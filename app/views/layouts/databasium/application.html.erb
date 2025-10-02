@@ -1,17 +1,26 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Databasium</title>
-  <%= csrf_meta_tags %>
-  <%= csp_meta_tag %>
+  <head>
+    <title>Databasium</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
-  <%= yield :head %>
+    <%= yield :head %>
+    <%= turbo_include_tags %>
 
-  <%= stylesheet_link_tag    "databasium/application", media: "all" %>
-</head>
-<body>
+    <%= stylesheet_link_tag "databasium", "data-turbo-track": Rails.env.production? ? "reload" : "" %>
 
-<%= yield %>
+  </head>
+  <body class="bg-gray-100 container mx-auto">
 
-</body>
+  <%= yield %>
+  <h1>Databasium</h1>
+  
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  <h1 class="text-2xl font-bold">Databasium</h1>
+  </body>
 </html>
