@@ -1,4 +1,5 @@
 #!/usr/bin/env ruby
+# frozen_string_literal: true
 # This command will automatically be run when you run "rails" with Rails gems
 # installed from the root of your application.
 
@@ -9,6 +10,32 @@ APP_PATH = File.expand_path("../test/dummy/config/application", __dir__)
 # Set up gems listed in the Gemfile.
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
+
+
+tailwind_input  = File.join(ENGINE_ROOT, "app/assets/stylesheets/databasium/databasium_engine.css")
+tailwind_output = File.join(ENGINE_ROOT, "app/assets/builds/databasium.css")
+tailwind_config = File.join(ENGINE_ROOT, "config/tailwind.config.js")
+
+
+tailwind_pid = Process.spawn("bundle", "exec", "tailwindcss",
+  "-i", tailwind_input,
+  "-o", tailwind_output,
+  "-c", tailwind_config,
+  "--minify", "-w",
+  chdir: ENGINE_ROOT,
+  out: $stdout, err: $stderr
+)
+
+at_exit do
+  begin
+    Process.kill("TERM", tailwind_pid) if tailwind_pid
+    Process.wait(tailwind_pid) rescue nil
+  rescue Errno::ESRCH, Errno::ECHILD
+  end
+end
+
+trap("INT") { exit }
+trap("TERM") { exit }
 
 require "rails/all"
 require "rails/engine/commands"

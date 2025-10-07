@@ -66,4 +66,15 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "views")
+  config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "stylesheets")
+  config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "builds")  # or whatever build path
+  
+  # Add force reload for CSS/JS so changes are fully applied
+  config.hotwire_livereload.force_reload_paths << Rails.root.join("../../app/assets/stylesheets")
+  config.hotwire_livereload.force_reload_paths << Rails.root.join("../../app/assets/builds")
+  
+  # Optionally adjust debounce to avoid multiple reloads
+  config.hotwire_livereload.debounce_delay_ms = 300
 end

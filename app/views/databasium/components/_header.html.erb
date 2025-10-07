@@ -1,0 +1,8 @@
+<div class="flex p-4 px-12">
+  <div class="flex-1">
+    <h1 class="text-5xl"><%= content_for?(:title) ? yield(:title) : "Databasium" %></h1>
+  </div>
+  <div class="flex-1 flex justify-end align-end text-3xl">
+    <%= link_to "Records", records_path, class: "text-blue-400 font-size-lg underline" %>
+  </div>
+</div>

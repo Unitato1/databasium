@@ -1,0 +1,6 @@
+// my_engine/app/javascript/my_engine/controllers/application.js
+import { Application } from "@hotwired/stimulus"
+const application = Application.start()
+application.debug = false
+window.Stimulus = application
+export { application }
