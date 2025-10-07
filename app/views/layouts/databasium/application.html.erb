@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Databasium</title>
+    <title><%= content_for?(:title) ? yield(:title) : "Databasium" %></title>
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
-    <%= turbo_include_tags %>
-
     <%= stylesheet_link_tag "databasium", "data-turbo-track": Rails.env.production? ? "reload" : "" %>
+    <%= javascript_importmap_tags "databasium/application" %>
 
   </head>
   <body>
-
+    <%= render "databasium/components/header" %>
   <%= yield %>
   
   </body>
