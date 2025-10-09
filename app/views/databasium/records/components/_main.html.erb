@@ -1,20 +1,22 @@
-<div class="flex flex-col w-full">
-  <% if @records %>
-  <table class="border-2 border-gray-300 w-100">
-    <tr class="border-2 border-gray-300">
-      <% @model.columns.each do |column| %>
-        <th class="px-3 border-2 border-gray-300"><%= column.name %></th>
-      <% end %>
-    </tr>
-    <% @records.each do |record| %>
+<turbo-frame id="main">
+  <div class="flex flex-col w-full overflow-x-auto">
+    <% if @records %>
+    <table class="border-2 border-gray-300 w-100 w-fit whitespace-nowrap border-t">
       <tr class="border-2 border-gray-300">
-        <% record.attributes.each do |attribute, value| %>
-          <td class="pr-3 pl-1 border-2 border-gray-300"><%= value %></td>
+        <% @model.columns.each do |column| %>
+          <th class="px-3 border-2 border-gray-300"><%= column.name %></th>
         <% end %>
       </tr>
+      <% @records.each do |record| %>
+        <tr class="border-2 border-gray-300">
+          <% record.attributes.each do |attribute, value| %>
+            <td class="pr-3 pl-1 border-2 border-gray-300"><%= value %></td>
+          <% end %>
+        </tr>
+      <% end %>
+    </table>
+    <% else %>
+      <p>No records found</p>
     <% end %>
-  </table>
-  <% else %>
-    <p>No records found</p>
-  <% end %>
-</div>
+  </div>
+</turbo-frame>
