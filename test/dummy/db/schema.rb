@@ -10,11 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_06_150658) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_07_194437) do
+  create_table "locations", force: :cascade do |t|
+    t.string "street"
+    t.string "city"
+    t.integer "number"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.string "title"
     t.integer "likes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "schools", force: :cascade do |t|
+    t.string "name"
+    t.integer "capacity"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "location_id", null: false
+    t.index ["location_id"], name: "index_schools_on_location_id"
+  end
+
+  create_table "students", force: :cascade do |t|
+    t.string "name"
+    t.integer "age"
+    t.integer "credits"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "school_id", null: false
+    t.index ["school_id"], name: "index_students_on_school_id"
+  end
+
+  add_foreign_key "schools", "locations"
+  add_foreign_key "students", "schools"
 end

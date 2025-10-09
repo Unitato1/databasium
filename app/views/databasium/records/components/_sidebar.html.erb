@@ -7,7 +7,7 @@
   <turbo-frame id="results">
     <% @tables.each do |table| %>
       <div class="border-b-2 border-b-gray-300 py-2 px-3">
-        <%= link_to table, records_path(table: table) %>
+        <%= link_to "#{table}", records_path(table: table), data: { turbo_frame: "main" } %>
       </div>
     <% end %>
   </turbo-frame>
