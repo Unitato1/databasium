@@ -5,20 +5,18 @@
       filter_columns_value: @columns_names_types.to_json
     } do %>
     
-    <%= form_with url: records_path, method: :get,
+    <%= form_with(url: records_path, method: :get,
         class: "flex flex-col gap-2 w-fit", 
         data: {
-          turbo_frame: "results",
           action: "change->search#update",
-          filter_target: "form"
-      } do |form| %>
-      
-      <%= tag.div(
-        class: "flex",
-        data: {
-        }
-        ) do %> 
-        <%= form.select :column,
+          filter_target: "form",
+          turbo_frame: "records"
+      },
+      ) do |form| %>
+        <%= hidden_field_tag :table, @model.name %>
+
+      <div>
+        <%= form.select nil,
           @model.column_names,
           { prompt: "Select column" },
           {
@@ -30,8 +28,13 @@
             }
           }
         %>
-      <% end %>
+
+      </div>
+
+      <%= form.submit "Filter", class: "border-2 border-gray-300 hover-cursor" %>
+   
     <% end %>
+   
     <button type="button"
       data-action="click->filter#addFilter"
       class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">

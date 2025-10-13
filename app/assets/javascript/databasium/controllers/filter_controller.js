@@ -22,7 +22,6 @@ export default class extends Controller {
     const next = this.columnsValue.map(c =>
       c.name === selected ? { ...c, used: true } : c
     )
-    console.log(next)
     const selectedAttribute = this.columnsValue.find(c => c.name === selected)
     this.columnsValue = next
     const fieldAssigned = event.target.nextElementSibling
@@ -41,7 +40,7 @@ export default class extends Controller {
     clone.value = ""
 
     containerDiv.appendChild(clone)
-    this.formTarget.appendChild(containerDiv, this.formTarget.lastElementChild)        
+    this.formTarget.lastElementChild.before(containerDiv)  
   }
 
   createInputField(selectedAttribute) {
@@ -54,7 +53,7 @@ export default class extends Controller {
   
     inputField.type = typeMap[selectedAttribute.type] || "text"
     inputField.classList = "border-2 border-gray-300"
-  
+    inputField.name =  "filter[" + selectedAttribute.name + "]"
     return inputField
   }
 }
