@@ -1,0 +1,42 @@
+<% if @model %>
+  <%= tag.div id: "filters",
+    data: { 
+      controller: "filter",
+      filter_columns_value: @columns_names_types.to_json
+    } do %>
+    
+    <%= form_with url: records_path, method: :get,
+        class: "flex flex-col gap-2 w-fit", 
+        data: {
+          turbo_frame: "results",
+          action: "change->search#update",
+          filter_target: "form"
+      } do |form| %>
+      
+      <%= tag.div(
+        class: "flex",
+        data: {
+        }
+        ) do %> 
+        <%= form.select :column,
+          @model.column_names,
+          { prompt: "Select column" },
+          {
+            class: "px-4 py-2 rounded-md border-2 border-gray-300", 
+            data: 
+            { 
+              filter_target: "selectColumn",
+              action: "change->filter#chooseColumn",
+            }
+          }
+        %>
+      <% end %>
+    <% end %>
+    <button type="button"
+      data-action="click->filter#addFilter"
+      class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">
+      + Add Filter
+    </button>
+
+  <% end %>
+<% end %>
