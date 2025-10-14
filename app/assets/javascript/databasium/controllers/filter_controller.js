@@ -20,7 +20,8 @@ export default class extends Controller {
     console.log(event)
     const selected = event.target.value
     let selectedAttribute = null;
-    const next = this.columnsValue.map(c => {
+    
+    this.columnsValue = this.columnsValue.map(c => {
       if (c.name === selected) {
         selectedAttribute = c;
         return { ...c, used: true };
@@ -30,10 +31,12 @@ export default class extends Controller {
         return c;
       }
     });
+
+    this.resetOptions();
+    
     if (!selectedAttribute) {
       return;
     }
-    this.columnsValue = next
     const fieldAssigned = event.target.nextElementSibling
     if (fieldAssigned && fieldAssigned.tagName !== "BUTTON") {
       fieldAssigned.remove()
@@ -60,7 +63,7 @@ export default class extends Controller {
         select.add(new Option(element.name, element.name));
       }
     });
-    select.setAttribute("data-form-target", "selectColumn");
+    select.setAttribute("data-filter-target", "selectColumn");
     select.setAttribute("data-action", "change->filter#chooseColumn mousedown->filter#rememberValue");
     select.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
     
@@ -91,9 +94,40 @@ export default class extends Controller {
   }
 
   removeFilter(event){
-    console.log("Adada")
+    const value = event.target.parentElement.querySelector("select")?.value
+    console.log(value)
+    if (value){
+      this.columnsValue = this.columnsValue.map(c => {
+        if (c.name === value) {
+          return { ...c, used: false };
+        } else {
+          return c;
+        }
+      });
+    }
     if (event.target.parentElement) {
       event.target.parentElement.remove()
     }
+    this.resetOptions();
+  }
+
+  resetOptions(){
+    console.log("Resetting options")
+
+    this.selectColumnTargets.forEach((select, index) => {
+      const value = select.value
+
+      select.innerHTML = "";
+
+      select.add(new Option("Select column", ""));
+
+      this.columnsValue
+      .forEach(col => {
+        if (!col.used || col.name === value){
+          select.add(new Option(col.name, col.name));
+        }
+      });
+      select.value = value;
+    });
   }
 }
