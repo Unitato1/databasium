@@ -37,7 +37,9 @@ class Databasium::RecordsController < Databasium::ApplicationController
     return if @model.nil? || @records.nil?
     @columns_names_types = @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
     filter_params&.each do |name, value|
-      @records = @records.where(@model.arel_table[name].eq(value))
+      if value.present?
+        @records = @records.where(@model.arel_table[name].eq(value))
+      end
     end
   end
 

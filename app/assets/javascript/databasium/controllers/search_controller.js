@@ -13,9 +13,10 @@ export default class extends Controller {
     const currentValue = event.target.value
     clearTimeout(this.debounceTimer)
     this.debounceTimer = setTimeout(() => {
-      console.log("Search controller connected")
       if (this.lastSubmittedValue === currentValue) return
+
       this.lastSubmittedValue = currentValue
+
       if (event.target.form) event.target.form.requestSubmit()
     }, 100)
   }
