@@ -4,7 +4,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
     search_tables
     set_viewing_table
     apply_filters
-    puts params
     respond_to do |format|
       format.html
       format.turbo_stream
@@ -37,13 +36,21 @@ class Databasium::RecordsController < Databasium::ApplicationController
     return if @model.nil? || @records.nil?
     @columns_names_types = @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
     filter_params&.each do |name, value|
-      if value.present?
-        @records = @records.where(@model.arel_table[name].eq(value))
+      if value[:operator].present? && value[:value].present?
+        if value[:operator] == "matches"
+          @records = @records.where(@model.arel_table[name].matches("%#{value[:value]}%"))
+        else
+          @records = @records.where(@model.arel_table[name].send(value[:operator], value[:value]))
+        end
       end
     end
   end
 
   def filter_params
-    params.fetch(:filter, {}).permit(@model.columns.map { |column| column.name.to_s })
+    allowed_columns = @model.columns.map { |c| c.name.to_s }
+
+    params.fetch(:filter, {}).permit(
+      allowed_columns.index_with { |_col| [:operator, :value] }
+    )
   end
 end

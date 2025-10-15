@@ -37,12 +37,18 @@ export default class extends Controller {
     if (!selectedAttribute) {
       return;
     }
-    const fieldAssigned = event.target.nextElementSibling
+    let fieldAssigned = event.target.nextElementSibling
     if (fieldAssigned && fieldAssigned.tagName !== "BUTTON") {
       fieldAssigned.remove()
     }
-    
+
+    fieldAssigned = event.target.nextElementSibling
+    if (fieldAssigned && fieldAssigned.tagName !== "BUTTON") {
+      fieldAssigned.remove()
+    }
+
     event.target.after( this.createInputField(selectedAttribute) )
+    event.target.after( this.createOperatorField(selectedAttribute) )
   }
 
   rememberValue(event){
@@ -89,8 +95,29 @@ export default class extends Controller {
   
     inputField.type = typeMap[selectedAttribute.type] || "text"
     inputField.classList = "border-2 border-gray-300"
-    inputField.name =  "filter[" + selectedAttribute.name + "]"
+    inputField.name =  "filter[" + selectedAttribute.name + "][value]"
     return inputField
+  }
+
+  createOperatorField(selectedAttribute) {
+    const selectOperator = document.createElement("select")
+    selectOperator.name = "filter[" + selectedAttribute.name + "][operator]"
+    selectOperator.classList = "border-2 border-gray-300"
+    const operatorPlaceholder = new Option("Select operator", "");
+    selectOperator.add(operatorPlaceholder);
+    selectOperator.add(new Option("Equals", "eq"));
+    selectOperator.add(new Option("Not equals", "not_eq"));
+    selectOperator.add(new Option("Like", "matches"));
+    selectOperator.add(new Option("Not like", "does_not_match"));
+    selectOperator.add(new Option("Greater than", "gt"));
+    selectOperator.add(new Option("Less than", "lt"));
+    selectOperator.add(new Option("Greater than or equal to", "gteq"));
+    selectOperator.add(new Option("Less than or equal to", "lteq"));
+    selectOperator.add(new Option("In", "in"));
+    selectOperator.add(new Option("Not in", "not_in"));
+    selectOperator.add(new Option("Is null", "is_null"));
+    selectOperator.add(new Option("Is not null", "is_not_null"));
+    return selectOperator
   }
 
   removeFilter(event){
@@ -112,8 +139,6 @@ export default class extends Controller {
   }
 
   resetOptions(){
-    console.log("Resetting options")
-
     this.selectColumnTargets.forEach((select, index) => {
       const value = select.value
 

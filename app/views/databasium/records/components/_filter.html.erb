@@ -15,23 +15,7 @@
       ) do |form| %>
       <%= hidden_field_tag :table, @model.name %>
 
-      <div class="flex items-center gap-2">
-        <%= form.select nil,
-          @model.column_names,
-          { prompt: "Select column" },
-          {
-            class: "px-4 py-2 rounded-md border-2 border-gray-300", 
-            data: 
-            { 
-              filter_target: "selectColumn",
-              action: "change->filter#chooseColumn focus->filter#rememberValue",
-            }
-          }
-        %>
-        <button data-action="click->filter#removeFilter" class="text-red-500 hover:text-red-800"> remove filter </button>
-      </div>
       <%= form.submit "Filter", class: "border-2 border-gray-300" %>
-   
     <% end %>
    
     <button type="button"
