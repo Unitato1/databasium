@@ -10,6 +10,25 @@ export default class extends Controller {
     console.log("connected to filter controller");
     this.previousValues = new WeakMap();
     this.addFilter();
+    this.textOperators = ["eq", "not_eq", "matches", "does_not_match"];
+    this.numberOperators = ["eq", "not_eq", "gt", "lt", "gteq", "lteq", "between"];
+    this.dateOperators = ["eq", "not_eq", "gt", "lt", "gteq", "lteq", "between"];
+    this.booleanOperators = ["eq", "not_eq", "is_true", "is_false", "is_null", "is_not_null"];
+    this.selectOperatorsLables = {
+      "eq": "=",
+      "not_eq": "!=",
+      "matches": "like",
+      "does_not_match": "not like",
+      "gt": ">",
+      "lt": "<",
+      "gteq": ">=",
+      "lteq": "<=",
+      "between": "between",
+      "is_true": "= true",
+      "is_false": "= false",
+      "is_null": "is null",
+      "is_not_null": "is not null",
+    }
   }
 
   update(event) {
@@ -103,20 +122,31 @@ export default class extends Controller {
     const selectOperator = document.createElement("select")
     selectOperator.name = "filter[" + selectedAttribute.name + "][operator]"
     selectOperator.classList = "border-2 border-gray-300"
-    const operatorPlaceholder = new Option("Select operator", "");
-    selectOperator.add(operatorPlaceholder);
-    selectOperator.add(new Option("Equals", "eq"));
-    selectOperator.add(new Option("Not equals", "not_eq"));
-    selectOperator.add(new Option("Like", "matches"));
-    selectOperator.add(new Option("Not like", "does_not_match"));
-    selectOperator.add(new Option("Greater than", "gt"));
-    selectOperator.add(new Option("Less than", "lt"));
-    selectOperator.add(new Option("Greater than or equal to", "gteq"));
-    selectOperator.add(new Option("Less than or equal to", "lteq"));
-    selectOperator.add(new Option("In", "in"));
-    selectOperator.add(new Option("Not in", "not_in"));
-    selectOperator.add(new Option("Is null", "is_null"));
-    selectOperator.add(new Option("Is not null", "is_not_null"));
+    
+    selectOperator.add(new Option("Select operator", ""));
+
+    switch (selectedAttribute.type) {
+      case "text": case "string":
+        this.textOperators.forEach(operator => {
+          selectOperator.add(new Option(this.selectOperatorsLables[operator], operator));
+        });
+        break;
+      case "integer": case "float": case "decimal":
+        this.numberOperators.forEach(operator => {
+          selectOperator.add(new Option(this.selectOperatorsLables[operator], operator));
+        });
+        break;
+      case "datetime" || "date" || "time":
+        this.dateOperators.forEach(operator => {
+          selectOperator.add(new Option(this.selectOperatorsLables[operator], operator));
+        });
+        break;
+      case "boolean":
+        this.booleanOperators.forEach(operator => {
+          selectOperator.add(new Option(this.selectOperatorsLables[operator], operator));
+        });
+        break;
+    }
     return selectOperator
   }
 

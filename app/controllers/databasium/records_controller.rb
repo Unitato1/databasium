@@ -34,11 +34,11 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def apply_filters
     return if @model.nil? || @records.nil?
-    @columns_names_types = @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
+    @columns_names_types ||= @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
     filter_params&.each do |name, value|
       if value[:operator].present? && value[:value].present?
-        if value[:operator] == "matches"
-          @records = @records.where(@model.arel_table[name].matches("%#{value[:value]}%"))
+        if value[:operator] == "matches" || value[:operator] == "does_not_match"
+          @records = @records.where(@model.arel_table[name].send(value[:operator], "%#{value[:value]}%"))
         else
           @records = @records.where(@model.arel_table[name].send(value[:operator], value[:value]))
         end
