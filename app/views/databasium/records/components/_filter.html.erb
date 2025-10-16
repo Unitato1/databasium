@@ -6,7 +6,7 @@
     } do %>
     
     <%= form_with(url: records_path, method: :get,
-        class: "flex flex-col gap-2 w-fit", 
+        class: "w-fit [&>*:nth-last-child(2)]:inline [&>*:nth-last-child(2)]:py-4", 
         data: {
           action: "change->search#update",
           filter_target: "form",
@@ -14,15 +14,16 @@
       },
       ) do |form| %>
       <%= hidden_field_tag :table, @model.name %>
+      <%= form.submit "Filter", class: "flex border-2 border-gray-300" %>
 
-      <%= form.submit "Filter", class: "border-2 border-gray-300" %>
+  <span
+    type="button"
+    data-action="click->filter#addFilter"
+    class="ps-4 py-1 rounded underline w-fit"
+  >
+    Add Filter
+  </span>
     <% end %>
-   
-    <button type="button"
-      data-action="click->filter#addFilter"
-      class="mt-2 bg-blue-500 text-white px-3 py-1 rounded">
-      + Add Filter
-    </button>
-    <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8 hidden", data_filter_target: "removeIcon" } %>
+    <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8 hidden mr-2", data_filter_target: "removeIcon" } %>   
   <% end %>
 <% end %>

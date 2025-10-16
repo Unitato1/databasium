@@ -53,21 +53,22 @@ export default class extends Controller {
 
     this.resetOptions();
     
+    if (this.previousValues.get(event.target)) {
+      while (event.target.nextElementSibling && event.target.nextElementSibling.tagName !== "BUTTON") {
+        event.target.nextElementSibling.remove();
+      }
+    }
+    
     if (!selectedAttribute) {
       return;
     }
-    let fieldAssigned = event.target.nextElementSibling
-    if (fieldAssigned && fieldAssigned.tagName !== "BUTTON") {
-      fieldAssigned.remove()
-    }
 
-    fieldAssigned = event.target.nextElementSibling
-    if (fieldAssigned && fieldAssigned.tagName !== "BUTTON") {
-      fieldAssigned.remove()
-    }
-
+    const seperator = document.createElement("div")
+    seperator.classList = "bg-gray-300 inline-block h-2 w-3"
     event.target.after( this.createInputField(selectedAttribute) )
+    event.target.after( seperator.cloneNode(true) )
     event.target.after( this.createOperatorField(selectedAttribute) )
+    event.target.after( seperator.cloneNode(true) )
   }
 
   rememberValue(event){
@@ -77,7 +78,7 @@ export default class extends Controller {
 
   addFilter(){
     const containerDiv = document.createElement("div")
-    containerDiv.classList = "flex gap-2"
+    containerDiv.classList = "flex items-center py-2"
 
     const select = document.createElement("select")
     const placeholder = new Option("Select column", "");
@@ -98,6 +99,7 @@ export default class extends Controller {
     button.classList = "text-red-500 hover:text-red-800"
     const xIcon = this.removeIconTarget.cloneNode(true)
     xIcon.classList.remove("hidden")
+    xIcon.classList.add("inline-block")
     button.appendChild(xIcon)
 
     containerDiv.appendChild(button);
@@ -115,7 +117,7 @@ export default class extends Controller {
     }
   
     inputField.type = typeMap[selectedAttribute.type] || "text"
-    inputField.classList = "border-2 border-gray-300"
+    inputField.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
     inputField.name =  "filter[" + selectedAttribute.name + "][value]"
     return inputField
   }
@@ -123,10 +125,10 @@ export default class extends Controller {
   createOperatorField(selectedAttribute) {
     const selectOperator = document.createElement("select")
     selectOperator.name = "filter[" + selectedAttribute.name + "][operator]"
-    selectOperator.classList = "border-2 border-gray-300"
+    selectOperator.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
     
     selectOperator.add(new Option("Select operator", ""));
-
+    // can create a map and use it will do in refactoring
     switch (selectedAttribute.type) {
       case "text": case "string":
         this.textOperators.forEach(operator => {
