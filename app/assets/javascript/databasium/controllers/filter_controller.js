@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="filter"
 export default class extends Controller {
-  static targets = ["selectColumn", "form", "closeButton"]
+  static targets = ["selectColumn", "form", "closeButton", "removeIcon"]
   static values = { columns: Array }
 
 
@@ -96,10 +96,12 @@ export default class extends Controller {
     
     button.setAttribute("data-action", "click->filter#removeFilter");
     button.classList = "text-red-500 hover:text-red-800"
-    button.innerHTML = "remove filter"
+    const xIcon = this.removeIconTarget.cloneNode(true)
+    xIcon.classList.remove("hidden")
+    button.appendChild(xIcon)
 
-    containerDiv.appendChild(select);
     containerDiv.appendChild(button);
+    containerDiv.appendChild(select);
     this.formTarget.lastElementChild.before(containerDiv)
 
   }
@@ -151,8 +153,7 @@ export default class extends Controller {
   }
 
   removeFilter(event){
-    const value = event.target.parentElement.querySelector("select")?.value
-    console.log(value)
+    const value = event.currentTarget.parentElement.querySelector("select")?.value
     if (value){
       this.columnsValue = this.columnsValue.map(c => {
         if (c.name === value) {
@@ -162,8 +163,8 @@ export default class extends Controller {
         }
       });
     }
-    if (event.target.parentElement) {
-      event.target.parentElement.remove()
+    if (event.currentTarget.parentElement) {
+      event.currentTarget.parentElement.remove()
     }
     this.resetOptions();
   }

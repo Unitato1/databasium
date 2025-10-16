@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     databasium (0.1.0)
+      heroicon
       rails (>= 8.0.2)
       tailwindcss-rails
 
@@ -94,6 +95,8 @@ GEM
     ffi (1.17.2-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
+    heroicon (1.0.0)
+      rails (>= 5.2)
     hotwire-livereload (2.0.0)
       actioncable (>= 7.0.0)
       listen (>= 3.0.0)
@@ -266,6 +269,7 @@ PLATFORMS
 
 DEPENDENCIES
   databasium!
+  heroicon
   hotwire-livereload (~> 2.0)
   importmap-rails
   propshaft
