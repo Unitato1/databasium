@@ -7,6 +7,8 @@ unless Location.find_by(street: "Main Street")
     Location.create(street: location, city: cities.sample, number: numbers.sample)
   end
   puts "Seeded #{Location.count} locations"
+else
+  puts "Locations are already seeded."
 end
 
 unless School.find_by(name: "Muni")
@@ -17,6 +19,8 @@ unless School.find_by(name: "Muni")
     School.create(name: school_name, capacity: capacities.sample, location: Location.all.sample)
   end
   puts "Seeded #{School.count} schools"
+else
+  puts "Schools are already seeded."
 end
 
 unless Student.find_by(name: "John")
@@ -27,4 +31,6 @@ unless Student.find_by(name: "John")
     Student.create(name: name, age: ages.sample, credits: rand(30..180), school: School.all.sample)
   end
   puts "Seeded #{Student.count} students"
+else
+  puts "Students are already seeded."
 end

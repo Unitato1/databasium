@@ -32,7 +32,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_194437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "location_id", null: false
-    t.index [ "location_id" ], name: "index_schools_on_location_id"
+    t.index ["location_id"], name: "index_schools_on_location_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -42,7 +42,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_07_194437) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "school_id", null: false
-    t.index [ "school_id" ], name: "index_students_on_school_id"
+    t.index ["school_id"], name: "index_students_on_school_id"
   end
 
   add_foreign_key "schools", "locations"
