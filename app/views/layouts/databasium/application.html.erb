@@ -11,9 +11,8 @@
     <%= javascript_importmap_tags "databasium/application" %>
 
   </head>
-  <body>
+  <body class="overflow-x-hidden">
     <%= render "databasium/components/header" %>
-  <%= yield %>
-  
+    <%= yield %>
   </body>
 </html>

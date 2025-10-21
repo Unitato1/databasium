@@ -14,15 +14,12 @@
       },
       ) do |form| %>
       <%= hidden_field_tag :table, @model.name %>
-      <%= form.submit "Filter", class: "flex border-2 border-gray-300" %>
-
-  <span
-    type="button"
-    data-action="click->filter#addFilter"
-    class="ps-4 py-1 rounded underline w-fit"
-  >
-    Add Filter
-  </span>
+      <%= form.submit "Run Filters", class: "bg-blue-500 text-white px-4 py-2 rounded-md" %>
+      <span type="button"
+        data-action="click->filter#addFilter"
+        class="ps-4 py-1 rounded underline w-fit">
+        Add Filter
+      </span>
     <% end %>
     <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8 hidden mr-2", data_filter_target: "removeIcon" } %>   
   <% end %>
