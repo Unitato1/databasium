@@ -3,7 +3,7 @@
 
   <turbo-frame id="records" class="mt-4 overflow-auto block">
 
-    <% if @records %>
+    <% if @records&.any? %>
       <table class="table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max">
         <thead>
           <tr class="border-2 border-gray-300">
