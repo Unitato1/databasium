@@ -91,7 +91,7 @@ export default class extends Controller {
     });
     select.setAttribute("data-filter-target", "selectColumn");
     select.setAttribute("data-action", "change->filter#chooseColumn mousedown->filter#rememberValue");
-    select.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
+    select.classList = "px-4 py-2 rounded-md border-2 border-gray-300 w-fit"
     
     const button = document.createElement("button")
     
@@ -117,7 +117,7 @@ export default class extends Controller {
     }
   
     inputField.type = typeMap[selectedAttribute.type] || "text"
-    inputField.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
+    inputField.classList = "px-4 py-2 rounded-md border-2 border-gray-300 w-fit"
     inputField.name =  "filter[" + selectedAttribute.name + "][value]"
     return inputField
   }
@@ -125,7 +125,7 @@ export default class extends Controller {
   createOperatorField(selectedAttribute) {
     const selectOperator = document.createElement("select")
     selectOperator.name = "filter[" + selectedAttribute.name + "][operator]"
-    selectOperator.classList = "px-4 py-2 rounded-md border-2 border-gray-300"
+    selectOperator.classList = "px-4 py-2 rounded-md border-2 border-gray-300 w-fit"
     
     selectOperator.add(new Option("Select operator", ""));
     // can create a map and use it will do in refactoring

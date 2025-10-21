@@ -6,7 +6,13 @@
     } do %>
     
     <%= form_with(url: records_path, method: :get,
-        class: "w-fit [&>*:nth-last-child(2)]:inline [&>*:nth-last-child(2)]:py-4", 
+        class: "border-1 border-gray-300 p-4
+        bg-gray-100 rounded-xl 
+        min-w-125
+        w-fit [&>*:nth-last-child(2)]:inline 
+        [&>*:nth-last-child(2)]:py-4 
+        max-h-50
+        overflow-y-auto", 
         data: {
           action: "change->search#update",
           filter_target: "form",
