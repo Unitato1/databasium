@@ -17,7 +17,7 @@ gem "rubocop-rails-omakase", require: false
 
 gem "tailwindcss-rails"
 
-gem "hotwire-livereload", "~> 2.0", group: :development
+gem "hotwire-livereload", "~> 2.1", group: :development
 
 gem "turbo-rails", "~> 2.0"
 gem "stimulus-rails", "~> 1.3"
