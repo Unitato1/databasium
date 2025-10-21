@@ -8,5 +8,3 @@ pin "databasium/controllers", to: "databasium/controllers/index.js"
 
 # Auto-pin all Stimulus controllers under the namespace
 pin_all_from Databasium::Engine.root.join("app/assets/javascript/databasium/controllers"), under: "databasium/controllers"
-
-

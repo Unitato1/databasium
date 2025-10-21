@@ -24,4 +24,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "rails", ">= 8.0.2"
   spec.add_dependency "tailwindcss-rails"
+  spec.add_dependency "heroicon"
 end

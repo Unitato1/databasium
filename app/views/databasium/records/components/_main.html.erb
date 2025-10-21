@@ -1,22 +1,29 @@
-<turbo-frame id="main">
-  <div class="flex flex-col w-full overflow-x-auto">
-    <% if @records %>
-    <table class="border-2 border-gray-300 w-100 w-fit whitespace-nowrap border-t">
-      <tr class="border-2 border-gray-300">
-        <% @model.columns.each do |column| %>
-          <th class="px-3 border-2 border-gray-300"><%= column.name %></th>
-        <% end %>
-      </tr>
-      <% @records.each do |record| %>
-        <tr class="border-2 border-gray-300">
-          <% record.attributes.each do |attribute, value| %>
-            <td class="pr-3 pl-1 border-2 border-gray-300"><%= value %></td>
+<turbo-frame id="main" class=" sm:pe-100 block">
+  <%= render "databasium/records/components/filter" %>
+
+  <turbo-frame id="records" class="mt-4 overflow-auto block">
+
+    <% if @records&.any? %>
+      <table class="table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max">
+        <thead>
+          <tr class="border-2 border-gray-300">
+            <% @model.columns.each do |column| %>
+              <th class="py-2 border-2 border-gray-300"><%= column.name %></th>
+            <% end %>
+          </tr>
+        </thead>
+        <tbody>
+          <% @records.each do |record| %>
+            <tr class="border-2 border-gray-300 hover:bg-gray-100">
+              <% record.attributes.each do |_, value| %>
+                <td class="text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"><%= value %></td>
+              <% end %>
+            </tr>
           <% end %>
-        </tr>
-      <% end %>
-    </table>
+        </tbody>
+      </table>
     <% else %>
       <p>No records found</p>
     <% end %>
-  </div>
+  </turbo-frame>
 </turbo-frame>

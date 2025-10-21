@@ -1,0 +1,28 @@
+<% if @model %>
+  <%= tag.div id: "filters",
+    data: { 
+      controller: "filter",
+      filter_columns_value: @columns_names_types.to_json
+    } do %>
+    
+    <%= form_with(url: records_path, method: :get,
+        class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit max-h-50 overflow-y-auto", 
+        data: {
+          action: "change->search#update",
+          filter_target: "form",
+          turbo_frame: "records"
+      },
+      ) do |form| %>
+      <%= hidden_field_tag :table, @model.name %>
+      <div class="flex items-center justify-between">
+        <span type="button"
+          data-action="click->filter#addFilter"
+          class="ps-4 py-1 rounded underline w-fit">
+          Add Filter
+        </span>
+        <%= form.submit "Run Filters", class: "bg-blue-500 text-white px-4 py-2 rounded-md" %>
+      </div>
+    <% end %>
+    <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8 hidden mr-2", data_filter_target: "removeIcon" } %>   
+  <% end %>
+<% end %>
