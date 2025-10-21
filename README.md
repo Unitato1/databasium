@@ -1,8 +1,16 @@
 # Databasium
 
-Short description and motivation. TODO
+TODO
 
 ## Usage
+
+To start the local server
+
+```
+rails s
+```
+
+This will also start autorefresh and auto tailwind building
 
 visit http://127.0.0.1:3000/databasium/
 
@@ -17,13 +25,16 @@ bundle install
 ```
 
 For now only records page is somewhat finished and its on its own branch add-filters-for-records, please to view it
-https://github.com/Unitato1/databasium/tree/add-filters-for-records
+run
 
 ```
 git checkout add-filters-for-records
 ```
 
-Note:
+https://github.com/Unitato1/databasium/tree/add-filters-for-records
+
+### Note:
+
 /test/dummy is where dummy-real app used for developing is we need to migrate and seed it.
 
 ```
@@ -31,7 +42,7 @@ Note:
 ./test/dummy/bin/rails db:seed
 ```
 
-visit http://127.0.0.1:3000/databasium/
+visit http://127.0.0.1:3000/databasium/records
 
 ## Contributing
 
