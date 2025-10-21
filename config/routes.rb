@@ -3,4 +3,5 @@ Databasium::Engine.routes.draw do
   resources :homepage, only: [:index]
 
   resources :records, only: [:index]
+  resources :migrations, only: [:index]
 end
