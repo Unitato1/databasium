@@ -21,7 +21,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
-# https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
+  # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
   def migration_context
     # paths = ActiveRecord::Migrator.migrations_paths
     # self.migrations_paths = ["db/migrate"] https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1428

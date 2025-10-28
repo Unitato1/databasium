@@ -4,7 +4,7 @@
   <div class="w-fit">
     <% @migrations.each do |m| %>
         <div class="">
-          <%= link_to "#{m.version} - #{m.name}",
+          <%= link_to "#{m.name}",
             migrations_path(migration: m.version),
             data: { turbo_frame: "migration", turbo_action: "replace" }, 
             class: "text-blue-600 hover:underline" %>
