@@ -1,0 +1,12 @@
+<% content_for(:title) { "Migrations" } %>
+
+<div class="px-4 w-full flex flex-col lg:flex-row gap-4">
+  <%= render "sidebar"%>
+  <%= turbo_frame_tag "migration", class: "flex-1" do %>
+    <% if @migration %>
+      <%= render "databasium/migrations/migration_file", migration: @migration %>
+    <% else %>
+      <p>No migration found</p>
+    <% end %>
+  <% end %>
+</div>
