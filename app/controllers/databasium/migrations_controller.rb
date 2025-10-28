@@ -1,8 +1,5 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
-  rescue_from ActiveRecord::PendingMigrationError, with: :ignore_pending_migrations
-
   MIGRATIONS_PATHS = ["db/migrate"] 
-  rescue_from ActiveRecord::PendingMigrationError, with: :ignore_pending_migrations
 
   def index
     @migrations = migration_context.migrations
@@ -40,11 +37,5 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
     raise ActiveRecord::RecordNotFound, "Migration not found" unless migration && File.file?(migration.filename)
     migration
-  end
-
-  def ignore_pending_migrations
-    Rails.logger.warn "⚠️ Ignored pending migrations in #{controller_name} controller"
-    # Optionally render a custom message or continue
-    render plain: "Ignoring pending migrations for this controller", status: :ok
   end
 end
