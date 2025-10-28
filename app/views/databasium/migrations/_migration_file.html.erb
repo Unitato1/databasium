@@ -1,0 +1,8 @@
+<div class="px-4 w-full">
+  <h1 class="text-xl font-semibold mb-4">Migration <%= @migration.version %> - <%= @migration.name %></h1>
+  <p class="mb-2 text-gray-600"><%= @migration.filename %></p>
+  <pre class="bg-gray-100 p-4 overflow-x-auto rounded"><code><%= h @content %></code></pre>
+  <div class="mt-4">
+    <%= link_to "Clear", migrations_path, data: { turbo_frame: "migration", turbo_action: "replace" }, class: "text-blue-600 hover:underline" %>
+  </div>
+</div>

@@ -1,1 +1,33 @@
-<h1>Migrations</h1>
+<% content_for(:title) { "Migrations" } %>
+
+<div class="px-4 flex gap-4 w-full">
+  <div class="w-fit">
+    <% @migrations.each do |m| %>
+        <div class="">
+          <%= link_to "#{m.version} - #{m.name}",
+            migrations_path(migration: m.version),
+            data: { turbo_frame: "migration", turbo_action: "replace" }, 
+            class: "text-blue-600 hover:underline" %>
+      </div>
+    <% end %>
+  </div>
+  <div class="w-fit">
+    <% @migrations.each do |m| %>
+      <div class="border-s-1 border-gray-300 ps-4">
+        <% if @pending_migrations.include?(m.version) %>
+          <span class="text-red-500">Pending</span>
+        <% else %>
+          <span class="text-green-500">Applied</span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <%= turbo_frame_tag "migration", class: "flex-1" do %>
+    <% if @migration %>
+      <%= render "databasium/migrations/migration_file", migration: @migration %>
+    <% else %>
+      <p>No migration found</p>
+    <% end %>
+  <% end %>
+</div>
