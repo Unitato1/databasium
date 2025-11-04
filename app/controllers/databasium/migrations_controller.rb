@@ -22,9 +22,38 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def new
     puts params
   end
-
+  # Might be simplistic approach, but lets start with it,
+  # I searched a bit of for how are generataors used in code and what code they actually run
+  # We basiclly need same functionality as them, and ability to change the file from UI
+  #  https://github.com/rails/rails/blob/main/railties/lib/rails/generators.rb#L263C9-L263C10
+  #  I needed to do some reverse engineering to find out how the generator works or more like what it expects
+  #  for params, running rails g migration CreateCda name:string
+  # gets you this:
+  # namespace: migration
+  # names: ["migration"]
+  # args: ["CreateCda", "name:string"]
+  # config: {behavior: :invoke, destination_root: #<Pathname>}
+  #  Notes on what I also checked:
+  #  https://api.rubyonrails.org/classes/Rails/Generators/Migration.html -> Not much documentation
+  #  
   def create
-    puts "creating new migration"
+    require 'rails/generators'
+    Rails.application.load_generators
+
+    # Hardcoded test invocation
+    generator = 'migration'
+    args = [
+      params[:table_name]
+    ]
+    if params[:columns].present?
+      args += params[:columns].map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
+    end
+    Rails::Generators.invoke(
+      generator,
+      args,
+      behavior: :invoke,
+      destination_root: Rails.root.to_s
+    )
   end
 
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
@@ -46,4 +75,5 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     raise ActiveRecord::RecordNotFound, "Migration not found" unless migration && File.file?(migration.filename)
     migration
   end
+
 end
