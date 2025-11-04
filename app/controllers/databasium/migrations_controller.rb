@@ -43,10 +43,12 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     # Hardcoded test invocation
     generator = 'migration'
     args = [
-      params[:table_name]
+      params[:migration_action].capitalize + params[:table_name]
     ]
     if params[:columns].present?
-      args += params[:columns].map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
+      args += params[:columns]
+        .filter { |c| c[:column_name].present? && c[:column_type].present? }
+        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
     end
     Rails::Generators.invoke(
       generator,

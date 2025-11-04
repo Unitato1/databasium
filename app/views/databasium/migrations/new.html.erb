@@ -1,8 +1,8 @@
-<%= form_with(url: migrations_path, method: :post, class: "flex flex-col gap-4 mx-auto w-fit") do |form| %>
+<%= form_with(url: migrations_path, method: :post, class: "flex flex-col gap-4 mx-auto w-fit", data: { controller: "new-migration" }) do |form| %>
 
   <div class="flex flex-col">
-    <%= form.label :action %>
-    <%= form.select :action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+    <%= form.label :migration_action %>
+    <%= form.select :migration_action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
   </div>
 
   <div class="flex flex-col">
@@ -18,18 +18,15 @@
 
   <div class="flex flex-col">
     <h1 class="text-lg font-semibold">Columns</h1>
-    <label for="column_name" class="text-lg font-semibold">Column Name</label>
-    <input type="text" name="columns[][column_name]", class="p-2 border-2 border-gray-300 w-fit"/>
-    <label for="column_type" class="text-lg font-semibold">Column Type</label>
-    <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/>
+    <div data-new-migration-target="column" class="hidden flex gap-2">
+      <label for="column_name" class="text-lg font-semibold">Column Name</label>
+      <input type="text" name="columns[][column_name]", class="p-2 border-2 border-gray-300 w-fit"/>
+      <label for="column_type" class="text-lg font-semibold">Column Type</label>
+      <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/>
+      <button data-action="click->new-migration#removeColumn" type="button" class="bg-red-500 text-white p-1 rounded-md w-fit">-</button>
+    </div>
 
-    <label for="column_name" class="text-lg font-semibold">Column Name</label>
-    <input type="text" name="columns[][column_name]", class="p-2 border-2 border-gray-300 w-fit"/>
-    <label for="column_type" class="text-lg font-semibold">Column Type</label>
-    <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/>
-
-
-    <button class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
+    <button data-action="click->new-migration#addColumn" type="button" class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
   </div>
 
   <div class="flex flex-col">
