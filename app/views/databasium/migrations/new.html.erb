@@ -1,0 +1,54 @@
+<%= form_with(url: migrations_path, method: :post, class: "flex flex-col gap-2") do |form| %>
+
+  <div class="flex flex-col">
+    <h1>Columns</h1>
+    <%= form.label :action %>
+    <%= form.select :action, ["create", "remove", "add"] %>
+  </div>
+
+  <div class="flex flex-col">
+    <h1>Name Of table</h1>
+    <%= form.label :table_name %>
+    <%= form.text_field :table_name, class: "border-2 border-gray-300 w-fit" %>
+  </div>
+
+  <div class="flex flex-col">
+    <h1>Primary Keys</h1>
+    <%= form.label :primary_key %>
+    <%= form.text_field :primary_key, class: "p-2 border-2 border-gray-300 w-fit" %>
+  </div>
+
+  <div class="flex flex-col">
+    <h1>Columns</h1>
+    <%= form.label :column_type %>
+    <%= form.text_field :column_type, class: "p-2 border-2 border-gray-300 w-fit" %>
+  
+    <%= form.label :column_name %>
+    <%= form.text_field :column_name, class: "p-2 border-2 border-gray-300 w-fit" %>
+  </div>
+
+  <div class="flex flex-col">
+    <h1>Columns</h1>
+    <%= form.label :column_type %>
+    <%= form.text_field :column_type, class: "p-2 border-2 border-gray-300 w-fit" %>
+  
+    <%= form.label :column_name %>
+    <%= form.text_field :column_name, class: "p-2 border-2 border-gray-300 w-fit" %>
+  </div>
+
+  <div class="flex flex-col">
+    <h1>Valiadtion</h1>
+    <%= form.label :validation_name_column %>
+    <%= form.text_field :validation_name_column, class: "p-2 border-2 border-gray-300 w-fit" %>
+  
+    <%= form.label :column_name %>
+    <%= form.select :validation_column, ["create", "remove", "add"] %>
+    <%= form.text_field :column_name, class: "p-2 border-2 border-gray-300 w-fit" %>
+  </div>
+
+  <div>
+    <%= form.submit "Save" %>
+  </div>
+<% end %>
+
+

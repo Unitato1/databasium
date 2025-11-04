@@ -19,6 +19,14 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     end
   end
 
+  def new
+    puts params
+  end
+
+  def create
+    puts "creating new migration"
+  end
+
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
   # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
