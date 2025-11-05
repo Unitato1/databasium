@@ -21,6 +21,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def new
     puts params
+    @tables = (ActiveRecord::Base.connection.tables - %w[ar_internal_metadata schema_migrations]).map(&:classify)
   end
   # Might be simplistic approach, but lets start with it,
   # I searched a bit of for how are generataors used in code and what code they actually run
@@ -35,21 +36,40 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   # config: {behavior: :invoke, destination_root: #<Pathname>}
   #  Notes on what I also checked:
   #  https://api.rubyonrails.org/classes/Rails/Generators/Migration.html -> Not much documentation
-  #  
+  #  https://guides.rubyonrails.org/active_record_migrations.html#running-migrations
   def create
     require 'rails/generators'
     Rails.application.load_generators
-
-    # Hardcoded test invocation
+    
     generator = 'migration'
+
+    table_name_with_action = params[:migration_action]&.capitalize
+
+    if params[:migration_action] != "create"
+      all_affected_columns = params[:columns].present? ?
+        params[:columns]
+        .filter { |c| c[:column_name].present? && c[:column_type].present? }
+        .map { |c| c[:column_name].capitalize }.join("And") : ""
+      table_name_with_action += all_affected_columns
+    else
+      table_name_with_action += params[:table_name]&.capitalize&.pluralize
+    end
+
+    if params[:migration_action] == "add"
+      table_name_with_action += "To#{params[:table_name_to]&.capitalize&.pluralize}"
+    elsif params[:migration_action] == "remove"
+      table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
+    end
     args = [
-      params[:migration_action].capitalize + params[:table_name]
+      table_name_with_action
     ]
+
     if params[:columns].present?
       args += params[:columns]
         .filter { |c| c[:column_name].present? && c[:column_type].present? }
         .map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
     end
+
     Rails::Generators.invoke(
       generator,
       args,

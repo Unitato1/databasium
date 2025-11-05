@@ -1,11 +1,23 @@
 <%= form_with(url: migrations_path, method: :post, class: "flex flex-col gap-4 mx-auto w-fit", data: { controller: "new-migration" }) do |form| %>
 
-  <div class="flex flex-col">
-    <%= form.label :migration_action %>
-    <%= form.select :migration_action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+  <div class="flex flex">
+    <div class="flex flex-col">
+      <%= form.label :migration_action %>
+      <%= form.select :migration_action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit", data: { action: "change->new-migration#set_action" }  %>
+    </div>
+
+    <div class="flex flex-col hidden" data-new-migration-target="table_name_from">
+      <%= form.label :table_name_from, "Table to remove from" %>
+      <%= form.select :table_name_from, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+    </div>
+
+    <div class="flex flex-col hidden" data-new-migration-target="table_name_to">
+      <%= form.label :table_name_to, "Table to add to" %>
+      <%= form.select :table_name_to, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+    </div>
   </div>
 
-  <div class="flex flex-col">
+  <div class="flex flex-col" data-new-migration-target="table_name">
     <%= form.label :table_name, class: "text-lg font-semibold" %>
     <%= form.text_field :table_name, class: "border-2 border-gray-300 w-fit" %>
   </div>
@@ -25,6 +37,41 @@
       <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/>
       <button data-action="click->new-migration#removeColumn" type="button" class="bg-red-500 text-white p-1 rounded-md w-fit">-</button>
     </div>
+
+<%
+=begin%>
+ invoking generator
+namespace: migration
+names: ["migration"]
+args: ["RemovePartNumberFromProducts", "part_number:string"]
+config: {behavior: :invoke, destination_root: #<Pathname:/home/svihla/Desktop/databasium>}
+      invoke  active_record
+      create    db/migrate/20251105213253_remove_part_number_from_products.rb
+class: Rails::Generators::MigrationGenerator 
+<%
+=end%>
+
+<%
+=begin%>
+ invoking generator
+namespace: migration
+names: ["migration"]
+args: ["AddPartNumberToProducts"]
+config: {behavior: :invoke, destination_root: #<Pathname:/home/svihla/Desktop/databasium>} 
+<%
+=end%>
+
+<%
+=begin%>
+ invoking generator
+namespace: migration
+names: ["migration"]
+args: ["AddTableName"]
+config: {behavior: :invoke, destination_root: "/home/svihla/Desktop/databasium/test/dummy"} 
+<%
+=end%>
+
+
 
     <button data-action="click->new-migration#addColumn" type="button" class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
   </div>
