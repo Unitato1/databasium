@@ -38,7 +38,19 @@
       <label for="column_name" class="text-lg font-semibold">Column Name</label>
       <input type="text" name="columns[][column_name]", class="p-2 border-2 border-gray-300 w-fit"/>
       <label for="column_type" class="text-lg font-semibold">Column Type</label>
-      <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/>
+      <%
+=begin%>
+ <input type="text" name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit"/> 
+<%
+=end%>
+      <select name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit">
+        <option value="string">String</option>
+        <option value="integer">Integer</option>
+        <option value="float">Float</option>
+        <option value="decimal">Decimal</option>
+        <option value="datetime">Datetime</option>
+        <option value="date">Date</option>
+      </select>
       <button data-action="click->new-migration#removeColumn" type="button" class="bg-red-500 text-white p-1 rounded-md w-fit">-</button>
     </div>
 

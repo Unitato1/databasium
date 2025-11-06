@@ -24,8 +24,15 @@ class Databasium::RecordsController < Databasium::ApplicationController
     return if params[:table].nil?
     table_name = params[:table].downcase.pluralize.to_sym
     if ActiveRecord::Base.connection.table_exists?(table_name)
-      @model = params[:table].classify.constantize
-      @records = @model.all
+      begin
+        # If there is no model for this table it will raise a NameError
+        @model = params[:table].classify.constantize
+        @records = @model.all
+      rescue NameError
+        @model = nil
+        @records = nil
+        @error = "No model found for this table, if you would like to interact with this table, you need to create a model for it."
+      end
     else
       @model = nil
       @records = nil
