@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="new-migration"
 export default class extends Controller {
-  static targets = ["column", "table_name_from", "table_name_to", "table_name"]
+  static targets = ["column", "table_name_from", "table_name_to", "table_name", "add_model_container", "add_model"]
 
   connect() {
     console.log("connected to new migration controller");
@@ -25,17 +25,29 @@ export default class extends Controller {
 
   set_action(e) {
     if (e.currentTarget.value === "create") {
+      
       this.table_name_fromTarget.classList.add("hidden");
       this.table_name_toTarget.classList.add("hidden");
       this.table_nameTarget.classList.remove("hidden");
+      this.add_model_containerTarget.classList.remove("hidden");
+      this.add_modelTarget.disabled = false;
+      
     } else if (e.currentTarget.value === "remove") {
+      
       this.table_name_fromTarget.classList.remove("hidden");
       this.table_name_toTarget.classList.add("hidden");
       this.table_nameTarget.classList.add("hidden");
+      this.add_model_containerTarget.classList.add("hidden");
+      this.add_modelTarget.disabled = true;
+    
     } else if (e.currentTarget.value === "add") {
+    
       this.table_name_fromTarget.classList.add("hidden");
       this.table_name_toTarget.classList.remove("hidden");
       this.table_nameTarget.classList.add("hidden");
+      this.add_model_containerTarget.classList.add("hidden");
+      this.add_modelTarget.disabled = true;
+    
     }
   }
 }

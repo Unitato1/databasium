@@ -40,10 +40,15 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def create
     require 'rails/generators'
     Rails.application.load_generators
-    
-    generator = 'migration'
 
-    table_name_with_action = params[:migration_action]&.capitalize
+    table_name_with_action = ""
+    if params[:add_model] == "1"
+      generator = 'model'
+    else
+      table_name_with_action += params[:migration_action]&.capitalize
+      generator = 'migration'
+    end
+       
 
     if params[:migration_action] != "create"
       all_affected_columns = params[:columns].present? ?

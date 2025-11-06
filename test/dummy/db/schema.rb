@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_22_203116) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_26_213207) do
   create_table "faculties", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -49,6 +49,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_10_22_203116) do
     t.datetime "updated_at", null: false
     t.integer "school_id", null: false
     t.index ["school_id"], name: "index_students_on_school_id"
+  end
+
+  create_table "teachers", force: :cascade do |t|
+    t.string "name"
   end
 
   add_foreign_key "schools", "locations"
