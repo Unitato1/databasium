@@ -20,7 +20,10 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   end
 
   def new
-    puts params
+    if params[:migration]
+      @migration = find_migration!(params[:migration])
+      @content = File.read(@migration.filename)
+    end
     @tables = (ActiveRecord::Base.connection.tables - %w[ar_internal_metadata schema_migrations]).map(&:classify)
   end
   # Might be simplistic approach, but lets start with it,
@@ -75,12 +78,14 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         .map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
     end
 
-    Rails::Generators.invoke(
+    gen = Rails::Generators.invoke(
       generator,
       args,
       behavior: :invoke,
       destination_root: Rails.root.to_s
     )
+
+    redirect_to new_migration_path(migration: migration_context.migrations.last.version)
   end
 
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
