@@ -43,15 +43,15 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def create
     require 'rails/generators'
     Rails.application.load_generators
-
+    require "rails/generators/active_record/migration/migration_generator"
+    
     table_name_with_action = ""
-    if params[:add_model] == "1"
+    if params[:add_migration] == "Save" && params[:add_model] == "1"
       generator = 'model'
     else
       table_name_with_action += params[:migration_action]&.capitalize
       generator = 'migration'
     end
-       
 
     if params[:migration_action] != "create"
       all_affected_columns = params[:columns].present? ?
@@ -68,6 +68,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     elsif params[:migration_action] == "remove"
       table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
     end
+
     args = [
       table_name_with_action
     ]
@@ -77,15 +78,73 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         .filter { |c| c[:column_name].present? && c[:column_type].present? }
         .map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
     end
+    
+    # args = ["CreateFoos", "name:string"]
+    # puts ("args: #{args}")
+    
+    # puts ("content: #{@content}")
+    # puts ("template {destination: #{destination}, source: #{source}, config: #{config}}")
+    # source = File.expand_path(find_in_source_paths(source.to_s))
 
-    gen = Rails::Generators.invoke(
-      generator,
-      args,
-      behavior: :invoke,
-      destination_root: Rails.root.to_s
-    )
+    # set_migration_assigns!(destination)
 
-    redirect_to new_migration_path(migration: migration_context.migrations.last.version)
+    # dir, base = File.split(destination)
+    # numbered_destination = File.join(dir, ["%migration_number%", base].join("_"))
+
+    # file = create_migration numbered_destination, nil, config do
+    #   puts ("result: #{ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(binding)}")
+    #   ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(binding)
+    # end
+    # set_table_model(params[:table_name] || params[:table_name_from] || params[:table_name_to])
+    if params[:add_migration] == "Save"
+      Rails::Generators.invoke(
+        generator,
+        args,
+        behavior: :invoke,
+        destination_root: Rails.root.to_s
+      )
+      redirect_to migrations_path(migration: migration_context.migrations.last.version)
+    else
+      gen = ActiveRecord::Generators::MigrationGenerator.new(
+        args,
+        {},
+        behavior: :invoke, destination_root: Rails.root.to_s
+      )
+
+      gen.send(:set_local_assigns!)
+
+      puts ("migration template: #{:@migration_template}")
+      tmpl = gen.instance_variable_get(:@migration_template)
+      source = File.expand_path(gen.find_in_source_paths(tmpl))
+
+      dest = File.join(gen.send(:db_migrate_path), "#{gen.send(:file_name)}.rb")
+
+      gen.send(:set_migration_assigns!, dest)
+
+      @content = ERB.new(File.binread(source), trim_mode: "-", eoutvar: "@output_buffer")
+                 .result(gen.instance_eval("binding"))
+      respond_to do |format|
+        format.html
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("migration_preview", partial: "databasium/migrations/components/migration_preview", locals: { content: @content }) }
+      end
+    end
+  end
+
+  def set_table_model(table_name)
+    return if table_name.nil?
+    table_name_sym = table_name.to_s.downcase.pluralize.to_sym
+    if ActiveRecord::Base.connection.table_exists?(table_name_sym)
+      begin
+        # If there is no model for this table it will raise a NameError
+        @model = table_name_sym.classify.constantize
+      rescue NameError
+        @model = nil
+        @error = "No model found for this table, if you would like to interact with this table, you need to create a model for it."
+      end
+    else
+      @model = nil
+      @records = nil
+    end
   end
 
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414

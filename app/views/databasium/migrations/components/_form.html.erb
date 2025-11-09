@@ -1,71 +1,89 @@
 
-<%= form_with(url: migrations_path, method: :post, class: "flex flex-col gap-4 w-fit", data: { controller: "new-migration" }) do |form| %>
-
-  <div class="flex flex">
-    <div class="flex flex-col">
-      <%= form.label :migration_action %>
-      <%= form.select :migration_action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit", data: { action: "change->new-migration#set_action" }  %>
-      <div class="flex flex-col" data-new-migration-target="add_model_container">
-        <%= form.label :add_model, "Add also model" %>
-        <%= form.check_box :add_model, checked: true, class: "p-2 border-2 border-gray-300 rounded-md w-fit", data: { new_migration_target: "add_model" } %>
+<%= form_with(url: migrations_path, method: :post, class: "flex p-4 gap-4", data: { controller: "new-migration" }) do |form| %>
+  <div class="flex flex-col gap-4 w-fit bg-gray-100 rounded-xl p-4">
+    <div class="flex gap-4 border-b border-gray-300 pb-1">
+      <div class="flex flex-col">
+        <%= form.label :migration_action, class: "text-lg font-semibold" %>
+        <%= form.select :migration_action, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 rounded-md w-fit", data: { action: "change->new-migration#set_action" }  %>
+        <div class="flex items-center gap-2 py-2" data-new-migration-target="add_model_container">
+          <%= form.check_box :add_model, checked: true, class: "w-4 h-4", data: { new_migration_target: "add_model" } %>
+          <%= form.label :add_model, "Add also model" %>
+        </div>
       </div>
+        <div class="flex flex-col hidden" data-new-migration-target="table_name_from">
+          <%= form.label :table_name_from, "Table to remove from" %>
+          <%= form.select :table_name_from, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+        </div>
+
+        <div class="flex flex-col hidden" data-new-migration-target="table_name_to">
+          <%= form.label :table_name_to, "Table to add to" %>
+          <%= form.select :table_name_to, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+        </div>
     </div>
 
-    <div class="flex flex-col hidden" data-new-migration-target="table_name_from">
-      <%= form.label :table_name_from, "Table to remove from" %>
-      <%= form.select :table_name_from, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+    <div class="flex flex-col border-b border-gray-300 pb-4" data-new-migration-target="table_name">
+      <%= form.label :table_name, class: "text-lg font-semibold" %>
+      <%= form.text_field :table_name, class: "p-2 border-2 border-gray-300 w-fit" %>
     </div>
 
-    <div class="flex flex-col hidden" data-new-migration-target="table_name_to">
-      <%= form.label :table_name_to, "Table to add to" %>
-      <%= form.select :table_name_to, @tables, { include_blank: "Select a table" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
-    </div>
-  </div>
-
-  <div class="flex flex-col" data-new-migration-target="table_name">
-    <%= form.label :table_name, class: "text-lg font-semibold" %>
-    <%= form.text_field :table_name, class: "border-2 border-gray-300 w-fit" %>
-  </div>
-
-  <div class="flex flex-col">
-    <h1 class="text-lg font-semibold">Primary Keys</h1>
-    <%= form.label :primary_key %>
-    <%= form.text_field :primary_key, class: "p-2 border-2 border-gray-300 w-fit" %>
-  </div>
-
-  <div class="flex flex-col">
-    <h1 class="text-lg font-semibold">Columns</h1>
-    <div data-new-migration-target="column" class="hidden flex gap-2">
-      <label for="column_name" class="text-lg font-semibold">Column Name</label>
-      <input type="text" name="columns[][column_name]", class="p-2 border-2 border-gray-300 w-fit"/>
-      <label for="column_type" class="text-lg font-semibold">Column Type</label>
-      <select name="columns[][column_type]", class="p-2 border-2 border-gray-300 w-fit">
-        <option value="string">String</option>
-        <option value="integer">Integer</option>
-        <option value="float">Float</option>
-        <option value="decimal">Decimal</option>
-        <option value="datetime">Datetime</option>
-        <option value="date">Date</option>
-      </select>
-      <button data-action="click->new-migration#removeColumn" type="button" class="bg-red-500 text-white p-1 rounded-md w-fit">-</button>
+    <div class="flex flex-col border-b border-gray-300 pb-4">
+      <%= form.label :primary_key, class: "text-lg font-semibold" %>
+      <%= form.text_field :primary_key, class: "p-2 border-2 border-gray-300 w-fit" %>
     </div>
 
-    <button data-action="click->new-migration#addColumn" type="button" class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
-  </div>
+    <div class="flex flex-col border-b border-gray-300 pb-4 gap-2">
+      <h1 class="text-lg font-semibold">Columns</h1>
+      <div data-new-migration-target="column" class="flex gap-2 items-end hidden">
+        <div class="flex flex-col gap-2">
+          <% if @model %>
+            <%= form.select :column_name, @model.columns.map(&:name), { include_blank: "Select a column name" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
+          <% else %>
+            <label for="column_name" class="text-sm font-semibold">Column Name</label>
+            <input type="text" name="columns[][column_name]", class="p-1 border-2 rounded-xl border-gray-300 h-fit"/>            
+          <% end %>
+        </div>
 
-  <div class="flex flex-col">
-    <h1 class="text-lg font-semibold">Valiadtion</h1>
-    <%= form.label :validation_column_name %>
-    <%= form.select :validation_column_name, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 w-fit" %>
+          <div class="flex flex-col gap-2 h-full">
+            <label for="column_type" class="text-sm font-semibold">Column Type</label>
+            <select name="columns[][column_type]", class="border-2 rounded-xl p-1 border-gray-300 h-full">
+              <option value="string">String</option>
+              <option value="integer">Integer</option>
+              <option value="float">Float</option>
+              <option value="decimal">Decimal</option>
+              <option value="datetime">Datetime</option>
+              <option value="date">Date</option>
+            </select>
+          </div>
+        <button data-action="click->new-migration#removeColumn" type="button" class="text-red-500 border-2 border-red-500 rounded-xl h-fit">
+          <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } %>   
+        </button>
+      </div>
+
+      <button data-action="click->new-migration#addColumn" type="button" class="text-blue-500">
+        <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>   
+      </button>
+    </div>
+
+    <div class="flex flex-col border-b border-gray-300 pb-4">
+      <h1 class="text-lg font-semibold">Valiadtion</h1>
+      <%= form.label :validation_column_name %>
+      <%= form.select :validation_column_name, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 w-fit" %>
+      
+      <%= form.label :validation_name_column %>
+      <%= form.text_field :validation_name_column, class: "p-2 border-2 border-gray-300 w-fit" %>
     
-    <%= form.label :validation_name_column %>
-    <%= form.text_field :validation_name_column, class: "p-2 border-2 border-gray-300 w-fit" %>
-  
-    <button class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
+      <button class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
+    </div>
+
+    <div>
+      <%= form.submit "Generate Preview", class: "bg-blue-500 text-white p-2 rounded-md w-fit", name: "add_migration" %>
+    </div>
+
   </div>
 
-  <div>
-    <%= form.submit "Save", class: "bg-blue-500 text-white p-2 rounded-md w-fit" %>
+  <div class="flex-1 pe-4 ">
+    <%= render "databasium/migrations/components/migration_preview", form: form %>
+    <%= form.submit "Save", class: "bg-blue-500 text-white p-2 rounded-md w-fit", name: "add_migration" %>
   </div>
 <% end %>
 

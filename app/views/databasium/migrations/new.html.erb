@@ -1,13 +1,1 @@
-<div class="flex gap-4">
-  <div class="w-full">
-    <%= render "databasium/migrations/components/form" %>
-  </div>
-
-  <div class="w-full">
-    <% if @migration %>
-      <%= render "databasium/migrations/migration_file", migration: @migration %>
-    <% else %>
-      <p>No migration found</p>
-    <% end %>
-  </div>
-</div>
+<%= render "databasium/migrations/components/form" %>
