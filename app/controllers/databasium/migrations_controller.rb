@@ -147,6 +147,16 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     end
   end
 
+  def run_pending_migrations
+    ActiveRecord::Tasks::DatabaseTasks.migrate
+    if ActiveRecord.dump_schema_after_migration
+      connection = ActiveRecord::Tasks::DatabaseTasks.migration_connection
+      ActiveRecord::Tasks::DatabaseTasks.dump_schema(connection.pool.db_config)
+    end
+    flash[:notice] = "Pending migrations run successfully"
+    redirect_to migrations_path
+  end
+
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
   # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206

@@ -1,0 +1,2 @@
+class Newdatatable < ApplicationRecord
+end
