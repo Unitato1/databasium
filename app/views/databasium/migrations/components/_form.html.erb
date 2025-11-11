@@ -1,5 +1,5 @@
 
-<%= form_with(url: migrations_path, method: :post, class: "flex p-4 gap-4", data: { controller: "new-migration" }) do |form| %>
+<%= form_with(url: migrations_path, method: :post, id: "migration_form", class: "flex p-4 gap-4", data: { controller: "new-migration" }) do |form| %>
   <div class="flex flex-col gap-4 w-fit bg-gray-100 rounded-xl p-4">
     <div class="flex gap-4 border-b border-gray-300 pb-1">
       <div class="flex flex-col">
@@ -83,7 +83,6 @@
 
   <div class="flex-1 pe-4 ">
     <%= render "databasium/migrations/components/migration_preview", form: form %>
-    <%= form.submit "Save", class: "bg-blue-500 text-white p-2 rounded-md w-fit", name: "add_migration" %>
   </div>
 <% end %>
 

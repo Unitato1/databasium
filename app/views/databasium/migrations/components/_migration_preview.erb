@@ -1,8 +1,17 @@
 <turbo-frame id="migration_preview">
-  <div class="bg-gray-100 p-4 rounded-2xl">
+  <div class="bg-gray-100 border-2 border-gray-300 p-4 rounded-2xl min-h-full">
     <% if @content %>
       <h1 class="text-xl font-semibold mb-3">Preview Migration</h1>
       <pre><%= h @content %></pre>
+      <button 
+    type="submit" 
+    form="migration_form"
+    name="add_migration"
+    value="Save"
+    class="bg-blue-500 text-white p-2 rounded-md w-fit mt-4"
+  >
+        Save
+      </button>
     <% else %>
       <h1 class="text-xl font-semibold">Please fill out the form to see the preview</h1>
     <% end %>
