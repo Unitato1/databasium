@@ -34,7 +34,7 @@
             <%= form.select :column_name, @model.columns.map(&:name), { include_blank: "Select a column name" }, class: "p-2 border-2 border-gray-300 rounded-md w-fit" %>
           <% else %>
             <label for="column_name" class="text-sm font-semibold">Column Name</label>
-            <input type="text" name="columns[][column_name]", class="p-1 border-2 rounded-xl border-gray-300 h-fit"/>            
+            <input type="text" name="columns[][column_name]", class="p-1 border-2 rounded-xl border-gray-300 h-fit", data-action="change->new-migration#updateColumnNames"/>            
           <% end %>
         </div>
 
@@ -60,16 +60,18 @@
       </button>
     <% end %>
 
-    <%= render Databasium::CollapsableComponent.new(name: "Valiadtion", form: form, class_name: "flex flex-col border-b border-gray-300 pb-4 gap-2") do %>
+    <%= render Databasium::CollapsableComponent.new(name: "Valiadtion", form: form, class_name: "flex flex-col border-b border-gray-300 pb-4 gap-2", data_targets: { new_migration_target: "validations" }) do %>
+      <div data-new-migration-target="validation" class="flex gap-2 items-end hidden">
+        <%= form.select :validation_column_name, [], { include_blank: "Select column" }, data: { new_migration_target: "validation_column_name" }, class: "p-2 border-2 border-gray-300 w-fit" %>
 
-      <h1 class="text-lg font-semibold">Valiadtion</h1>
-      <%= form.label :validation_column_name %>
-      <%= form.select :validation_column_name, ["create", "remove", "add"], {}, class: "p-2 border-2 border-gray-300 w-fit" %>
-      
-      <%= form.label :validation_name_column %>
-      <%= form.text_field :validation_name_column, class: "p-2 border-2 border-gray-300 w-fit" %>
-    
-      <button class="bg-blue-500 text-white p-1 rounded-md w-fit">+</button>
+        <%= form.select :validation_type, ["presence", "uniqueness", "format", "inclusion", "exclusion"], { include_blank: "Select validation type" }, class: "p-2 border-2 border-gray-300 w-fit" %>
+        <button data-action="click->new-migration#removeValidation" type="button" class="text-red-500 border-2 border-red-500 rounded-xl h-fit">
+          <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } %>   
+        </button>
+      </div>
+      <button data-action="click->new-migration#addValidation" type="button" class="text-blue-500">
+        <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>   
+      </button>
     <% end %>
 
     <div>
