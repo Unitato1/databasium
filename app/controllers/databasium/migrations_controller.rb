@@ -44,58 +44,17 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     require 'rails/generators'
     Rails.application.load_generators
     require "rails/generators/active_record/migration/migration_generator"
-    
-    table_name_with_action = ""
+    args = build_generator_args
+    puts ("args: #{args}")
+
     if params[:add_migration] == "Save" && params[:add_model] == "1"
       generator = 'model'
     else
-      table_name_with_action += params[:migration_action]&.capitalize
       generator = 'migration'
     end
 
-    if params[:migration_action] != "create"
-      all_affected_columns = params[:columns].present? ?
-        params[:columns]
-        .filter { |c| c[:column_name].present? && c[:column_type].present? }
-        .map { |c| c[:column_name].capitalize }.join("And") : ""
-      table_name_with_action += all_affected_columns
-    else
-      table_name_with_action += params[:table_name]&.capitalize&.pluralize
-    end
+    puts ("generator: #{generator}")
 
-    if params[:migration_action] == "add"
-      table_name_with_action += "To#{params[:table_name_to]&.capitalize&.pluralize}"
-    elsif params[:migration_action] == "remove"
-      table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
-    end
-
-    args = [
-      table_name_with_action
-    ]
-
-    if params[:columns].present?
-      args += params[:columns]
-        .filter { |c| c[:column_name].present? && c[:column_type].present? }
-        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" }
-    end
-    
-    # args = ["CreateFoos", "name:string"]
-    # puts ("args: #{args}")
-    
-    # puts ("content: #{@content}")
-    # puts ("template {destination: #{destination}, source: #{source}, config: #{config}}")
-    # source = File.expand_path(find_in_source_paths(source.to_s))
-
-    # set_migration_assigns!(destination)
-
-    # dir, base = File.split(destination)
-    # numbered_destination = File.join(dir, ["%migration_number%", base].join("_"))
-
-    # file = create_migration numbered_destination, nil, config do
-    #   puts ("result: #{ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(binding)}")
-    #   ERB.new(::File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(binding)
-    # end
-    # set_table_model(params[:table_name] || params[:table_name_from] || params[:table_name_to])
     if params[:add_migration] == "Save"
       Rails::Generators.invoke(
         generator,
@@ -113,7 +72,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
       gen.send(:set_local_assigns!)
 
-      puts ("migration template: #{:@migration_template}")
       tmpl = gen.instance_variable_get(:@migration_template)
       source = File.expand_path(gen.find_in_source_paths(tmpl))
 
@@ -121,8 +79,8 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
       gen.send(:set_migration_assigns!, dest)
 
-      @content = ERB.new(File.binread(source), trim_mode: "-", eoutvar: "@output_buffer")
-                 .result(gen.instance_eval("binding"))
+      @content = ERB.new(File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(gen.instance_eval("binding"))
+
       respond_to do |format|
         format.html
         format.turbo_stream { render turbo_stream: turbo_stream.replace("migration_preview", partial: "databasium/migrations/components/migration_preview", locals: { content: @content }) }
@@ -180,5 +138,45 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     raise ActiveRecord::RecordNotFound, "Migration not found" unless migration && File.file?(migration.filename)
     migration
   end
+
+  def build_generator_args
+    table_name_with_action = params[:add_migration] != "Save" || params[:add_model] != "1" ? params[:migration_action]&.capitalize : ""
+
+    if params[:migration_action] != "create"
+      all_affected_columns = params[:columns].present? ?
+        params[:columns]
+        .filter { it[:column_name].present? && it[:column_type].present? }
+        .map { it[:column_name].capitalize }.join("And") : ""
+      table_name_with_action += all_affected_columns
+    else
+      table_name_with_action += params[:table_name]&.capitalize&.pluralize
+    end
+
+    if params[:migration_action] == "add"
+      table_name_with_action += "To#{params[:table_name_to]&.capitalize&.pluralize}"
+    elsif params[:migration_action] == "remove"
+      table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
+    end
+
+    args = [
+      table_name_with_action
+    ]
+    
+    not_null_validation = build_not_null_validation
+    if params[:columns].present?
+      args += params[:columns]
+        .filter { |c| c[:column_name].present? && c[:column_type].present? }
+        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" + (not_null_validation.include?(c[:column_name]) ? "!" : "") }
+    end
+    
+    args
+  end
+
+  def build_not_null_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "not_null" }
+    .map { it[:column_name] }
+  end
+
 
 end
