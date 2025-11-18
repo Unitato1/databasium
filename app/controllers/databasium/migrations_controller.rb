@@ -163,10 +163,15 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     ]
     
     not_null_validation = build_not_null_validation
+    uniqueness_validation = build_uniqueness_validation
+    presence_validation = build_presence_validation
     if params[:columns].present?
       args += params[:columns]
         .filter { |c| c[:column_name].present? && c[:column_type].present? }
-        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" + (not_null_validation.include?(c[:column_name]) ? "!" : "") }
+        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" + \
+        (not_null_validation.include?(c[:column_name]) ? "!" : "") + \
+        (uniqueness_validation.include?(c[:column_name]) ? ":uniq" : "")
+      }
     end
     
     args
@@ -178,5 +183,15 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     .map { it[:column_name] }
   end
 
+  def build_uniqueness_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "uniqueness" }
+    .map { it[:column_name] }
+  end
 
+  def build_presence_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "presence" }
+    .map { it[:column_name] }
+  end
 end
