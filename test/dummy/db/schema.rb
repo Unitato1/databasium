@@ -10,45 +10,79 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_10_22_203116) do
-  create_table "faculties", force: :cascade do |t|
-    t.string "name"
+ActiveRecord::Schema[8.1].define(version: 2025_11_11_220642) do
+  create_table "adadas", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.string "nane"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cars", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cars2s", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "cars3s", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "faculties", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "name"
     t.datetime "updated_at", null: false
   end
 
   create_table "locations", force: :cascade do |t|
-    t.string "street"
     t.string "city"
-    t.integer "number"
     t.datetime "created_at", null: false
+    t.integer "number"
+    t.string "street"
     t.datetime "updated_at", null: false
   end
 
-  create_table "posts", force: :cascade do |t|
-    t.string "title"
-    t.integer "likes"
+  create_table "newdatatables", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.integer "engine"
+    t.string "name"
+    t.datetime "updated_at", null: false
+    t.decimal "version"
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "likes"
+    t.string "title"
     t.datetime "updated_at", null: false
   end
 
   create_table "schools", force: :cascade do |t|
-    t.string "name"
     t.integer "capacity"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.integer "location_id", null: false
+    t.string "name"
+    t.datetime "updated_at", null: false
     t.index ["location_id"], name: "index_schools_on_location_id"
   end
 
   create_table "students", force: :cascade do |t|
-    t.string "name"
     t.integer "age"
-    t.integer "credits"
     t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer "credits"
+    t.string "name"
     t.integer "school_id", null: false
+    t.datetime "updated_at", null: false
     t.index ["school_id"], name: "index_students_on_school_id"
+  end
+
+  create_table "teachers", force: :cascade do |t|
+    t.string "name"
   end
 
   add_foreign_key "schools", "locations"

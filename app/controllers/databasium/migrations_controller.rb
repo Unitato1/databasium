@@ -19,6 +19,106 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     end
   end
 
+  def new
+    if params[:migration]
+      @migration = find_migration!(params[:migration])
+      @content = File.read(@migration.filename)
+    end
+    @tables = (ActiveRecord::Base.connection.tables - %w[ar_internal_metadata schema_migrations]).map(&:classify)
+  end
+  # Might be simplistic approach, but lets start with it,
+  # I searched a bit of for how are generataors used in code and what code they actually run
+  # We basiclly need same functionality as them, and ability to change the file from UI
+  #  https://github.com/rails/rails/blob/main/railties/lib/rails/generators.rb#L263C9-L263C10
+  #  I needed to do some reverse engineering to find out how the generator works or more like what it expects
+  #  for params, running rails g migration CreateCda name:string
+  # gets you this:
+  # namespace: migration
+  # names: ["migration"]
+  # args: ["CreateCda", "name:string"]
+  # config: {behavior: :invoke, destination_root: #<Pathname>}
+  #  Notes on what I also checked:
+  #  https://api.rubyonrails.org/classes/Rails/Generators/Migration.html -> Not much documentation
+  #  https://guides.rubyonrails.org/active_record_migrations.html#running-migrations
+  def create
+    require 'rails/generators'
+    Rails.application.load_generators
+    require "rails/generators/active_record/migration/migration_generator"
+    args = build_generator_args
+    puts ("args: #{args}")
+
+    if params[:add_migration] == "Save" && params[:add_model] == "1"
+      generator = 'model'
+    else
+      generator = 'migration'
+    end
+
+    puts ("generator: #{generator}")
+
+    if params[:add_migration] == "Save"
+      Rails::Generators.invoke(
+        generator,
+        args,
+        behavior: :invoke,
+        destination_root: Rails.root.to_s
+      )
+      redirect_to migrations_path(migration: migration_context.migrations.last.version)
+    else
+      gen = ActiveRecord::Generators::MigrationGenerator.new(
+        args,
+        {},
+        behavior: :invoke, destination_root: Rails.root.to_s
+      )
+
+      gen.send(:set_local_assigns!)
+
+      tmpl = gen.instance_variable_get(:@migration_template)
+      source = File.expand_path(gen.find_in_source_paths(tmpl))
+
+      dest = File.join(gen.send(:db_migrate_path), "#{gen.send(:file_name)}.rb")
+
+      gen.send(:set_migration_assigns!, dest)
+
+      @content = ERB.new(File.binread(source), trim_mode: "-", eoutvar: "@output_buffer").result(gen.instance_eval("binding"))
+
+      respond_to do |format|
+        format.html
+        format.turbo_stream { render turbo_stream: turbo_stream.replace("migration_preview", partial: "databasium/migrations/components/migration_preview", locals: { content: @content }) }
+      end
+    end
+  end
+
+  def set_table_model(table_name)
+    return if table_name.nil?
+    table_name_sym = table_name.to_s.downcase.pluralize.to_sym
+    if ActiveRecord::Base.connection.table_exists?(table_name_sym)
+      begin
+        # If there is no model for this table it will raise a NameError
+        @model = table_name_sym.classify.constantize
+      rescue NameError
+        @model = nil
+        @error = "No model found for this table, if you would like to interact with this table, you need to create a model for it."
+      end
+    else
+      @model = nil
+      @records = nil
+    end
+  end
+
+  def run_pending_migrations
+    begin
+      ActiveRecord::Tasks::DatabaseTasks.migrate_all
+      if ActiveRecord.dump_schema_after_migration
+        connection = ActiveRecord::Tasks::DatabaseTasks.migration_connection
+        ActiveRecord::Tasks::DatabaseTasks.dump_schema(connection.pool.db_config)
+      end
+      flash[:success] = "Pending migrations run successfully"
+    rescue => e
+      flash[:error] = "Error running pending migrations: #{e.message}"
+    end
+    redirect_back fallback_location: migrations_path
+  end
+
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
   # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
@@ -37,5 +137,61 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
     raise ActiveRecord::RecordNotFound, "Migration not found" unless migration && File.file?(migration.filename)
     migration
+  end
+
+  def build_generator_args
+    table_name_with_action = params[:add_migration] != "Save" || params[:add_model] != "1" ? params[:migration_action]&.capitalize : ""
+
+    if params[:migration_action] != "create"
+      all_affected_columns = params[:columns].present? ?
+        params[:columns]
+        .filter { it[:column_name].present? && it[:column_type].present? }
+        .map { it[:column_name].capitalize }.join("And") : ""
+      table_name_with_action += all_affected_columns
+    else
+      table_name_with_action += params[:table_name]&.capitalize&.pluralize
+    end
+
+    if params[:migration_action] == "add"
+      table_name_with_action += "To#{params[:table_name_to]&.capitalize&.pluralize}"
+    elsif params[:migration_action] == "remove"
+      table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
+    end
+
+    args = [
+      table_name_with_action
+    ]
+
+    not_null_validation = build_not_null_validation
+    uniqueness_validation = build_uniqueness_validation
+    presence_validation = build_presence_validation
+    if params[:columns].present?
+      args += params[:columns]
+        .filter { |c| c[:column_name].present? && c[:column_type].present? }
+        .map { |c| "#{c[:column_name]}:#{c[:column_type]}" + \
+        (not_null_validation.include?(c[:column_name]) ? "!" : "") + \
+        (uniqueness_validation.include?(c[:column_name]) ? ":uniq" : "")
+      }
+    end
+
+    args
+  end
+
+  def build_not_null_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "not_null" }
+    .map { it[:column_name] }
+  end
+
+  def build_uniqueness_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "uniqueness" }
+    .map { it[:column_name] }
+  end
+
+  def build_presence_validation()
+    params[:validation]
+    .filter { it[:column_name].present? && it[:type] == "presence" }
+    .map { it[:column_name] }
   end
 end

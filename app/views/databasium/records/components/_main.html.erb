@@ -23,7 +23,13 @@
         </tbody>
       </table>
     <% else %>
-      <p>No records found</p>
+      <% if @error %>
+        <div class="border-2 border-gray-500 text-center p-4 rounded-xl bg-red-100">
+          <p class="text-red-500 text-2xl"><%= @error %></p>
+        </div>
+      <% else %>
+          <p>No records found</p>
+      <% end %>
     <% end %>
   </turbo-frame>
 </turbo-frame>

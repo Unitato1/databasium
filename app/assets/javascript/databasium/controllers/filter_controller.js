@@ -1,5 +1,18 @@
 import { Controller } from "@hotwired/stimulus"
 
+// #     case type
+// #     when :integer                  then :number_field
+// #     when :float, :decimal          then :text_field
+// #     when :time                     then :time_field
+// #     when :datetime, :timestamp     then :datetime_field
+// #     when :date                     then :date_field
+// #     when :text                     then :textarea
+// #     when :rich_text                then :rich_textarea
+// #     when :boolean                  then :checkbox
+// #     when :attachment, :attachments then :file_field
+// #     else
+// #       :text_field
+
 // Connects to data-controller="filter"
 export default class extends Controller {
   static targets = ["selectColumn", "form", "closeButton", "removeIcon"]
