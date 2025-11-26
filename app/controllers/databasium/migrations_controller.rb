@@ -161,7 +161,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     args = [
       table_name_with_action
     ]
-    
+
     not_null_validation = build_not_null_validation
     uniqueness_validation = build_uniqueness_validation
     presence_validation = build_presence_validation
@@ -173,7 +173,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         (uniqueness_validation.include?(c[:column_name]) ? ":uniq" : "")
       }
     end
-    
+
     args
   end
 

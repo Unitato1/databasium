@@ -59,7 +59,6 @@ export default class extends Controller {
   
   getColumnNames() {
     this.columnsNames = this.addedColumns.map(column => column.querySelector("input").value)
-    console.log(this.columnsNames)
   }
 
   removeValidation(e) {
@@ -68,16 +67,14 @@ export default class extends Controller {
 
   set_action(e) {
     if (e.currentTarget.value === "create") {
-      
       this.table_name_fromTarget.classList.add("hidden");
       this.table_name_toTarget.classList.add("hidden");
       this.table_nameTarget.classList.remove("hidden");
       this.add_model_containerTarget.classList.remove("hidden");
       this.add_modelTarget.disabled = false;
-      this.validationsTarget.classList.add("hidden");
+      this.validationsTarget.classList.remove("hidden");
       
     } else if (e.currentTarget.value === "remove") {
-      
       this.table_name_fromTarget.classList.remove("hidden");
       this.table_name_toTarget.classList.add("hidden");
       this.table_nameTarget.classList.add("hidden");
@@ -86,13 +83,12 @@ export default class extends Controller {
       this.validationsTarget.classList.add("hidden");
     
     } else if (e.currentTarget.value === "add") {
-    
       this.table_name_fromTarget.classList.add("hidden");
       this.table_name_toTarget.classList.remove("hidden");
       this.table_nameTarget.classList.add("hidden");
       this.add_model_containerTarget.classList.add("hidden");
       this.add_modelTarget.disabled = true;
-      this.validationsTarget.classList.remove("hidden");
+      this.validationsTarget.classList.add("hidden");
     }
   }
 }
