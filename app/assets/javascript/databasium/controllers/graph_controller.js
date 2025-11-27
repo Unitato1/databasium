@@ -1,44 +1,48 @@
 import { Controller } from "@hotwired/stimulus"
-import { Graph, InternalEvent } from "@maxgraph/core"
+import { Graph, InternalEvent, HierarchicalLayout, CompactTreeLayout } from "@maxgraph/core"
 
+// Connects to data-controller="graph"
 export default class extends Controller {
-	connect() {
-		const container = this.element
-		InternalEvent.disableContextMenu(container)
 
-		const graph = new Graph(container)
-		graph.setPanning(true)
+  static values = { tables: Array }
 
-		graph.batchUpdate(() => {
-			const vertex01 = graph.insertVertex({
-				position: [10, 10],
-				size: [100, 100],
-				value: "rectangle"
-			})
+  connect() {
+    console.log(this.tablesValue)
+    const container = this.element
+    InternalEvent.disableContextMenu(container)
 
-			const vertex02 = graph.insertVertex({
-				position: [350, 90],
-				size: [50, 50],
-				style: {
-					fillColor: "orange",
-					shape: "ellipse",
-					verticalAlign: "top",
-					verticalLabelPosition: "bottom"
-				},
-				value: "ellipse"
-			})
+    const graph = new Graph(container)
+    graph.setPanning(true)
 
-			graph.insertEdge({
-				source: vertex01,
-				target: vertex02,
-				value: "edge",
-				style: {
-					edgeStyle: "orthogonalEdgeStyle",
-					rounded: true
-				}
-			})
-		})
-	}
+    graph.batchUpdate(() => {
+      const vertexes = []
+      let i = 1;
+      for (let table of this.tablesValue) {
+      
+        const vertex = graph.insertVertex({
+          position: [120 * i, 10],
+          size: [100, 100],
+          value: table
+        })
+        i++;
+        // if (vertexes.length > 0) {
+        //   graph.insertEdge({
+        //     source: vertexes[vertexes.length - 1],
+        //     target: vertex,
+        //     value: "edge",
+        //     style: {
+        //         edgeStyle: "orthogonalEdgeStyle",
+        //         rounded: true
+        //     }
+        //   })          
+        // }
+        // vertexes.push(vertex)
+      }
+
+    // const layout = new HierarchicalLayout(graph)           // layered layout
+    const layout = new CompactTreeLayout(graph, false)   // tree layout (toggle orientation with 2nd arg)
+// Run on all cells under the default parent, or pass `vertexes` to limit scope
+    layout.execute(graph.getDefaultParent(), vertexes)
+    })
+  }
 }
-
-
