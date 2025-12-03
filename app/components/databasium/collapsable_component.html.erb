@@ -1,7 +1,11 @@
 <%= tag.div(class: @class_name ? @class_name : "flex gap-4 border-b border-gray-300 pb-4", data: @data_targets) do %>
   <div class="relative w-full" data-controller="collapse">
     <button data-action="click->collapse#toggle" type="button" class="flex items-center justify-between w-full h-fit hover:cursor-pointer">
-      <%= @form.label @name, class: "text-lg font-semibold" %>
+      <% if @form %>
+        <%= @form.label @name, class: "text-lg font-semibold" %>
+      <% else %>
+        <h2 class="text-lg font-semibold"> @name </h2>
+      <% end %>
       <%= helpers.heroicon "chevron-down", variant: :solid, options: { class: "w-8 h-8 text-red-500", data_collapse_target: "collapseIcon" } %>
     </button>
     <%= tag.div(class: "flex flex-col mt-2 hidden", data: { collapse_target: "content" }) do %>

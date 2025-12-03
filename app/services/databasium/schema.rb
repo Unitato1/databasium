@@ -22,6 +22,10 @@ class Databasium::Schema
     @conn.columns(table).map { |c| { name: c.name, sql_type: c.sql_type, null: c.null, default: c.default } }
   end
 
+  def get_columns_names(table)
+    @conn.columns(table).map { it.name }
+  end
+
   def build_schema
     @schema = {}
     @tables.each do |table|

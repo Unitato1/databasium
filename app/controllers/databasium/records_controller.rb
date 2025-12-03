@@ -6,7 +6,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     search_tables
     set_viewing_table
 
-    if @model && @records
+    if @model
       @columns_names_types ||= @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
       apply_filters
     end
@@ -17,9 +17,27 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
 
-
+  def create
+    create_schema_service
+    set_viewing_table
+    return unless @model
+    record = @model.new(model_columns)
+    if record.save
+      @records = @model.all
+      respond_to do |format|
+        format.html
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.append(
+            "records_list",
+            partial: "record",
+            locals: { record: record }
+          )
+        end
+      end
+    end
+  end
   private
-
+  
   def create_schema_service
     @schema_service = Databasium::Schema.new
   end
@@ -69,6 +87,15 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
     params.require(:filter).permit(
       allowed_columns.index_with { |_col| [:operator, :value] }
+    )
+  end
+
+  def model_columns
+    return if params[:table].nil?
+    table_name = params[:table].downcase.pluralize.to_sym
+    puts *@schema_service.get_columns_names(table_name)
+    params.require(:record).permit(
+      *@schema_service.get_columns_names(table_name)
     )
   end
 end
