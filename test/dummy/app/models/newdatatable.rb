@@ -1,2 +1,0 @@
-class Newdatatable < ApplicationRecord
-end

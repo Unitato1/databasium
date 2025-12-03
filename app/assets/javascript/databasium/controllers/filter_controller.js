@@ -20,7 +20,6 @@ export default class extends Controller {
 
 
   connect() {
-    console.log("connected to filter controller");
     this.previousValues = new WeakMap();
     this.addFilter();
     this.textOperators = ["eq", "not_eq", "matches", "does_not_match"];
