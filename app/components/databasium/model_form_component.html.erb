@@ -1,6 +1,7 @@
   <%= form_with(url: @path, method: :post, scope: :record,
-      class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit overflow-y-auto", 
+      class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit overflow-y-auto hidden my-4", 
       data: { turbo_frame: "records" },
+      id: "add_record"
     ) do |form| %>
     <%= render Databasium::CollapsableComponent.new(name: "Add New Record", form: form, data_targets: { }) do %>
     <%= hidden_field_tag :table, @model.name %>

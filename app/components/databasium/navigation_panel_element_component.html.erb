@@ -1,0 +1,7 @@
+<div data-hide=<%= @text.split(" ").join("_") %> data-action="click->hide#hide" class="flex flex-col justify-between items-center border-2 border-l-transparent first:border-l-2 first:border-gray-300 border-gray-300 px-2 py-1 text-xs w-full text-center cursor-pointer hover:border-green-500">
+  <%= helpers.heroicon @icon, variant: :outline, options: { class: "w-8 h-8" } %>
+
+  <div>
+    <p><%= @text %></p>
+  </div>
+</div>

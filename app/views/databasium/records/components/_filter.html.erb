@@ -1,5 +1,6 @@
 <% if @model %>
-  <%= tag.div id: "filters",
+  <%= tag.div id: "filter",
+    class: "hidden my-4",
     data: { 
       controller: "filter",
       filter_columns_value: @columns_names_types.to_json

@@ -68,6 +68,7 @@ Rails.application.configure do
   config.action_controller.raise_on_missing_callback_actions = true
 
   config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "views")
+  config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "components")
   config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "stylesheets")
   config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "builds")  # or whatever build path
   # config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "javascript", "databasium", "controllers")  # or whatever build path
