@@ -1,17 +1,16 @@
 <turbo-frame id="main" class=" sm:pe-100 block">
   <% if @model %>
-
     <%= render Databasium::NavigationPanelComponent.new(navigation_elements: 
         [
           {icon: "plus-circle", text: "add record"},
           {icon: "funnel", text: "filter"},
         ], vertical: true) %>
 
-      <%= render "databasium/records/components/filter" %>
+    <%= render "databasium/records/components/filter" %>
+    <%= render "databasium/records/components/add_record_form" %>
   <% end %>
   <turbo-frame id="records" class="overflow-auto block">
     <% if @records&.any? %>
-      <%= render "databasium/records/components/add_record_form" %>
       <table class="table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max">
         <thead>
           <tr class="border-2 border-gray-300">

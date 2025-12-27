@@ -1,11 +1,10 @@
 class Databasium::RecordsController < Databasium::ApplicationController
-  before_action :create_schema_service, only: [:index]
+  before_action :create_schema_service, only: [ :index ]
 
   def index
     @tables = @schema_service.tables
     search_tables
     set_viewing_table
-
     if @model
       @columns_names_types ||= @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
       apply_filters
@@ -37,7 +36,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
   private
-  
+
   def create_schema_service
     @schema_service = Databasium::Schema.new
   end
@@ -86,7 +85,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     allowed_columns = @model.columns.map { |c| c.name.to_s }
 
     params.require(:filter).permit(
-      allowed_columns.index_with { |_col| [:operator, :value] }
+      allowed_columns.index_with { |_col| [ :operator, :value ] }
     )
   end
 
