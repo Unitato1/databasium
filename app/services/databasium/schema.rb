@@ -1,14 +1,17 @@
 class Databasium::Schema
-  attr_reader :schema
+  attr_reader :schema, :tables
   def initialize
     @conn = ActiveRecord::Base.connection
     @tables = @conn.data_sources - %w[ar_internal_metadata schema_migrations]
-    @schema ||= build_schema
   end
 
   def get_associations(table)
     model = ActiveRecord::Base.descendants.find { |m| m.table_name == table } || table.classify.safe_constantize
     model ? model.reflect_on_all_associations.map { |r| { name: r.name.to_s.pluralize, macro: r.macro, class_name: r.class_name, foreign_key: r.foreign_key } } : []
+  end
+
+  def schema
+    @schema ||= build_schema
   end
 
   def get_foreign_keys(table)
@@ -17,6 +20,10 @@ class Databasium::Schema
 
   def get_columns(table)
     @conn.columns(table).map { |c| { name: c.name, sql_type: c.sql_type, null: c.null, default: c.default } }
+  end
+
+  def get_columns_names(table)
+    @conn.columns(table).map { it.name }
   end
 
   def build_schema
@@ -28,8 +35,6 @@ class Databasium::Schema
         associations: get_associations(table)
       }
     end
-    puts "schema: #{@schema}"
-    puts "schema: #{@schema.inspect}"
     @schema
   end
 end

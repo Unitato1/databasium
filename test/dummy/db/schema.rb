@@ -10,44 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_26_213207) do
-  create_table "faculties", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.string "name"
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "locations", force: :cascade do |t|
-    t.string "city"
-    t.datetime "created_at", null: false
-    t.integer "number"
-    t.string "street"
-    t.datetime "updated_at", null: false
-  end
-
+ActiveRecord::Schema[8.1].define(version: 2025_12_27_165256) do
   create_table "schools", force: :cascade do |t|
-    t.integer "capacity"
+    t.integer "capacity", null: false
     t.datetime "created_at", null: false
-    t.integer "location_id", null: false
-    t.string "name"
+    t.text "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["location_id"], name: "index_schools_on_location_id"
   end
 
   create_table "students", force: :cascade do |t|
-    t.integer "age"
+    t.integer "age", null: false
     t.datetime "created_at", null: false
-    t.integer "credits"
-    t.string "name"
-    t.integer "school_id", null: false
+    t.integer "height", null: false
+    t.text "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["school_id"], name: "index_students_on_school_id"
   end
-
-  create_table "teachers", force: :cascade do |t|
-    t.string "name"
-  end
-
-  add_foreign_key "schools", "locations"
-  add_foreign_key "students", "schools"
 end

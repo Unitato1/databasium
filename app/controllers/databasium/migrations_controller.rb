@@ -1,5 +1,5 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
-  MIGRATIONS_PATHS = ["db/migrate"] 
+  MIGRATIONS_PATHS = [ "db/migrate" ]
 
   def index
     @migrations = migration_context.migrations
@@ -41,16 +41,16 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   #  https://api.rubyonrails.org/classes/Rails/Generators/Migration.html -> Not much documentation
   #  https://guides.rubyonrails.org/active_record_migrations.html#running-migrations
   def create
-    require 'rails/generators'
+    require "rails/generators"
     Rails.application.load_generators
     require "rails/generators/active_record/migration/migration_generator"
     args = build_generator_args
     puts ("args: #{args}")
 
     if params[:add_migration] == "Save" && params[:add_model] == "1"
-      generator = 'model'
+      generator = "model"
     else
-      generator = 'migration'
+      generator = "migration"
     end
 
     puts ("generator: #{generator}")
@@ -62,7 +62,8 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         behavior: :invoke,
         destination_root: Rails.root.to_s
       )
-      redirect_to migrations_path(migration: migration_context.migrations.last.version)
+
+      redirect_to migrations_path(migration: migration_context.migrations.last&.version)
     else
       gen = ActiveRecord::Generators::MigrationGenerator.new(
         args,
@@ -177,19 +178,19 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     args
   end
 
-  def build_not_null_validation()
+  def build_not_null_validation
     params[:validation]
     .filter { it[:column_name].present? && it[:type] == "not_null" }
     .map { it[:column_name] }
   end
 
-  def build_uniqueness_validation()
+  def build_uniqueness_validation
     params[:validation]
     .filter { it[:column_name].present? && it[:type] == "uniqueness" }
     .map { it[:column_name] }
   end
 
-  def build_presence_validation()
+  def build_presence_validation
     params[:validation]
     .filter { it[:column_name].present? && it[:type] == "presence" }
     .map { it[:column_name] }

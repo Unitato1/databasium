@@ -1,11 +1,11 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
+  name: MyText
+  height : 1
   age: 1
-  credits: 1
 
 two:
-  name: MyString
+  name: MyText
+  height : 1
   age: 1
-  credits: 1
