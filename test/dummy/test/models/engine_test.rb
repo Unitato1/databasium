@@ -1,6 +1,6 @@
 require "test_helper"
 
-class NewdatatableTest < ActiveSupport::TestCase
+class EngineTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end

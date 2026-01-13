@@ -1,5 +1,6 @@
 class Databasium::RecordsController < Databasium::ApplicationController
   before_action :create_schema_service, only: [ :index ]
+  include Pagy::Method
 
   def index
     @tables = @schema_service.tables
@@ -9,6 +10,11 @@ class Databasium::RecordsController < Databasium::ApplicationController
       @columns_names_types ||= @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
       apply_filters
     end
+    puts "records: #{@records.inspect}"
+    if @records
+      @pagy, @records = pagy(@records, limit: 10)
+    end
+    puts "pagy: #{@pagy.inspect}"
 
     respond_to do |format|
       format.html

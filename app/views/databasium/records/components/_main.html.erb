@@ -5,7 +5,6 @@
           {icon: "plus-circle", text: "add record"},
           {icon: "funnel", text: "filter"},
         ], vertical: true) %>
-
     <%= render "databasium/records/components/filter" %>
     <%= render "databasium/records/components/add_record_form" %>
   <% end %>
@@ -37,6 +36,11 @@
       <% else %>
           <p>No records found</p>
       <% end %>
+    <% end %>
+    <% if @pagy %>
+      <div class="mt-4 flex justify-center">
+        <%== @pagy.series_nav %>
+      </div>
     <% end %>
   </turbo-frame>
 </turbo-frame>

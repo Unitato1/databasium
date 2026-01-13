@@ -1,11 +1,7 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 one:
-  name: MyString
-  engine: 1
-  version: 9.99
+  name: MyText
 
 two:
-  name: MyString
-  engine: 1
-  version: 9.99
+  name: MyText
