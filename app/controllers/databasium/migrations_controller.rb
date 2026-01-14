@@ -145,8 +145,8 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     if params[:migration_action] != "create"
       all_affected_columns = params[:columns].present? ?
         params[:columns]
-        .filter { it[:column_name].present? && it[:column_type].present? }
-        .map { it[:column_name].capitalize }.join("And") : ""
+        .filter { |c| c[:column_name].present? && c[:column_type].present? }
+        .map { |c| c[:column_name].capitalize }.join("And") : ""
       table_name_with_action += all_affected_columns
     else
       table_name_with_action += params[:table_name]&.capitalize&.pluralize
@@ -178,13 +178,13 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def build_not_null_validation
     params[:validation]
-    .filter { it[:column_name].present? && it[:type] == "not_null" }
-    .map { it[:column_name] }
+    .filter { |c| c[:column_name].present? && c[:type] == "not_null" }
+    .map { |c| c[:column_name] }
   end
 
   def build_uniqueness_validation
     params[:validation]
-    .filter { it[:column_name].present? && it[:type] == "uniqueness" }
-    .map { it[:column_name] }
+    .filter { |c| c[:column_name].present? && c[:type] == "uniqueness" }
+    .map { |c| c[:column_name] }
   end
 end
