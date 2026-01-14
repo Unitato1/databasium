@@ -10,9 +10,9 @@
         <%= link_to "#{table}", records_path(table: table), data: { turbo_frame: "main" } %>
       </div>
     <% end %>
-    <% if @pagy_tables %>
+    <% if @tables %>
       <div class="mt-4 flex justify-start">
-        <%== @pagy_tables.series_nav(size: [1, 2, 1]) %>
+        <%== @pagy_tables.series_nav() %>
       </div>
     <% end %>
   </turbo-frame>

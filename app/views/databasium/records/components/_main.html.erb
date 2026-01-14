@@ -9,16 +9,18 @@
     <%= render "databasium/records/components/add_record_form" %>
   <% end %>
   <turbo-frame id="records" class="overflow-auto block">
-    <% if @records&.any? %>
+      <% if @model %>
       <table class="table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max">
         <thead>
           <tr class="border-2 border-gray-300">
-            <% @model.columns.each do |column| %>
-              <th class="py-2 border-2 border-gray-300"><%= column.name %></th>
+            <% @model&.columns&.each do |column| %>
+              <th class="text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"><%= column.name %></th>
             <% end %>
           </tr>
         </thead>
         <tbody id="records_list">
+    <% if @records&.any? %>
+
           <% @records.each do |record| %>
             <tr class="border-2 border-gray-300 hover:bg-gray-100">
               <% record.attributes.each do |_, value| %>
@@ -26,9 +28,7 @@
               <% end %>
             </tr>
           <% end %>
-        </tbody>
-      </table>
-    <% else %>
+          <% else %>
       <% if @error %>
         <div class="border-2 border-gray-500 text-center p-4 rounded-xl bg-red-100">
           <p class="text-red-500 text-2xl"><%= @error %></p>
@@ -36,7 +36,12 @@
       <% else %>
           <p>No records found</p>
       <% end %>
+      <% end %>
+    <% else %>
+      <p>Select a table to view its records</p>
     <% end %>
+        </tbody>
+      </table>
     <% if @pagy %>
       <div class="mt-4 flex justify-start">
         <%== @pagy.series_nav %>

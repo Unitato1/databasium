@@ -3,12 +3,11 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def index
     @migrations = migration_context.migrations
-    @migraton = migration_context
     @pending_migrations = migration_context.pending_migration_versions
     @applied_migrations = migration_context.get_all_versions
-    # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1328
-    # for status
-    @status = migration_context.migrations_status
+    # # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1328
+    # # for status
+    # @status = migration_context.migrations_status
     #
     # there is also this way, but it return plain string with just versions the before are with version and name as a object
     # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/schema_migration.rb#L73
@@ -165,7 +164,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
     not_null_validation = build_not_null_validation
     uniqueness_validation = build_uniqueness_validation
-    presence_validation = build_presence_validation
     if params[:columns].present?
       args += params[:columns]
         .filter { |c| c[:column_name].present? && c[:column_type].present? }
@@ -187,12 +185,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def build_uniqueness_validation
     params[:validation]
     .filter { it[:column_name].present? && it[:type] == "uniqueness" }
-    .map { it[:column_name] }
-  end
-
-  def build_presence_validation
-    params[:validation]
-    .filter { it[:column_name].present? && it[:type] == "presence" }
     .map { it[:column_name] }
   end
 end
