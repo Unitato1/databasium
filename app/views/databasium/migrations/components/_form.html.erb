@@ -23,10 +23,6 @@
       <%= form.text_field :table_name, class: "p-2 border-2 border-gray-300 w-fit" %>
     <% end %>
 
-    <%= render Databasium::CollapsableComponent.new(name: "primary_key", form: form) do %>
-      <%= form.text_field :primary_key, class: "p-2 border-2 border-gray-300 w-fit" %>
-    <% end %>
-
     <%= render Databasium::CollapsableComponent.new(name: "columns", form: form, class_name: "flex flex-col border-b border-gray-300 pb-4 gap-2") do %>
       <div data-new-migration-target="column" class="flex gap-2 items-end hidden">
         <div class="flex flex-col gap-2">
@@ -52,6 +48,7 @@
               <option value="timestamp"> Timestamp </option>
               <option value="binary">    Binary    </option>
               <option value="boolean">   Boolean   </option>
+              <option value="references"> Reference   </option>
             </select>
           </div>
         <button data-action="click->new-migration#removeColumn" type="button" class="text-red-500 border-2 border-red-500 rounded-xl h-fit">
@@ -77,7 +74,6 @@
 =end%>
 
         <select name="validation[][type]", class="p-2 border-2 border-gray-300 w-fit" data-new-migration-target="validation_column_type">
-          <option value="presence">Presence</option>
           <option value="uniqueness">Uniqueness</option>
           <option value="not_null">Not Null</option>
         </select>
