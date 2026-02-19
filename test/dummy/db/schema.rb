@@ -10,19 +10,5 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_12_27_165256) do
-  create_table "schools", force: :cascade do |t|
-    t.integer "capacity", null: false
-    t.datetime "created_at", null: false
-    t.text "name", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "students", force: :cascade do |t|
-    t.integer "age", null: false
-    t.datetime "created_at", null: false
-    t.integer "height", null: false
-    t.text "name", null: false
-    t.datetime "updated_at", null: false
-  end
+ActiveRecord::Schema[8.1].define(version: 2026_01_14_212631) do
 end
