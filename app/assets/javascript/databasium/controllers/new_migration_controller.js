@@ -18,7 +18,6 @@ export default class extends Controller {
 
   updateColumnNames() {
     this.columnsNames = this.addedColumns.map(column => column.querySelector("input").value)
-    console.log(this.columnsNames)
 
     const options = [new Option("Select a column", "")];
 
@@ -44,9 +43,7 @@ export default class extends Controller {
       alert("You need at least one column");
       return;
     }
-    console.log(this.addedColumns)
     this.addedColumns = this.addedColumns.filter(column => column !== e.currentTarget.parentElement)
-    console.log(this.addedColumns)
     e.currentTarget.parentElement.remove();
     this.updateColumnNames();
   }

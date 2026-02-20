@@ -12,7 +12,6 @@ export default class extends Controller {
   }
 
   close(){
-    console.log("closing flash");
     this.element.classList.add("opacity-0")
     setTimeout(() => this.element.remove(), 1000)
   }

@@ -48,7 +48,6 @@ export default class extends Controller {
   }
 
   chooseColumn(event){
-    console.log(event)
     const selected = event.target.value
     let selectedAttribute = null;
     
@@ -85,7 +84,6 @@ export default class extends Controller {
 
   rememberValue(event){
     this.previousValues.set(event.target, event.target.value)
-    console.log(this.previousValues)
   }
 
   addFilter(){
