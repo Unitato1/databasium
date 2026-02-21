@@ -1,26 +1,21 @@
 <%= form_with(url: models_path, method: :post, scope: :model, data: { controller: "model" }) do |form| %>
-  <div class="attribute-group border p-4 mb-4 rounded-lg">
+  <%= render "databasium/models/components/attribute_template" %>
+  <%= render "databasium/models/components/validation_template" %>
+  <div class="border p-4 mb-4 rounded-lg">
     <div class="flex flex-col mb-4">
       <%= form.label :model_name, "Model Name" %>
       <%= form.text_field :model_name, class: "border-2 rounded-xl p-1 border-gray-300 w-fit mt-2" %>
     </div>
+    <button 
+      data-action="click->model#add"
+      data-model-target-param="attribute"
+      data-model-container-param="attributesContainer"
+      type="button" class="text-blue-500">
+      <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>
+    </button>
     <h3 class="font-bold">Attribute</h3>
-    <div data-model-target="container">
-      <div class="flex flex-col gap-2 mb-2" data-model-target="attribute">
-        <input type="text" name="model[attributes][][name]" placeholder="Attribute Name (e.g. email)" class="border p-1" />
-        <input type="text" name="model[attributes][][type]" placeholder="Type (e.g. string)" class="border p-1" />
-        <h4 class="text-sm font-semibold">Validations for this Attribute</h4>
-        <button data-action="click->model#addValidation" type="button" class="text-blue-500">
-          <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>
-        </button>
-        <template data-model-target="validation">
-          <div class="flex gap-2 mt-2">
-            <input type="text" name="model[attributes][][validations][][name]" value="presence" class="border p-1 text-sm" />
-            <input type="text" name="model[attributes][][validations][][type]" value="required" class="border p-1 text-sm" />
-            <input type="text" name="model[attributes][][validations][][value]" value="true" class="border p-1 text-sm" />
-          </div>
-        </template>
-      </div>
+    <div data-model-target="attributesContainer">
+      <%= render "databasium/models/components/attribute_fields" %>
     </div>
   </div>
   <%= form.submit "Create Model", class: "bg-blue-500 text-white px-4 py-2 rounded-md mt-2" %>
