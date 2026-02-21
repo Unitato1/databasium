@@ -1,10 +1,17 @@
-<div class="flex flex-col gap-2 mb-2 group">
-  <input type="text" name="model[attributes][][name]" placeholder="Attribute Name (e.g. email)" class="border p-1" />
-  <input type="text" name="model[attributes][][type]" placeholder="Type (e.g. string)" class="border p-1" />
-  <h4 class="text-sm font-semibold">Validations for this Attribute</h4>
-  <button data-action="click->model#add" data-model-target-param="validation" data-model-container-param="validationsContainer" type="button" class="text-blue-500">
-    <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>
-  </button>
-  <div data-model-target="validationsContainer">
+<%= render Databasium::CollapsableComponent.new(name: "Attribute", form: nil) do %>
+  <div class="flex flex-col gap-2 mb-2 group">
+    <input type="text" name="model[attributes][][name]" placeholder="Attribute Name (e.g. email)" class="border-2 rounded-xl p-1 border-gray-300 w-fit mt-2" />
+    <input type="text" name="model[attributes][][type]" placeholder="Type (e.g. string)" class="border-2 rounded-xl p-1 border-gray-300 w-fit mt-2" />
+    <h4 class="text-sm font-semibold">Validations for this Attribute</h4>
+    <%= render Databasium::CollapsableComponent.new(name: "Validation", form: nil) do %>
+      <div data-model-target="validationsContainer" class="validationsContainer">
+        <div class="flex items-center gap-2">
+          <span class="font-semibold">Add new Validation</span>
+          <button data-action="click->model#add" data-model-target-param="validation" data-model-container-param="validationsContainer" type="button" class="text-blue-500">
+            <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>
+          </button>
+        </div>
+      </div>
+    <% end %>
   </div>
-</div>
+<% end %>

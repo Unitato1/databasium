@@ -4,7 +4,7 @@
       <% if @form %>
         <%= @form.label @name, class: "text-lg font-semibold" %>
       <% else %>
-        <h2 class="text-lg font-semibold"> @name </h2>
+        <h2 class="text-lg font-semibold"> <%= @name %> </h2>
       <% end %>
       <%= helpers.heroicon "chevron-down", variant: :solid, options: { class: "w-8 h-8 text-red-500", data_collapse_target: "collapseIcon" } %>
     </button>
@@ -15,6 +15,5 @@
         </div>
       </div>
     <% end %>
-
   </div>
 <% end %>
