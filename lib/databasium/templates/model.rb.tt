@@ -1,8 +1,8 @@
-<% attributes.each do |attr| -%>
+<% attributes&.each do |attr| -%>
 # <%= attr[:name] %><%= " " * (longest_name_length - attr[:name].length)%>: <%= attr[:type] %>
 <% end %>
 class <%= model_name.capitalize %> < ApplicationRecord
-<% attributes.each do |attr| -%>
+<% attributes&.each do |attr| -%>
 <% attr[:validations]&.each do |val| -%>
   validates :<%= val[:name] -%>, <%= val[:type] -%>: <%= val[:value].to_s %>
 <% end -%>

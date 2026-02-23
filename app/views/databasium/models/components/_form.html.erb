@@ -1,4 +1,4 @@
-<%= form_with(url: models_path, method: :post, scope: :model, data: { controller: "model" }) do |form| %>
+<%= form_with(url: models_path, method: :post, scope: :model, html: { id: "model_form" }, data: { controller: "model" }) do |form| %>
   <%= render "databasium/models/components/attribute_template" %>
   <%= render "databasium/models/components/validation_template" %>
   <div class="bg-gray-100 border-2 border-gray-300 p-4 rounded-2xl min-h-full flex-1 p-4">
@@ -18,6 +18,6 @@
     </div>
     <div data-model-target="attributesContainer">
     </div>
-    <%= form.submit "Create Model", class: "bg-blue-500 text-white px-4 py-2 rounded-md mt-2" %>
+    <%= form.submit "Create preview for model", class: "bg-blue-500 text-white px-4 py-2 rounded-md mt-2" %>
   </div>
 <% end %>
