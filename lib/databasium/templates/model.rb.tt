@@ -3,8 +3,8 @@
 <% end %>
 class <%= model_name.capitalize %> < ApplicationRecord
 <% attributes.each do |attr| -%>
-<% attr[:validations].each do |val| -%>
-  validates :<%= val[:name] -%>, <%= val[:type] -%> <%= val[:value].to_s %>
+<% attr[:validations]&.each do |val| -%>
+  validates :<%= val[:name] -%>, <%= val[:type] -%>: <%= val[:value].to_s %>
 <% end -%>
-<% end %>
+<% end -%>
 end
