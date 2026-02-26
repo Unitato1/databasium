@@ -4,7 +4,6 @@ module Components
   module Databasium
     class IconNavigationPanel < Phlex::HTML
       def initialize(icons_with_text: [], vertical: nil)
-        # Keep both keywords for an easy migration from ViewComponent usage.
         @icons_with_text = icons_with_text
         @vertical = vertical
       end
@@ -35,25 +34,3 @@ module Components
     end
   end
 end
-
-# <%= render Databasium::NavigationPanelComponent.new(navigation_elements:
-#   [
-#     {icon: "plus-circle", text: "add record"},
-#     {icon: "funnel", text: "filter"},
-#   ], vertical: true) %>
-# # frozen_string_literal: true
-
-# module Databasium
-#   class NavigationPanelComponent < ViewComponent::Base
-#     def initialize(navigation_elements:, vertical:)
-#       @vertical = vertical
-#       @navigation_elements = navigation_elements
-#     end
-#   end
-# end
-
-# <%= tag.div class: ["w-fit align-items-center mb-4 justify-items-center", @vertical ? "flex"  : "flex-column" ], data: {controller: "hide"} do %>
-#   <% @navigation_elements.each do |element| %>
-#     <%= render Components::Databasium::IconNavigationPanel.new(icon: element[:icon], text: element[:text]) %>
-#   <% end %>
-# <% end %>

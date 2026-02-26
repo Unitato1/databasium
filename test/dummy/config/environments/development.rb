@@ -72,12 +72,12 @@ Rails.application.configure do
   config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "stylesheets")
   config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "builds")  # or whatever build path
   # config.hotwire_livereload.listen_paths << Rails.root.join("..", "..", "app", "assets", "javascript", "databasium", "controllers")  # or whatever build path
-  
+
   # Add force reload for CSS/JS so changes are fully applied
   # config.hotwire_livereload.force_reload_paths << Rails.root.join("../../app/assets/stylesheets")
   # config.hotwire_livereload.force_reload_paths << Rails.root.join("../../app/assets/builds")
   # config.hotwire_livereload.force_reload_paths << Rails.root.join("../../app/assets/javascript/databasium/controllers")
-  
+
   # Optionally adjust debounce to avoid multiple reloads
   config.hotwire_livereload.debounce_delay_ms = 300
 end

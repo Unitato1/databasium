@@ -25,7 +25,6 @@ gem "stimulus-rails", "~> 1.3"
 gem "importmap-rails"
 
 gem "heroicon"
-gem "view_component"
 
 gem "pagy", "~> 43.2"
 
