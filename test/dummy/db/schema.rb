@@ -10,9 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_19_185202) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_26_174834) do
   create_table "cars", force: :cascade do |t|
     t.datetime "created_at", null: false
+    t.text "name"
     t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_cars_on_name", unique: true
   end
 end

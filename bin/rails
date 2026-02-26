@@ -11,10 +11,6 @@ APP_PATH = File.expand_path("../test/dummy/config/application", __dir__)
 ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 require "bundler/setup" if File.exist?(ENV["BUNDLE_GEMFILE"])
 
-# tailwind_input  = File.join(ENGINE_ROOT, "app/assets/stylesheets/databasium/databasium_engine.css")
-# tailwind_output = File.join(ENGINE_ROOT, "app/assets/builds/databasium.css")
-# tailwind_config = File.join(ENGINE_ROOT, "config/tailwind.config.js")
-
 tailwind_pid = nil
 if %w[server s].include?(ARGV.first)
   tailwind_input  = File.join(ENGINE_ROOT, "app/assets/stylesheets/databasium/databasium_engine.css")

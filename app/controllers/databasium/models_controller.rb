@@ -32,10 +32,8 @@ class Databasium::ModelsController < Databasium::ApplicationController
   end
 
   def write_file(content)
-    puts "writing file with content"
     model_name = model_params[:model_name].downcase
     destination_path = Rails.root.join("app/models/#{model_name}.rb")
-    puts "destination_path: #{destination_path}"
     File.open(destination_path, "w") { |file| file.write(content) }
   end
 

@@ -43,6 +43,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
       end
     end
   end
+
   private
 
   def create_schema_service
@@ -77,7 +78,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def apply_filters
     return if params[:filter].nil?
-    puts "#{filter_params.inspect}"
     filter_params&.each do |name, value|
       if value[:operator].present? && value[:value].present?
         if value[:operator] == "matches" || value[:operator] == "does_not_match"
@@ -100,7 +100,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
   def model_columns
     return if params[:table].nil?
     table_name = params[:table].downcase.pluralize.to_sym
-    puts *@schema_service.get_columns_names(table_name)
     params.require(:record).permit(
       *@schema_service.get_columns_names(table_name)
     )

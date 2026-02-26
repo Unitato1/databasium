@@ -4,9 +4,9 @@ PATH
     databasium (0.1.0)
       heroicon
       pagy
+      phlex-rails
       rails (>= 8.0.2)
       tailwindcss-rails
-      view_component
 
 GEM
   remote: https://rubygems.org/
@@ -163,6 +163,13 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
+    phlex (2.4.1)
+      refract (~> 1.0)
+      zeitwerk (~> 2.7)
+    phlex-rails (2.4.0)
+      phlex (~> 2.4.0)
+      railties (>= 7.1, < 9)
+      zeitwerk (~> 2.7)
     pp (0.6.3)
       prettyprint
     prettyprint (0.2.0)
@@ -224,6 +231,9 @@ GEM
       erb
       psych (>= 4.0.0)
       tsort
+    refract (1.1.0)
+      prism
+      zeitwerk
     regexp_parser (2.11.3)
     reline (0.6.3)
       io-console (~> 0.5)
@@ -305,6 +315,7 @@ DEPENDENCIES
   hotwire-livereload (~> 2.0)
   importmap-rails
   pagy (~> 43.2)
+  phlex-rails (~> 2.4)
   propshaft
   puma
   rubocop-rails-omakase

@@ -1,5 +1,5 @@
 <div data-controller="attribute">
-  <%= render Databasium::CollapsableComponent.new(
+  <%= render Components::Databasium::Collapsable.new(
     name: "Attribute",
     form: nil,
     name_params: { data: { attribute_target: "name" } }
@@ -13,7 +13,7 @@
       placeholder="Attribute Name (e.g. email)"
       class="border-2 rounded-xl p-1 border-gray-300 w-full mt-2" />
       <input type="text" name="model[attributes][][type]" placeholder="Type (e.g. string)" class="border-2 rounded-xl p-1 border-gray-300 w-full mt-2" />
-      <%= render Databasium::CollapsableComponent.new(name: "Validation", form: nil) do %>
+      <%= render Components::Databasium::Collapsable.new(name: "Validation", form: nil) do %>
         <div data-model-target="validationsContainer" class="validationsContainer">
           <div class="flex items-center gap-2">
             <span class="font-semibold">Add new Validation</span>

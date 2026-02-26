@@ -28,3 +28,5 @@ gem "heroicon"
 gem "view_component"
 
 gem "pagy", "~> 43.2"
+
+gem "phlex-rails", "~> 2.4"
