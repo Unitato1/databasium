@@ -8,6 +8,7 @@ export default class extends Controller {
   }
 
   toggle(e){
+    e.preventDefault();
     if (this.hasContentTarget) {
         this.contentTargets.forEach(target => {
             target.classList.toggle("hidden")

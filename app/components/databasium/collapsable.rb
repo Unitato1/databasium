@@ -22,7 +22,7 @@ module Components
           div(class: "relative w-full", data: { controller: "collapse" }) do
             button(data: { action: "click->collapse#toggle" }, class: "flex items-center justify-between w-full h-fit hover:cursor-pointer") do
               if @form
-                raw @form.label(@name, class: "text-lg font-semibold").html_safe
+                raw @form.label(@name, class: "text-lg font-semibold")
               else
                 h2(class: "text-lg font-semibold", **@name_params) { @name }
               end
