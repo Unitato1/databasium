@@ -30,20 +30,7 @@
         </div>
         <div class="flex flex-col gap-2 h-full">
           <label for="column_type" class="text-sm font-semibold">Column Type</label>
-          <select name="columns[][column_type]", class="border-2 rounded-xl p-1 border-gray-300 h-full">
-            <option value="text">      Text      </option>
-            <option value="string">    String    </option>
-            <option value="integer">   Integer   </option>
-            <option value="float">     Float     </option>
-            <option value="decimal">   Decimal   </option>
-            <option value="time">      Time      </option>
-            <option value="date">      Date      </option>
-            <option value="datetime">  Datetime  </option>
-            <option value="timestamp"> Timestamp </option>
-            <option value="binary">    Binary    </option>
-            <option value="boolean">   Boolean   </option>
-            <option value="references"> Reference   </option>
-          </select>
+          <%= render Components::Databasium::TypeSelect.new(name: "columns[][column_type]") %>
         </div>
         <button data-action="click->new-migration#removeColumn" type="button" class="text-red-500 border-2 border-red-500 rounded-xl h-fit">
           <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } %>

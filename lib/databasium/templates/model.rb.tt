@@ -2,7 +2,7 @@
 # <%= attr[:name] %><%= " " * (longest_name_length - attr[:name].length)%>: <%= attr[:type] %>
 <% end %>
 class <%= model_name.capitalize %> < ApplicationRecord
-<% relations.each do |rel| -%>
+<% relations&.each do |rel| -%>
   <%= rel[:type] -%> :<%= rel[:table_name] %>
 <% end -%>
 <% attributes&.each do |attr| -%>
