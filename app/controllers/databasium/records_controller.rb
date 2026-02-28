@@ -14,6 +14,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     if @records
       @pagy, @records = pagy(@records, limit: 10, root_key: "records")
     end
+    render Views::Databasium::Records::Index.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy)
   end
 
   def create
@@ -59,6 +60,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @turbo_frame_id = params[:frame_id].presence || "records"
     if @turbo_frame_id == "foreign_records"
       render "foreign_records"
+    else
+      render Components::Databasium::Records.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy)
     end
   end
   private
