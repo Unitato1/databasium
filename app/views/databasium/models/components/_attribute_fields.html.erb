@@ -23,6 +23,16 @@
           </div>
         </div>
       <% end %>
-    </div>
+      <%= render Components::Databasium::Collapsable.new(name: "Relation", form: nil) do %>
+        <div data-model-target="relationsContainer" class="relationsContainer">
+          <div class="flex items-center gap-2">
+            <span class="font-semibold">Add new Relation</span>
+            <button data-action="click->model#add" data-model-target-param="relation" data-model-container-param="relationsContainer" type="button" class="text-blue-500">
+              <%= heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } %>
+            </button>
+          </div>
+        </div>
+      </div>
+    <% end %>
   <% end %>
 </div>

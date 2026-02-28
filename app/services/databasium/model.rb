@@ -1,9 +1,10 @@
 class Databasium::Model
-  attr_reader :model_name, :attributes
+  attr_reader :model_name, :attributes, :relations
 
-  def initialize(model_name:, attributes:)
+  def initialize(model_name:, attributes:, relations:)
     @model_name = model_name
     @attributes = attributes
+    @relations = relations
   end
 
   def get_binding
@@ -27,7 +28,7 @@ class Databasium::Model
   end
 
   class Attribute
-    attr_reader :name, :type, :validations
+    attr_reader :name, :type, :validations, :relations
 
     def initialize(name:, type:, validations:)
       @name = name

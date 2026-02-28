@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 // Connects to data-controller="hide"
 export default class extends Controller {
-  static targets = ["attribute", "validation", "attributesContainer", "validationsContainer"]
+  static targets = ["attribute", "validation", "relation", "attributesContainer", "validationsContainer", "relationsContainer"]
 
   connect() {
   }

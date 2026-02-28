@@ -1,6 +1,6 @@
 class Databasium::ModelsController < Databasium::ApplicationController
   def new
-    @model = Databasium::Model.new(model_name: params[:model_name], attributes: params[:attributes])
+    @model = Databasium::Model.new(model_name: params[:model_name], attributes: params[:attributes], relations: params[:relations])
   end
 
   def create
@@ -26,6 +26,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
     context = Databasium::Model.new(
       model_name: model_params[:model_name],
       attributes: model_params[:attributes],
+      relations: model_params[:relations]
     )
 
     renderer.result(context.get_binding)
@@ -49,6 +50,10 @@ class Databasium::ModelsController < Databasium::ApplicationController
           :type,
           :value
         ]
+      ],
+      relations: [
+        :type,
+        :table_name
       ]
     )
   end
