@@ -5,7 +5,7 @@
       controller: "filter",
       filter_columns_value: @columns_names_types.to_json
     } do %>
-    <%= form_with(url: records_path, method: :get,
+    <%= form_with(url: records_records_path, method: :get,
         class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit max-h-50 overflow-y-auto", 
         data: {
           action: "change->search#update",

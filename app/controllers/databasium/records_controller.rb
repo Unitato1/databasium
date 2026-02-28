@@ -1,5 +1,5 @@
 class Databasium::RecordsController < Databasium::ApplicationController
-  before_action :create_schema_service, only: [ :index ]
+  before_action :create_schema_service, only: [ :index, :foreign_records, :records ]
   include Pagy::Method
 
   def index
@@ -8,16 +8,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
       @pagy_tables, @tables = pagy(@tables, limit: 5, root_key: "tables")
     end
     set_viewing_table
-    if @model
-      @columns_names_types ||= @model.columns.map { |column| {
-        name: column.name,
-        type: column.type.to_s,
-        used: false,
-        foreign_key: @schema_service.is_column_foreign_key?(@model.table_name, column.name),
-        to_table: @schema_service.get_foreign_key_to_table(@model.table_name, column.name) }
-      }
-      apply_filters
-    end
+    set_columns_names_types
+    apply_filters
 
     if @records
       @pagy, @records = pagy(@records, limit: 10, root_key: "records")
@@ -49,13 +41,23 @@ class Databasium::RecordsController < Databasium::ApplicationController
     if @model
       @records = @model.all
     end
-
+    set_columns_names_types
     apply_filters
     if @records
       @pagy, @records = pagy(@records, limit: 10, root_key: "records")
     end
   end
 
+  def records
+    set_viewing_table
+    set_columns_names_types
+    apply_filters
+
+    if @records
+      @pagy, @records = pagy(@records, limit: 10, root_key: "records")
+    end
+    @turbo_frame_id = params[:frame_id].presence || "records"
+  end
   private
 
   def create_schema_service
@@ -89,8 +91,20 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
 
+  def set_columns_names_types
+    if @model
+      @columns_names_types ||= @model.columns.map { |column| {
+        name: column.name,
+        type: column.type.to_s,
+        used: false,
+        foreign_key: @schema_service.is_column_foreign_key?(@model.table_name, column.name),
+        to_table: @schema_service.get_foreign_key_to_table(@model.table_name, column.name) }
+      }
+    end
+  end
+
   def apply_filters
-    return if params[:filter].nil?
+    return if params[:filter].nil? || @model.nil?
     filter_params&.each do |name, value|
       if value[:operator].present? && value[:value].present?
         if value[:operator] == "matches" || value[:operator] == "does_not_match"

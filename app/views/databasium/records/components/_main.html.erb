@@ -8,12 +8,7 @@
     <%= render "databasium/records/components/filter" %>
     <%= render "databasium/records/components/add_record_form" %>
   <% end %>
-  <turbo-frame id="records" class="overflow-auto block">
-    <%= render Components::Databasium::Records.new(records: @records, model: @model) %>
-    <% if @pagy %>
-      <div class="mt-4 flex justify-start">
-        <%== @pagy.series_nav %>
-      </div>
-    <% end %>
-  </turbo-frame>
+  <%= turbo_frame_tag "records", class: "overflow-auto block", src: records_records_path(table: @model&.name, frame_id: "records") do %>
+    loading...
+  <% end %>
 </turbo-frame>

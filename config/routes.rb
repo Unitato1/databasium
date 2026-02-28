@@ -4,6 +4,7 @@ Databasium::Engine.routes.draw do
 
   resources :records, only: [ :index, :create ] do
     get :foreign_records, on: :collection
+    get :records, on: :collection
   end
   resources :migrations, only: [ :index, :new, :create ] do
     post :run_pending_migrations, on: :collection

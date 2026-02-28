@@ -7,11 +7,16 @@
         <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } %>
       </button>
     </div>
-    <%= render Components::Databasium::Records.new(records: @records, model: @model) %>
-    <% if @pagy %>
-      <div class="mt-4 flex justify-start">
-        <%== @pagy.series_nav %>
-      </div>
+    <%= tag.div id: "filter",
+    class: "my-4",
+    data: { 
+      controller: "filter",
+      filter_columns_value: @columns_names_types.to_json
+    } do %>
+      <%= render Components::Databasium::RecordsFilter.new(records: @records, model: @model, path: records_records_path(table: @model.name, frame_id: "foreign_records_list"), turbo_frame: "foreign_records_list") %>
+    <% end %>
+    <%= turbo_frame_tag "foreign_records_list", class: "overflow-auto block", src: records_records_path(table: @model&.name, frame_id: "foreign_records_list") do %>
+      loading...
     <% end %>
   </div>
 <% end %>
