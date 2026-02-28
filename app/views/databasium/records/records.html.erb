@@ -1,6 +1,1 @@
-<%= render Components::Databasium::Records.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records") %>
-<% if @pagy %>
-  <div class="mt-4 flex justify-start">
-    <%== @pagy.series_nav %>
-  </div>
-<% end %>
+<%= render Components::Databasium::Records.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy) %>

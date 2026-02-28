@@ -5,15 +5,17 @@ module Components
     class Records < Phlex::HTML
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(records:, model:, turbo_frame:)
+      def initialize(records:, model:, turbo_frame:, pagy: nil)
         @records = records
         @model = model
         @turbo_frame = turbo_frame
+        @pagy = pagy
       end
 
       def view_template
         turbo_frame_tag @turbo_frame do
           render_table
+          render_pagy
         end
       end
 
@@ -76,6 +78,14 @@ module Components
           value.strftime("%Y-%m-%d")
         else
           value.to_s
+        end
+      end
+
+      def render_pagy
+        if @pagy
+          div(class: "mt-4 flex justify-start") do
+            raw @pagy.series_nav.html_safe
+          end
         end
       end
       # /
