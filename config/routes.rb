@@ -3,7 +3,6 @@ Databasium::Engine.routes.draw do
   resources :homepage, only: [ :index ]
 
   resources :records, only: [ :index, :create ] do
-    get :foreign_records, on: :collection
     get :records, on: :collection
   end
   resources :migrations, only: [ :index, :new, :create ] do

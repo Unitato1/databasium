@@ -83,18 +83,18 @@ module Components
 
       def foreign_key_content(form, column)
         frame_id = "foreign_records"
-        div(data: { controller: "table-select" }) do
+        div(data: { controller: "table-select" }, class: "flex w-2/3") do
           raw form.public_send(
             type_to_helper(column[:type]), column[:name],
-            class: "border-2 rounded-xl p-1 border-gray-300 w-2/3",
+            class: "border-2 rounded-xl p-1 border-gray-300 me-2 w-full",
             data: { table_select_target: "foreignKeyInput" }
           )
-
+          link_to(helpers.records_records_path(table: column[:to_table], frame_id: frame_id),
+            class: "border-1 border-blue-500 text-white rounded-md flex justify-center items-center p-1",
+            data: { turbo_frame: frame_id }) do
+              helpers.heroicon "arrow-right-circle", variant: :solid, options: { class: "w-8 h-8 text-blue-500" }
+            end
           div(class: "relative") do
-            link_to "Show table",
-              helpers.foreign_records_records_path(table: column[:to_table]),
-              class: "bg-blue-500 text-white px-4 py-2 rounded-md",
-              data: { turbo_frame: frame_id }
             turbo_frame_tag(frame_id)
           end
         end

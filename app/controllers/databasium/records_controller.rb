@@ -57,6 +57,9 @@ class Databasium::RecordsController < Databasium::ApplicationController
       @pagy, @records = pagy(@records, limit: 10, root_key: "records")
     end
     @turbo_frame_id = params[:frame_id].presence || "records"
+    if @turbo_frame_id == "foreign_records"
+      render "foreign_records"
+    end
   end
   private
 

@@ -1,22 +1,22 @@
 <%= turbo_frame_tag "foreign_records" do %>
   <div
-    class="absolute -top-2 left-full z-100 bg-blue-100 p-4 text-black rounded-xl border-1 border-blue-300" id="foreign_records" data-table-select-target="table">
+    class="absolute top-0 ml-1 left-full z-100 bg-blue-100 p-4 text-black rounded-xl border-1 border-blue-300"
+    id="foreign_records"
+    data-table-select-target="table">
     <div class="flex justify-between items-center mb-2 border-b-1 border-blue-300 pb-2 mb-2">
-      <h1 class="w-full text-2xl font-bold">Foreign Records for <%= @model.name %></h1>
+      <h1 class="w-full text-2xl font-bold">Records of <%= @model.name %></h1>
       <button type="button" class="text-blue-500 border-2 border-blue-500 rounded-xl h-fit" data-action="click->table-select#toggleVisibility">
         <%= heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } %>
       </button>
     </div>
-    <%= tag.div id: "filter",
-      class: "my-4",
-      data: { 
-        controller: "filter",
-        filter_columns_value: @columns_names_types.to_json
-      } do %>
-      <%= render Components::Databasium::RecordsFilter.new(records: @records, model: @model, path: records_records_path(table: @model.name, frame_id: "foreign_records_list"), turbo_frame: "foreign_records_list") %>
-    <% end %>
+    <%= render Components::Databasium::RecordsFilter.new(
+        records: @records,
+        model: @model,
+        path: records_records_path(table: @model.name, frame_id: "foreign_records_list"),
+        turbo_frame: "foreign_records_list",
+        columns_names_types: @columns_names_types,
+        hidden: false) %>
     <%= turbo_frame_tag "foreign_records_list", class: "overflow-auto block", src: records_records_path(table: @model&.name, frame_id: "foreign_records_list") do %>
-      loading...
     <% end %>
   </div>
 <% end %>

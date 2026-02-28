@@ -45,7 +45,7 @@ module Components
       end
 
       def render_table_body
-        tbody(id: "records_list") do
+        tbody(id: "#{@turbo_frame}_list") do
           if @records&.any?
             @records.each do |record|
               tr(class: "border-2 border-gray-300 hover:bg-gray-100 hover:cursor-pointer", data: { action: "click->table-select#selectRecord", record_id: record.id }) do
@@ -88,7 +88,6 @@ module Components
           end
         end
       end
-      # /
     end
   end
 end

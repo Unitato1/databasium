@@ -1,20 +1,45 @@
 # frozen_string_literal: true
 
+# <% if @model %>
+#   <%= tag.div id: "filter",
+#       class: "my-4 hidden",
+#       data: {
+#         controller: "filter",
+#         filter_columns_value: @columns_names_types.to_json
+#       } do %>
+#     <%= render Components::Databasium::RecordsFilter.new(
+#       records: @records,
+#       model: @model,
+#       path: records_records_path(table: @model.name, frame_id: "records"),
+#       turbo_frame: "records") %>
+#   <% end %>
+# <% end %>
+
 module Components
   module Databasium
-    class RecordsFilter < Phlex::HTML
+    class RecordsFilter < Components::Base
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::HiddenFieldTag
 
-      def initialize(records:, model:, path:, turbo_frame:)
+      def initialize(records:, model:, path:, turbo_frame:, columns_names_types:, hidden: true)
         @records = records
         @model = model
         @path = path
         @turbo_frame = turbo_frame
+        @columns_names_types = columns_names_types
+        @hidden = hidden
       end
 
       def view_template
-        render_filter
+        if @model
+          div(class: class_names("my-4", "hidden" => @hidden), id: "filter",
+            data: {
+              controller: "filter",
+              filter_columns_value: @columns_names_types.to_json
+            }) do
+            render_filter
+          end
+        end
       end
 
       private
