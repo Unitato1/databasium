@@ -1,0 +1,8 @@
+<%= turbo_frame_tag "foreign_records" do %>
+  <%= render Components::Databasium::Records.new(records: @records, model: @model) %>
+  <% if @pagy %>
+    <div class="mt-4 flex justify-start">
+      <%== @pagy.series_nav %>
+    </div>
+  <% end %>
+<% end %>

@@ -7,3 +7,9 @@
     <%= render "databasium/records/components/main" %>
   </div>
 </div>
+<%= link_to "Show table",
+      foreign_records_records_path(table: "cars"),
+      class: "bg-blue-500 text-white px-4 py-2 rounded-md",
+      data: { turbo_frame: "foreign_records" } %>
+<turbo-frame id="foreign_records">
+</turbo-frame>

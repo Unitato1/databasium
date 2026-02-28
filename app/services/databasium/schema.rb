@@ -15,7 +15,8 @@ class Databasium::Schema
   end
 
   def get_foreign_keys(table)
-    @conn.foreign_keys(table).map { |fk| { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key } }
+    @all_references ||= @conn.foreign_keys(table).map { |fk| { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key } }
+    @all_references
   end
 
   def get_columns(table)
@@ -36,5 +37,16 @@ class Databasium::Schema
       }
     end
     @schema
+  end
+
+  def is_column_foreign_key?(table, column_name)
+    @all_references ||= get_foreign_keys(table)
+    @all_references.any? { |fk| fk[:column] == column_name }
+  end
+
+  def get_foreign_key_to_table(table, column_name)
+    @all_references ||= get_foreign_keys(table)
+    fk = @all_references.find { |fk| fk[:column] == column_name }
+    fk[:to] if fk
   end
 end

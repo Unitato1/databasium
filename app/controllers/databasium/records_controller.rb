@@ -3,24 +3,24 @@ class Databasium::RecordsController < Databasium::ApplicationController
   include Pagy::Method
 
   def index
-    @tables = @schema_service.tables
     search_tables
     if @tables
       @pagy_tables, @tables = pagy(@tables, limit: 5, root_key: "tables")
     end
     set_viewing_table
     if @model
-      @columns_names_types ||= @model.columns.map { |column| { name: column.name, type: column.type.to_s, used: false } }
+      @columns_names_types ||= @model.columns.map { |column| {
+        name: column.name,
+        type: column.type.to_s,
+        used: false,
+        foreign_key: @schema_service.is_column_foreign_key?(@model.table_name, column.name),
+        to_table: @schema_service.get_foreign_key_to_table(@model.table_name, column.name) }
+      }
       apply_filters
     end
 
     if @records
       @pagy, @records = pagy(@records, limit: 10, root_key: "records")
-    end
-
-    respond_to do |format|
-      format.html
-      format.turbo_stream
     end
   end
 
@@ -44,6 +44,18 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
 
+  def foreign_records
+    set_viewing_table
+    if @model
+      @records = @model.all
+    end
+
+    apply_filters
+    if @records
+      @pagy, @records = pagy(@records, limit: 10, root_key: "records")
+    end
+  end
+
   private
 
   def create_schema_service
@@ -51,6 +63,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
   end
 
   def search_tables
+    @tables = @schema_service.tables
     if params[:search]
       @tables = @tables.select { |table| table =~ /#{params[:search]}/i }
     end
