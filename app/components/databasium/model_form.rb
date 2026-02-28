@@ -23,7 +23,7 @@ module Components
           url: @path,
           method: :post,
           scope: :record,
-          class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit overflow-y-auto mb-4 hidden",
+          class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit mb-4 hidden",
           id: "add_record"
         ) { |form| form_content(form) }
       end
@@ -83,15 +83,21 @@ module Components
 
       def foreign_key_content(form, column)
         frame_id = "foreign_records"
+        div(data: { controller: "table-select" }) do
+          raw form.public_send(
+            type_to_helper(column[:type]), column[:name],
+            class: "border-2 rounded-xl p-1 border-gray-300 w-2/3",
+            data: { table_select_target: "foreignKeyInput" }
+          )
 
-        p do
-          column[:foreign_key] ? "This is a foreign key" : "This is not a foreign key"
+          div(class: "relative") do
+            link_to "Show table",
+              helpers.foreign_records_records_path(table: column[:to_table]),
+              class: "bg-blue-500 text-white px-4 py-2 rounded-md",
+              data: { turbo_frame: frame_id }
+            turbo_frame_tag(frame_id)
+          end
         end
-        link_to "Show table",
-          helpers.foreign_records_records_path(table: column[:to_table]),
-          class: "bg-blue-500 text-white px-4 py-2 rounded-md",
-          data: { turbo_frame: frame_id }
-        turbo_frame_tag(frame_id)
       end
     end
   end

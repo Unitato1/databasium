@@ -41,7 +41,7 @@ module Components
         tbody(id: "records_list") do
           if @records&.any?
             @records.each do |record|
-              tr(class: "border-2 border-gray-300 hover:bg-gray-100") do
+              tr(class: "border-2 border-gray-300 hover:bg-gray-100 hover:cursor-pointer", data: { action: "click->table-select#selectRecord", record_id: record.id }) do
                 record.attributes.each do |_, value|
                   td(class: "text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto") do
                     plain format_cell_value(value)
