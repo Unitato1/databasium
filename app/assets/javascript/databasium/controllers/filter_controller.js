@@ -1,18 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// #     case type
-// #     when :integer                  then :number_field
-// #     when :float, :decimal          then :text_field
-// #     when :time                     then :time_field
-// #     when :datetime, :timestamp     then :datetime_field
-// #     when :date                     then :date_field
-// #     when :text                     then :textarea
-// #     when :rich_text                then :rich_textarea
-// #     when :boolean                  then :checkbox
-// #     when :attachment, :attachments then :file_field
-// #     else
-// #       :text_field
-
 // Connects to data-controller="filter"
 export default class extends Controller {
   static targets = ["selectColumn", "form", "closeButton", "removeIcon"]
@@ -21,7 +8,7 @@ export default class extends Controller {
 
   connect() {
     this.previousValues = new WeakMap();
-    this.addFilter();
+    this.addFilter(false);
     this.textOperators = ["eq", "not_eq", "matches", "does_not_match"];
     this.numberOperators = ["eq", "not_eq", "gt", "lt", "gteq", "lteq", "between"];
     this.dateOperators = ["eq", "not_eq", "gt", "lt", "gteq", "lteq", "between"];
@@ -41,10 +28,6 @@ export default class extends Controller {
       "is_null": "is null",
       "is_not_null": "is not null",
     }
-  }
-
-  update(event) {
-    
   }
 
   chooseColumn(event){
@@ -86,7 +69,7 @@ export default class extends Controller {
     this.previousValues.set(event.target, event.target.value)
   }
 
-  addFilter(){
+  addFilter(withOperatorType = true){
     const containerDiv = document.createElement("div")
     containerDiv.classList = "flex items-center py-2"
 
@@ -114,6 +97,9 @@ export default class extends Controller {
 
     containerDiv.appendChild(button);
     containerDiv.appendChild(select);
+    if (withOperatorType) {
+      this.formTarget.lastElementChild.before( this.createOperatorTypeField() )
+    }
     this.formTarget.lastElementChild.before(containerDiv)
 
   }
@@ -162,6 +148,16 @@ export default class extends Controller {
         break;
     }
     return selectOperator
+  }
+
+  createOperatorTypeField(selectedAttribute) {
+    const selectOperatorType = document.createElement("select")
+    selectOperatorType.name = "filter[operator_types][]"
+    selectOperatorType.classList = "px-4 py-2 rounded-md border-2 border-gray-300 w-fit h-10"
+    selectOperatorType.add(new Option("Operator Type", "and"));
+    selectOperatorType.add(new Option("AND", "and"));
+    selectOperatorType.add(new Option("OR", "or"));
+    return selectOperatorType
   }
 
   removeFilter(event){
