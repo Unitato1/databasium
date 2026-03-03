@@ -9,7 +9,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
       write_file(@content)
       redirect_to schemas_path, notice: "Model file created successfully"
     else
-      respond_to do |format|
+    respond_to do |format|
       format.html
       format.turbo_stream { render turbo_stream: turbo_stream.replace("model_preview", partial: "databasium/models/components/model_preview", locals: { content: @content }) }
       end
