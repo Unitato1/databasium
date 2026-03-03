@@ -4,7 +4,6 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
 
   connect() {
-    console.log("I am connected hide btruadnsa");
     this.lastShown = null;
   }
 
@@ -18,8 +17,5 @@ export default class extends Controller {
       this.lastShown = element;
       element.classList.toggle("hidden")
     }
-    console.log(e.currentTarget.dataset.hide)
-    console.log(element)
-
   }
 }

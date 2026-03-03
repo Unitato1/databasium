@@ -1,5 +1,0 @@
-<%= tag.div class: ["w-fit align-items-center mb-4 justify-items-center", @vertical ? "flex"  : "flex-column" ], data: {controller: "hide"} do %>
-  <% @navigation_elements.each do |element| %>
-    <%= render Databasium::NavigationPanelElementComponent.new(icon: element[:icon], text: element[:text]) %>
-  <% end %>
-<% end %>

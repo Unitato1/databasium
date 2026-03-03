@@ -3,12 +3,12 @@
     <h1 class="text-5xl"><%= content_for?(:title) ? yield(:title) : "Databasium" %></h1>
   </div>
   <div class="flex-1 flex justify-end align-end text-3xl">
-   <div class="flex gap-4">
-    <%= link_to "Records", records_path, class: "text-blue-400 font-size-lg underline" %>
-    <%= link_to "Migrations", migrations_path, class: "text-blue-400 font-size-lg underline" %>
-    <%= link_to "Schema", schemas_path, class: "text-blue-400 font-size-lg underline" %>
-    <%= link_to "Edits", new_migration_path, class: "text-blue-400 font-size-lg underline" %>
-   </div>
+    <div class="flex gap-4">
+      <%= link_to "Records", records_path, class: "text-blue-400 font-size-lg underline" %>
+      <%= link_to "Migrations", migrations_path, class: "text-blue-400 font-size-lg underline" %>
+      <%= link_to "Models", new_model_path, class: "text-blue-400 font-size-lg underline" %>
+      <%= link_to "Schema", schemas_path, class: "text-blue-400 font-size-lg underline" %>
+      <%= link_to "Edits", new_migration_path, class: "text-blue-400 font-size-lg underline" %>
+    </div>
   </div>
-
 </div>

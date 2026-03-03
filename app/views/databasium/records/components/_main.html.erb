@@ -1,51 +1,20 @@
 <turbo-frame id="main" class=" sm:pe-100 block">
   <% if @model %>
-    <%= render Databasium::NavigationPanelComponent.new(navigation_elements: 
+    <%= render Components::Databasium::IconNavigationPanel.new(icons_with_text: 
         [
           {icon: "plus-circle", text: "add record"},
           {icon: "funnel", text: "filter"},
         ], vertical: true) %>
-    <%= render "databasium/records/components/filter" %>
-    <%= render "databasium/records/components/add_record_form" %>
+    <%= render Components::Databasium::RecordsFilter.new(
+      records: @records,
+      model: @model,
+      path: records_records_path(table: @model.name, frame_id: "records"),
+      turbo_frame: "records",
+      columns_names_types: @columns_names_types,
+      hidden: true) %>
+    <%= render Components::Databasium::ModelForm.new(columns_names_types: @columns_names_types, model: @model, path: @path) %>
   <% end %>
-  <turbo-frame id="records" class="overflow-auto block">
-      <% if @model %>
-      <table class="table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max">
-        <thead>
-          <tr class="border-2 border-gray-300">
-            <% @model&.columns&.each do |column| %>
-              <th class="text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"><%= column.name %></th>
-            <% end %>
-          </tr>
-        </thead>
-        <tbody id="records_list">
-    <% if @records&.any? %>
-
-          <% @records.each do |record| %>
-            <tr class="border-2 border-gray-300 hover:bg-gray-100">
-              <% record.attributes.each do |_, value| %>
-                <td class="text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"><%= value %></td>
-              <% end %>
-            </tr>
-          <% end %>
-          <% else %>
-      <% if @error %>
-        <div class="border-2 border-gray-500 text-center p-4 rounded-xl bg-red-100">
-          <p class="text-red-500 text-2xl"><%= @error %></p>
-        </div>
-      <% else %>
-          <p>No records found</p>
-      <% end %>
-      <% end %>
-    <% else %>
-      <p>Select a table to view its records</p>
-    <% end %>
-        </tbody>
-      </table>
-    <% if @pagy %>
-      <div class="mt-4 flex justify-start">
-        <%== @pagy.series_nav %>
-      </div>
-    <% end %>
-  </turbo-frame>
+  <%= turbo_frame_tag "records", class: "overflow-auto block", src: records_records_path(table: @model&.name, frame_id: "records") do %>
+    loading...
+  <% end %>
 </turbo-frame>

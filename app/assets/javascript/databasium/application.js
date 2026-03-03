@@ -1,4 +1,4 @@
 import "@hotwired/turbo-rails"
 import "databasium/controllers"
 
-console.log("Databasium engine JS loaded ✅")
+// console.log("Databasium engine JS loaded ✅")

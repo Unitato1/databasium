@@ -119,8 +119,41 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     redirect_back fallback_location: migrations_path
   end
 
+  def rollback_migration
+    begin
+      if rollback_migration_params[:rollback_steps].present?
+        migration_context.rollback(rollback_migration_params[:rollback_steps].to_i)
+      elsif rollback_migration_params[:till_this_migration] == "true"
+        migration_context.migrate(rollback_migration_params[:version].to_i)
+      else
+        migration_context.run(:down, rollback_migration_params[:version].to_i)
+      end
+      flash[:success] = "Migration rolled back successfully"
+    rescue => e
+      flash[:error] = "Error rolling back migration: #{e.message}"
+    end
+    redirect_back fallback_location: migrations_path(migration: rollback_migration_params[:version])
+  end
+
+  def run_migration
+    begin
+      migration_context.run(:up, run_migration_params[:version].to_i)
+      flash[:success] = "Migration run successfully"
+    rescue => e
+      flash[:error] = "Error running migration: #{e.message}"
+    end
+    redirect_back fallback_location: migrations_path(migration: run_migration_params[:version])
+  end
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
+
+  def run_migration_params
+    params.permit(:version)
+  end
+
+  def rollback_migration_params
+    params.permit(:version, :till_this_migration, :rollback_steps)
+  end
   # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
   def migration_context
     # paths = ActiveRecord::Migrator.migrations_paths
