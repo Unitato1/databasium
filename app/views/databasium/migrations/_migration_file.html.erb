@@ -12,6 +12,11 @@
       method: :post,
       class: "text-blue-600 font-bold hover:underline text-xl",
       form: { data: { turbo_frame: "_top" } } %>
+    <%= button_to "Run Migration",
+      run_migration_migrations_path(version: @migration.version),
+      method: :post,
+      class: "text-blue-600 font-bold hover:underline text-xl",
+      form: { data: { turbo_frame: "_top" } } %>
   </div>
   <pre class="bg-gray-100 p-4 overflow-x-auto rounded-2xl"><%= h @content %></pre>
   <div class="py-6">

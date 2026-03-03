@@ -134,8 +134,22 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     end
     redirect_back fallback_location: migrations_path(migration: rollback_migration_params[:version])
   end
+
+  def run_migration
+    begin
+      migration_context.run(:up, run_migration_params[:version].to_i)
+      flash[:success] = "Migration run successfully"
+    rescue => e
+      flash[:error] = "Error running migration: #{e.message}"
+    end
+    redirect_back fallback_location: migrations_path(migration: run_migration_params[:version])
+  end
   # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
   private
+
+  def run_migration_params
+    params.permit(:version)
+  end
 
   def rollback_migration_params
     params.permit(:version, :till_this_migration, :rollback_steps)

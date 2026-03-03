@@ -7,6 +7,7 @@ Databasium::Engine.routes.draw do
   end
   resources :migrations, only: [ :index, :new, :create ] do
     post :run_pending_migrations, on: :collection
+    post :run_migration, on: :collection
     post :rollback_migration, on: :collection
   end
   resources :models, only: [ :new, :create ]
