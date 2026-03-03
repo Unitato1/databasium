@@ -1,44 +1,32 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
+  before_action :create_migration_service
   MIGRATIONS_PATHS = [ "db/migrate" ]
 
   def index
-    @migrations = migration_context.migrations
-    @pending_migrations = migration_context.pending_migration_versions
-    @applied_migrations = migration_context.get_all_versions
-    # # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1328
-    # # for status
-    # @status = migration_context.migrations_status
-    #
-    # there is also this way, but it return plain string with just versions the before are with version and name as a object
-    # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/schema_migration.rb#L73
-    # @schema_migrations = ActiveRecord::SchemaMigration.new( ActiveRecord::Base.connection_pool ).normalized_versions
-    if params[:migration]
-      @migration = find_migration!(params[:migration])
+    @migrations = @migration_service.migrations
+    @pending_migrations = @migration_service.pending_migrations
+    @applied_migrations = @migration_service.applied_migrations
+
+    unless params[:migration].present?
+      render "index" and return
+    end
+
+    @migration, error = @migration_service.find_migration!(params[:migration])
+    if error
+      flash[:error] = error.message
+    else
       @content = File.read(@migration.filename)
     end
   end
 
   def new
+    @tables = Databasium::Schema.new.tables
     if params[:migration]
-      @migration = find_migration!(params[:migration])
+      @migration = @migration_service.find_migration!(params[:migration])
       @content = File.read(@migration.filename)
     end
-    @tables = (ActiveRecord::Base.connection.tables - %w[ar_internal_metadata schema_migrations]).map(&:classify)
   end
-  # Might be simplistic approach, but lets start with it,
-  # I searched a bit of for how are generataors used in code and what code they actually run
-  # We basiclly need same functionality as them, and ability to change the file from UI
-  #  https://github.com/rails/rails/blob/main/railties/lib/rails/generators.rb#L263C9-L263C10
-  #  I needed to do some reverse engineering to find out how the generator works or more like what it expects
-  #  for params, running rails g migration CreateCda name:string
-  # gets you this:
-  # namespace: migration
-  # names: ["migration"]
-  # args: ["CreateCda", "name:string"]
-  # config: {behavior: :invoke, destination_root: #<Pathname>}
-  #  Notes on what I also checked:
-  #  https://api.rubyonrails.org/classes/Rails/Generators/Migration.html -> Not much documentation
-  #  https://guides.rubyonrails.org/active_record_migrations.html#running-migrations
+
   def create
     require "rails/generators"
     Rails.application.load_generators
@@ -62,7 +50,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         destination_root: Rails.root.to_s
       )
 
-      redirect_to migrations_path(migration: migration_context.migrations.last&.version)
+      redirect_to migrations_path(migration: @migration_service.migrations.last&.version)
     else
       gen = ActiveRecord::Generators::MigrationGenerator.new(
         args,
@@ -88,64 +76,48 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     end
   end
 
-  def set_table_model(table_name)
-    return if table_name.nil?
-    table_name_sym = table_name.to_s.downcase.pluralize.to_sym
-    if ActiveRecord::Base.connection.table_exists?(table_name_sym)
-      begin
-        # If there is no model for this table it will raise a NameError
-        @model = table_name_sym.classify.constantize
-      rescue NameError
-        @model = nil
-        @error = "No model found for this table, if you would like to interact with this table, you need to create a model for it."
-      end
-    else
-      @model = nil
-      @records = nil
-    end
-  end
-
   def run_pending_migrations
-    begin
-      ActiveRecord::Tasks::DatabaseTasks.migrate_all
-      if ActiveRecord.dump_schema_after_migration
-        connection = ActiveRecord::Tasks::DatabaseTasks.migration_connection
-        ActiveRecord::Tasks::DatabaseTasks.dump_schema(connection.pool.db_config)
-      end
+    success, error = @migration_service.run_pending_migrations
+    if success
       flash[:success] = "Pending migrations run successfully"
-    rescue => e
-      flash[:error] = "Error running pending migrations: #{e.message}"
+    else
+      flash[:error] = "Error running pending migrations: #{error.message}"
     end
+
     redirect_back fallback_location: migrations_path
   end
 
   def rollback_migration
-    begin
-      if rollback_migration_params[:rollback_steps].present?
-        migration_context.rollback(rollback_migration_params[:rollback_steps].to_i)
-      elsif rollback_migration_params[:till_this_migration] == "true"
-        migration_context.migrate(rollback_migration_params[:version].to_i)
-      else
-        migration_context.run(:down, rollback_migration_params[:version].to_i)
-      end
+    success, error = @migration_service.rollback_migration(
+      rollback_migration_params[:version],
+      rollback_migration_params[:rollback_steps],
+      rollback_migration_params[:till_this_migration])
+
+    if success
       flash[:success] = "Migration rolled back successfully"
-    rescue => e
-      flash[:error] = "Error rolling back migration: #{e.message}"
+    else
+      flash[:error] = "Error rolling back migration: #{error.message}"
     end
+
     redirect_back fallback_location: migrations_path(migration: rollback_migration_params[:version])
   end
 
   def run_migration
-    begin
-      migration_context.run(:up, run_migration_params[:version].to_i)
+    success, error = @migration_service.run_migration(run_migration_params[:version])
+    if success
       flash[:success] = "Migration run successfully"
-    rescue => e
-      flash[:error] = "Error running migration: #{e.message}"
+    else
+      flash[:error] = "Error running migration: #{error.message}"
     end
+
     redirect_back fallback_location: migrations_path(migration: run_migration_params[:version])
   end
-  # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1414
+
   private
+
+  def create_migration_service
+    @migration_service ||= Databasium::Migration.new()
+  end
 
   def run_migration_params
     params.permit(:version)
@@ -153,23 +125,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def rollback_migration_params
     params.permit(:version, :till_this_migration, :rollback_steps)
-  end
-  # https://github.com/rails/rails/blob/3a611889fd174d208c7632c0be43a00ed085924a/activerecord/lib/active_record/migration.rb#L1206
-  def migration_context
-    # paths = ActiveRecord::Migrator.migrations_paths
-    # self.migrations_paths = ["db/migrate"] https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1428
-    # I dont think this is needed because we are using the default migrations_paths
-    # Hm it might be, it seems like there is some way to tweak this elsewhere, maybe I will come back TODO
-    ActiveRecord::MigrationContext.new(MIGRATIONS_PATHS)
-    # https://github.com/rails/rails/blob/main/activerecord/lib/active_record/migration.rb#L1312
-    # I tried to find where could migration be loaded from, this seems like right place
-    # there is a lot of of migrations_paths etc. but all seems to be private methods
-  end
-
-  def find_migration!(version)
-    migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
-    raise ActiveRecord::RecordNotFound, "Migration not found" unless migration && File.file?(migration.filename)
-    migration
   end
 
   def build_generator_args
