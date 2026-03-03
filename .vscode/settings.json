@@ -1,0 +1,18 @@
+{
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[ruby]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[erb]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "files.associations": {
+    "Gemfile": "ruby",
+    "Rakefile": "ruby",
+    "*.gemspec": "ruby",
+    "*.rake": "ruby"
+  },
+  "prettier.requireConfig": true,
+  "prettier.prettierPath": "/home/svihla/Desktop/databasium/node_modules/prettier"
+}

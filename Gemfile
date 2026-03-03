@@ -27,5 +27,12 @@ gem "importmap-rails"
 gem "heroicon"
 
 gem "pagy", "~> 43.2"
+<<<<<<< Updated upstream
+=======
 
 gem "phlex-rails", "~> 2.4"
+
+group :development do
+  gem "syntax_tree"
+end
+>>>>>>> Stashed changes

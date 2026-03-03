@@ -8,6 +8,8 @@
 /test/dummy/log/*.log
 /test/dummy/storage/
 /test/dummy/tmp/
+
+/app/assets/builds/*
 /test/dummy/app/models/*
 /test/dummy/db/migrate/*
 /test/dummy/db/schema.rb
@@ -15,3 +17,6 @@
 /test/dummy/db/*
 /test/*
 /app/assets/builds/*
+/node_modules/
+/package.json
+/package-lock.json
