@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class Records < Phlex::HTML
+    class Records < Components::Base
       include Phlex::Rails::Helpers::TurboFrameTag
 
       def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil)

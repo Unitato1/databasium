@@ -45,11 +45,6 @@
         <select name="validation[][column_name]", class="p-2 border-2 border-gray-300 w-fit" data-new-migration-target="validation_column_name">
           <option value="">Select column</option>
         </select>
-        <%
-=begin%>
-        <%= form.select :validation_column_name, [], { include_blank: "Select column" }, data: { new_migration_target: "validation_column_name" }, class: "p-2 border-2 border-gray-300 w-fit" %>
-        <%
-=end%>
         <select name="validation[][type]", class="p-2 border-2 border-gray-300 w-fit" data-new-migration-target="validation_column_type">
           <option value="uniqueness">Uniqueness</option>
           <option value="not_null">Not Null</option>

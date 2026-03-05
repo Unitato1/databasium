@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class Collapsable < Phlex::HTML
+    class Collapsable < Components::Base
       def initialize(name: nil, form: nil, class_name: nil, data_targets: {}, name_params: nil)
         @name = name
         @form = form

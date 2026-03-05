@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class IconNavigationPanel < Phlex::HTML
+    class IconNavigationPanel < Components::Base
       def initialize(icons_with_text: [], vertical: nil)
         @icons_with_text = icons_with_text
         @vertical = vertical
