@@ -10,9 +10,7 @@
       </button>
     </div>
     <%= render Components::Databasium::RecordsFilter.new(
-        records: @records,
         model: @model,
-        path: records_records_path(table: @model.name, frame_id: "foreign_records_list"),
         turbo_frame: "foreign_records_list",
         columns_names_types: @columns_names_types,
         hidden: false) %>

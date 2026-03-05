@@ -5,11 +5,8 @@ module Views
     class Records::Index < Views::Base
       include Phlex::Rails::Helpers::ContentFor
 
-      def initialize(records:, model:, turbo_frame:, pagy:)
-        @records = records
+      def initialize(model:)
         @model = model
-        @turbo_frame = turbo_frame
-        @pagy = pagy
       end
 
       def view_template
