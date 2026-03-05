@@ -8,6 +8,7 @@ class Databasium::SchemasController < Databasium::ApplicationController
   private
 
   def set_tables
-    @tables = (ActiveRecord::Base.connection.data_sources - %w[ar_internal_metadata schema_migrations])
+    @tables =
+      (ActiveRecord::Base.connection.data_sources - %w[ar_internal_metadata schema_migrations])
   end
 end

@@ -6,7 +6,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     @pending_migrations = @migration_service.pending_migrations
     @applied_migrations = @migration_service.applied_migrations
 
-    render "index" and return unless params[:migration].present?
+    render 'index' and return unless params[:migration].present?
 
     @migration, error = @migration_service.find_migration!(params[:migration])
     if error
@@ -30,6 +30,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     require "rails/generators/active_record/migration/migration_generator"
 
     if params[:add_migration] == "Save"
+    if params[:add_migration] == 'Save'
       success, error = @migration_service.save_migration(params)
     else
       @content, error = @migration_service.generate_migration(params)
@@ -56,7 +57,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def run_pending_migrations
     success, error = @migration_service.run_pending_migrations
     if success
-      flash[:success] = "Pending migrations run successfully"
+      flash[:success] = 'Pending migrations run successfully'
     else
       flash[:error] = "Error running pending migrations: #{error.message}"
     end
@@ -73,7 +74,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       )
 
     if success
-      flash[:success] = "Migration rolled back successfully"
+      flash[:success] = 'Migration rolled back successfully'
     else
       flash[:error] = "Error rolling back migration: #{error.message}"
     end
@@ -84,7 +85,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def run_migration
     success, error = @migration_service.run_migration(run_migration_params[:version])
     if success
-      flash[:success] = "Migration run successfully"
+      flash[:success] = 'Migration run successfully'
     else
       flash[:error] = "Error running migration: #{error.message}"
     end

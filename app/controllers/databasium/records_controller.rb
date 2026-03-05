@@ -1,20 +1,21 @@
 class Databasium::RecordsController < Databasium::ApplicationController
-  before_action :create_schema_service, only: [ :index, :foreign_records, :records ]
+  before_action :create_schema_service, only: %i[index foreign_records records]
   include Pagy::Method
 
   def index
     search_tables
-    if @tables
-      @pagy_tables, @tables = pagy(@tables, limit: 5, root_key: "tables")
-    end
+    @pagy_tables, @tables = pagy(@tables, limit: 5, root_key: "tables") if @tables
     set_viewing_table
     set_columns_names_types
     apply_filters
 
-    if @records
-      @pagy, @records = pagy(@records, limit: 10, root_key: "records")
-    end
-    render Views::Databasium::Records::Index.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy)
+    @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
+    render Views::Databasium::Records::Index.new(
+             records: @records,
+             model: @model,
+             turbo_frame: @turbo_frame_id || "records",
+             pagy: @pagy
+           )
   end
 
   def create
@@ -27,11 +28,14 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html
         format.turbo_stream do
-          render turbo_stream: turbo_stream.append(
-            "records_list",
-            partial: "record",
-            locals: { record: record }
-          )
+          render turbo_stream:
+                   turbo_stream.append(
+                     "records_list",
+                     partial: "record",
+                     locals: {
+                       record: record
+                     }
+                   )
         end
       end
     end
@@ -39,14 +43,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def foreign_records
     set_viewing_table
-    if @model
-      @records = @model.all
-    end
+    @records = @model.all if @model
     set_columns_names_types
     apply_filters
-    if @records
-      @pagy, @records = pagy(@records, limit: 10, root_key: "records")
-    end
+    @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
   end
 
   def records
@@ -54,16 +54,20 @@ class Databasium::RecordsController < Databasium::ApplicationController
     set_columns_names_types
     apply_filters
 
-    if @records
-      @pagy, @records = pagy(@records, limit: 10, root_key: "records")
-    end
+    @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
     if @turbo_frame_id == "foreign_records"
       render "foreign_records"
     else
-      render Components::Databasium::Records.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy)
+      render Components::Databasium::Records.new(
+               records: @records,
+               model: @model,
+               turbo_frame: @turbo_frame_id || "records",
+               pagy: @pagy
+             )
     end
   end
+
   private
 
   def create_schema_service
@@ -72,9 +76,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def search_tables
     @tables = @schema_service.tables
-    if params[:search]
-      @tables = @tables.select { |table| table =~ /#{params[:search]}/i }
-    end
+    @tables = @tables.select { |table| table =~ /#{params[:search]}/i } if params[:search]
     @tables
   end
 
@@ -89,7 +91,9 @@ class Databasium::RecordsController < Databasium::ApplicationController
       rescue NameError
         @model = nil
         @records = nil
-        @error = "No model found for this table, if you would like to interact with this table, you need to create a model for it."
+        @error =
+          'No model found for this table,
+          if you would like to interact with this table, you need to create a model for it.'
       end
     else
       @model = nil
@@ -99,55 +103,18 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def set_columns_names_types
     if @model
-      @columns_names_types ||= @model.columns.map { |column| {
-        name: column.name,
-        type: column.type.to_s,
-        used: false,
-        foreign_key: @schema_service.is_column_foreign_key?(@model.table_name, column.name),
-        to_table: @schema_service.get_foreign_key_to_table(@model.table_name, column.name) }
-      }
+      @columns_names_types ||=
+        @model.columns.map do |column|
+          {
+            name: column.name,
+            type: column.type.to_s,
+            used: false,
+            foreign_key: @schema_service.is_column_foreign_key?(@model.table_name, column.name),
+            to_table: @schema_service.get_foreign_key_to_table(@model.table_name, column.name)
+          }
+        end
     end
   end
-  #   operators = Array(filter_params[:operator_types]).map(&:to_s)
-
-  #   predicates = filter_params.except(:operator_types).to_h.map do |name, value|
-  #     build_filter_predicate(name, value)
-  #   end.compact
-
-  #   return if predicates.empty?
-
-  #   query = predicates.first
-  #   predicates.drop(1).each_with_index do |predicate, index|
-  #     connector = operators[index] == "or" ? :or : :and
-  #     query = query.public_send(connector, predicate)
-  #   end
-
-  #   @records = @records.where(query)
-  # end
-
-  # def build_filter_predicate(name, value)
-  #   return if value.blank?
-
-  #   operator = value[:operator].to_s
-  #   raw_value = value[:value].to_s
-  #   return if operator.blank?
-  #   return unless allowed_filter_operators.include?(operator)
-
-  #   column = @model.arel_table[name]
-
-  #   case operator
-  #   when "matches", "does_not_match"
-  #     return if raw_value.blank?
-  #     column.public_send(operator, "%#{raw_value}%")
-  #   else
-  #     return if raw_value.blank?
-  #     column.public_send(operator, raw_value)
-  #   end
-  # end
-
-  # def allowed_filter_operators
-  #   %w[eq not_eq gt lt gteq lteq matches does_not_match]
-  # end
 
   def apply_filters
     return if params[:filter].nil? || @model.nil?
@@ -156,26 +123,28 @@ class Databasium::RecordsController < Databasium::ApplicationController
     combined_predicate = nil
     predicate_index = 0
 
-    filter_params.except(:operator_types).each do |name, value|
-      next if value[:operator].blank? || value[:value].blank?
+    filter_params
+      .except(:operator_types)
+      .each do |name, value|
+        next if value[:operator].blank? || value[:value].blank?
 
-      operator = value[:operator].to_s
-      next unless allowed_operators.include?(operator)
+        operator = value[:operator].to_s
+        next unless allowed_operators.include?(operator)
 
-      column = @model.arel_table[name]
-      predicate_value = value[:value].to_s
-      predicate_value = "%#{predicate_value}%" if [ "matches", "does_not_match" ].include?(operator)
-      current_predicate = column.public_send(operator, predicate_value)
+        column = @model.arel_table[name]
+        predicate_value = value[:value].to_s
+        predicate_value = "%#{predicate_value}%" if %w[matches does_not_match].include?(operator)
+        current_predicate = column.public_send(operator, predicate_value)
 
-      if combined_predicate.nil?
-        combined_predicate = current_predicate
-      else
-        connector = connectors[predicate_index - 1] == "or" ? :or : :and
-        combined_predicate = combined_predicate.public_send(connector, current_predicate)
+        if combined_predicate.nil?
+          combined_predicate = current_predicate
+        else
+          connector = connectors[predicate_index - 1] == "or" ? :or : :and
+          combined_predicate = combined_predicate.public_send(connector, current_predicate)
+        end
+
+        predicate_index += 1
       end
-
-      predicate_index += 1
-    end
 
     return if combined_predicate.nil?
 
@@ -186,7 +155,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     allowed_columns = @model.columns.map { |c| c.name.to_s }
 
     params.require(:filter).permit(
-      allowed_columns.index_with { |_col| [ :operator, :value ] },
+      allowed_columns.index_with { |_col| %i[operator value] },
       operator_types: []
     )
   end
@@ -194,8 +163,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
   def model_columns
     return if params[:table].nil?
     table_name = params[:table].downcase.pluralize.to_sym
-    params.require(:record).permit(
-      *@schema_service.get_columns_names(table_name)
-    )
+    params.require(:record).permit(*@schema_service.get_columns_names(table_name))
   end
 end
