@@ -19,7 +19,7 @@ class Databasium::Schema
     @all_references
   end
 
-  def get_columns(table)
+  def get_columns_from_table(table)
     @conn.columns(table).map { |c| { name: c.name, sql_type: c.sql_type, null: c.null, default: c.default } }
   end
 
@@ -46,7 +46,7 @@ class Databasium::Schema
   end
 
   def get_model_from_table(table)
-    return if table.nil?
+    return [ nil, "Select a table to view its records." ] if table.nil?
     table_name = table.downcase.pluralize.to_sym
     unless ActiveRecord::Base.connection.table_exists?(table_name)
       return [ nil, "Table #{table} does not exist" ]
@@ -103,7 +103,7 @@ class Databasium::Schema
     @schema = {}
     @tables.each do |table|
       @schema[table] = {
-        columns: get_columns(table),
+        columns: get_columns_from_table(table),
         foreign_keys: get_foreign_keys(table),
         associations: get_associations(table)
       }
