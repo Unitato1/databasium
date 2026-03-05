@@ -5,11 +5,12 @@ module Components
     class Records < Phlex::HTML
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(records:, model:, turbo_frame:, pagy: nil)
+      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil)
         @records = records
         @model = model
         @turbo_frame = turbo_frame
         @pagy = pagy
+        @feedback = feedback
       end
 
       def view_template
@@ -22,13 +23,15 @@ module Components
       private
 
       def render_table
-        if @model
+        if @feedback || !@model || @records.empty?
+          div(class: "border-2 border-teal-500 text-center p-2 rounded-xl bg-teal-200 mx-auto w-fit text-gray-700 text-xl") do
+            @feedback || "Select a table to view its records."
+          end
+        else
           table(class: "table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max") do
             render_table_head
             render_table_body
           end
-        else
-          p(class: "text-center text-2xl text-gray-500") { "Select a table to view its records" }
         end
       end
 
@@ -55,16 +58,6 @@ module Components
                   end
                 end
               end
-            end
-          else
-            if @error
-              div(class: "border-2 border-gray-500 text-center p-4 rounded-xl bg-red-100") do
-                p(class: "text-red-500 text-2xl") do
-                  @error
-                end
-              end
-            else
-              p { "No records found" }
             end
           end
         end

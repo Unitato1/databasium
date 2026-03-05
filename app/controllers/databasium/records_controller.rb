@@ -7,12 +7,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @model, @error = @schema_service.get_model_from_table(params[:table])
     @columns_names_types = @schema_service.get_columns(@model)
 
-    render Views::Databasium::Records::Index.new(
-             records: @records,
-             model: @model,
-             turbo_frame: @turbo_frame_id || "records",
-             pagy: @pagy
-           )
+    render Views::Databasium::Records::Index.new(model: @model)
   end
 
   def create
@@ -36,12 +31,11 @@ class Databasium::RecordsController < Databasium::ApplicationController
   end
 
   def records
-    @model, @error = @schema_service.get_model_from_table(params[:table])
+    @model, @feedback = @schema_service.get_model_from_table(params[:table])
     @records = @model&.all
     @columns_names_types = @schema_service.get_columns(@model)
     @records = @schema_service.filter_records(@records, params[:filter])
     @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
-
     @turbo_frame_id = params[:frame_id].presence || "records"
     if @turbo_frame_id == "foreign_records"
       render "foreign_records"
@@ -50,7 +44,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
                records: @records,
                model: @model,
                turbo_frame: @turbo_frame_id || "records",
-               pagy: @pagy
+               pagy: @pagy,
+               feedback: @feedback
              )
     end
   end
