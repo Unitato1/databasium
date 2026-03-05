@@ -1,20 +1,5 @@
 # frozen_string_literal: true
 
-# <% if @model %>
-#   <%= tag.div id: "filter",
-#       class: "my-4 hidden",
-#       data: {
-#         controller: "filter",
-#         filter_columns_value: @columns_names_types.to_json
-#       } do %>
-#     <%= render Components::Databasium::RecordsFilter.new(
-#       records: @records,
-#       model: @model,
-#       path: records_records_path(table: @model.name, frame_id: "records"),
-#       turbo_frame: "records") %>
-#   <% end %>
-# <% end %>
-
 module Components
   module Databasium
     class RecordsFilter < Components::Base

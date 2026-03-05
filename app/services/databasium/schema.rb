@@ -27,6 +27,78 @@ class Databasium::Schema
     @conn.columns(table).map { it.name }
   end
 
+  def get_tables(search)
+    @tables = @tables.select { |table| table =~ /#{search}/i } if search
+    @tables
+  end
+
+  def get_columns(model)
+    return if model.nil?
+    model.columns.map do |column|
+      {
+        name: column.name,
+        type: column.type.to_s,
+        used: false,
+        foreign_key: is_column_foreign_key?(model.table_name, column.name),
+        to_table: get_foreign_key_to_table(model.table_name, column.name)
+      }
+    end
+  end
+
+  def get_model_from_table(table)
+    return if table.nil?
+    table_name = table.downcase.pluralize.to_sym
+    unless ActiveRecord::Base.connection.table_exists?(table_name)
+      return [ nil, "Table #{table} does not exist" ]
+    end
+    begin
+      # If there is no model for this table it will raise a NameError
+      @model = table.classify.constantize
+      @error = nil
+    rescue NameError
+      @model = nil
+      @error =
+        'No model found for this table,
+        if you would like to interact with this table, you need to create a model for it.'
+    end
+    [ @model, @error ]
+  end
+
+  def filter_records(records, filter)
+    return records if filter.nil? || @model.nil?
+    connectors = Array(filter[:operator_types]).map(&:to_s)
+    allowed_operators = %w[eq not_eq gt lt gteq lteq matches does_not_match]
+    combined_predicate = nil
+    predicate_index = 0
+
+    filter
+      .except(:operator_types)
+      .each do |name, value|
+        next if value[:operator].blank? || value[:value].blank?
+
+        operator = value[:operator].to_s
+        next unless allowed_operators.include?(operator)
+
+        column = @model.arel_table[name]
+        predicate_value = value[:value].to_s
+        predicate_value = "%#{predicate_value}%" if %w[matches does_not_match].include?(operator)
+        current_predicate = column.public_send(operator, predicate_value)
+
+        if combined_predicate.nil?
+          combined_predicate = current_predicate
+        else
+          connector = connectors[predicate_index - 1] == "or" ? :or : :and
+          combined_predicate = combined_predicate.public_send(connector, current_predicate)
+        end
+
+        predicate_index += 1
+      end
+
+    return records if combined_predicate.nil?
+
+    records.where(combined_predicate)
+  end
+
   def build_schema
     @schema = {}
     @tables.each do |table|
