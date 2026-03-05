@@ -6,10 +6,8 @@ module Components
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::HiddenFieldTag
 
-      def initialize(records:, model:, path:, turbo_frame:, columns_names_types:, hidden: true)
-        @records = records
+      def initialize(model:, turbo_frame:, columns_names_types:, hidden: true)
         @model = model
-        @path = path
         @turbo_frame = turbo_frame
         @columns_names_types = columns_names_types
         @hidden = hidden

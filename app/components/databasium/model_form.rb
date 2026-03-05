@@ -12,15 +12,13 @@ module Components
       TYPES = %w[string text integer float double decimal boolean date datetime timestamp time binary].freeze
       SKIPPED_COLUMNS = %w[created_at updated_at id].freeze
 
-      def initialize(columns_names_types:, model:, path:)
+      def initialize(columns_names_types:, model:)
         @columns_names_types = columns_names_types
-        @path = path
         @model = model
       end
 
       def view_template
         form_with(
-          url: @path,
           method: :post,
           scope: :record,
           class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit mb-4 hidden",
