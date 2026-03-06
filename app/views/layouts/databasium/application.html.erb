@@ -12,8 +12,8 @@
 
   </head>
   <body class="overflow-x-hidden">
-    <%= render "databasium/components/header" %>
-    <%= render "databasium/components/flash" %>
+    <%= render Components::Databasium::Global::Header.new(title: content_for?(:title) ? yield(:title) : "Databasium") %>
+    <%= render Components::Databasium::Global::Flash.new(success: flash[:success], error: flash[:error]) %>
     
     <%= yield %>
   </body>
