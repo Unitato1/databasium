@@ -6,13 +6,14 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     @pending_migrations = @migration_service.pending_migrations
     @applied_migrations = @migration_service.applied_migrations
 
-    render "index" and return unless params[:migration].present?
+    render Views::Databasium::Migrations::Index.new(migrations: @migrations, pending_migrations: @pending_migrations) and return unless params[:migration].present?
 
     @migration, error = @migration_service.find_migration!(params[:migration])
     if error
       flash[:error] = error.message
     else
       @content = File.read(@migration.filename)
+      render Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
     end
   end
 
@@ -22,6 +23,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     #   @migration = @migration_service.find_migration!(params[:migration])
     #   @content = File.read(@migration.filename)
     # end
+    render Views::Databasium::Migrations::New.new(tables: @tables, content: @content)
   end
 
   def create
@@ -43,7 +45,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
           render turbo_stream:
                    turbo_stream.replace(
                      "migration_preview",
-                     partial: "databasium/migrations/components/migration_preview",
+                     Components::Databasium::Migrations::Preview.new(content: @content)
                    )
         end
       end
