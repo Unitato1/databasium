@@ -29,23 +29,33 @@ module Views
       def render_sidebar
         div(class: "flex flex-col w-full") do
           div(data: { controller: "search" }) do
-            form_with url: helpers.records_path, method: :get, class: "flex gap-2", data: { turbo_frame: "results", action: "input->search#update" } do |form|
-              raw form.search_field :search, class: "border-2 border-gray-300 rounded-md p-2", placeholder: "Search for a table"
+            form_with url: helpers.records_path,
+                      method: :get,
+                      class: "flex gap-2",
+                      data: {
+                        turbo_frame: "results",
+                        action: "input->search#update"
+                      } do |form|
+              raw form.search_field :search,
+                                    class: "border-2 border-gray-300 rounded-md p-2",
+                                    placeholder: "Search for a table"
             end
           end
           turbo_frame_tag("results") do
-          @tables&.each do |table|
-            div(class: "border-b-2 border-b-gray-300 py-2 px-3") do
-              link_to "#{table}", helpers.records_path(table: table), data: { turbo_frame: "main" }
+            @tables&.each do |table|
+              div(class: "border-b-2 border-b-gray-300 py-2 px-3") do
+                link_to "#{table}",
+                        helpers.records_path(table: table),
+                        data: {
+                          turbo_frame: "main"
+                        }
+              end
             end
-          end
-          if @tables
-            div(class: "mt-4 flex justify-start") do
-              raw @pagy_tables.series_nav.html_safe
+            if @tables
+              div(class: "mt-4 flex justify-start") { raw @pagy_tables.series_nav.html_safe }
             end
           end
         end
-      end
       end
 
       def render_main
