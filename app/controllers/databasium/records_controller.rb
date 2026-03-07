@@ -37,7 +37,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     if @turbo_frame_id == "foreign_records"
       render Components::Databasium::Records::ForeignRecords.new(model: @model, columns_names_types: @columns_names_types)
     else
-      render Components::Databasium::Records.new(
+      render Components::Databasium::Records::Table.new(
                records: @records,
                model: @model,
                turbo_frame: @turbo_frame_id || "records",

@@ -61,14 +61,20 @@ module Views
       def render_main
         turbo_frame_tag("main") do
           if @model
-            render Components::Databasium::IconNavigationPanel.new(
+            render Components::Databasium::Navigation::IconPanel.new(
                      icons_with_text: [
                        { icon: "plus-circle", text: "add record" },
                        { icon: "funnel", text: "filter" }
                      ],
                      vertical: true
                    )
-            render Components::Databasium::ModelForm.new(
+            render Components::Databasium::Records::Filter.new(
+                     model: @model,
+                     turbo_frame: "records",
+                     columns_names_types: @columns_names_types,
+                     hidden: true
+                   )
+            render Components::Databasium::Forms::Model.new(
                      columns_names_types: @columns_names_types,
                      model: @model
                    )
@@ -83,23 +89,3 @@ module Views
     end
   end
 end
-
-# <div class="flex flex-col w-full">
-# <div data-controller="search">
-# <%= form_with url: records_path, method: :get, class: "flex gap-2", data: { turbo_frame: "results", action: "input->search#update" } do |form| %>
-#   <%= form.search_field :search, class: "border-2 border-gray-300 rounded-md p-2", placeholder: "Search for a table" %>
-# <% end %>
-# </div>
-# <turbo-frame id="results">
-# <% @tables.each do |table| %>
-#   <div class="border-b-2 border-b-gray-300 py-2 px-3">
-#     <%= link_to "#{table}", records_path(table: table), data: { turbo_frame: "main" } %>
-#   </div>
-# <% end %>
-# <% if @tables %>
-#   <div class="mt-4 flex justify-start">
-#     <%== @pagy_tables.series_nav() %>
-#   </div>
-# <% end %>
-# </turbo-frame>
-# </div>

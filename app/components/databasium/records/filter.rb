@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class RecordsFilter < Components::Base
+    class Records::Filter < Components::Base
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::HiddenFieldTag
 
@@ -15,13 +15,14 @@ module Components
 
       def view_template
         if @model
-          div(class: class_names("my-4", "hidden" => @hidden), id: "filter",
+          div(
+            class: class_names("my-4", "hidden" => @hidden),
+            id: "filter",
             data: {
               controller: "filter",
               filter_columns_value: @columns_names_types.to_json
-            }) do
-            render_filter
-          end
+            }
+          ) { render_filter }
         end
       end
 
@@ -31,27 +32,34 @@ module Components
         form_with(
           url: helpers.records_records_path,
           method: :get,
-          class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit max-h-50 overflow-y-auto",
+          class:
+            "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit max-h-50 overflow-y-auto",
           data: {
-              action: "change->search#update",
-              filter_target: "form",
-              turbo_frame: @turbo_frame }
+            action: "change->search#update",
+            filter_target: "form",
+            turbo_frame: @turbo_frame
+          }
         ) do |form|
           hidden_field_tag :table, @model.name
           hidden_field_tag :frame_id, @turbo_frame
           div(class: "flex items-center justify-between") do
             span(
               type: "button",
-              data: { action: "click->filter#addFilter" },
-              class: "ps-4 py-1 rounded underline w-fit") do
-              "Add Filter"
-            end
+              data: {
+                action: "click->filter#addFilter"
+              },
+              class: "ps-4 py-1 rounded underline w-fit"
+            ) { "Add Filter" }
             form.submit "Run Filters", class: "bg-blue-500 text-white px-4 py-2 rounded-md"
           end
-          raw helpers.heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8 hidden mr-2", data_filter_target: "removeIcon" }
+          raw helpers.heroicon "x-mark",
+                               variant: :solid,
+                               options: {
+                                 class: "w-8 h-8 hidden mr-2",
+                                 data_filter_target: "removeIcon"
+                               }
         end
       end
-      # /
     end
   end
 end

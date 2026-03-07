@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class ModelForm < Components::Base
+    class Forms::Model < Components::Base
       include Phlex::Rails::Helpers::HiddenFieldTag
       include Phlex::Rails::Helpers::ContentTag
       include Phlex::Rails::Helpers::FormWith

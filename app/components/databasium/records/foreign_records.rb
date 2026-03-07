@@ -43,7 +43,7 @@ module Components
       end
 
       def render_filters
-        render Components::Databasium::RecordsFilter.new(
+        render Records::Filter.new(
                  model: @model,
                  turbo_frame: "foreign_records_list",
                  columns_names_types: @columns_names_types,
@@ -59,7 +59,7 @@ module Components
                             table: @model&.name,
                             frame_id: "foreign_records_list",
                             lazy: true
-                          ) { }
+                          ) {}
       end
     end
   end

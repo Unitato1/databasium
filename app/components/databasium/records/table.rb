@@ -2,7 +2,7 @@
 
 module Components
   module Databasium
-    class Records < Components::Base
+    class Records::Table < Components::Base
       include Phlex::Rails::Helpers::TurboFrameTag
 
       def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil)
@@ -24,9 +24,10 @@ module Components
 
       def render_table
         if @feedback || !@model || @records.empty?
-          div(class: "border-2 border-teal-500 text-center p-2 rounded-xl bg-teal-200 mx-auto w-fit text-gray-700 text-xl") do
-            @feedback || "Select a table to view its records."
-          end
+          div(
+            class:
+              "border-2 border-teal-500 text-center p-2 rounded-xl bg-teal-200 mx-auto w-fit text-gray-700 text-xl"
+          ) { @feedback || "Select a table to view its records." }
         else
           table(class: "table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max") do
             render_table_head
@@ -51,11 +52,17 @@ module Components
         tbody(id: "#{@turbo_frame}_list") do
           if @records&.any?
             @records.each do |record|
-              tr(class: "border-2 border-gray-300 hover:bg-gray-100 hover:cursor-pointer", data: { action: "click->table-select#selectRecord", record_id: record.id }) do
+              tr(
+                class: "border-2 border-gray-300 hover:bg-gray-100 hover:cursor-pointer",
+                data: {
+                  action: "click->table-select#selectRecord",
+                  record_id: record.id
+                }
+              ) do
                 record.attributes.each do |_, value|
-                  td(class: "text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto") do
-                    plain format_cell_value(value)
-                  end
+                  td(
+                    class: "text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"
+                  ) { plain format_cell_value(value) }
                 end
               end
             end
@@ -75,11 +82,7 @@ module Components
       end
 
       def render_pagy
-        if @pagy
-          div(class: "mt-4 flex justify-start") do
-            raw @pagy.series_nav.html_safe
-          end
-        end
+        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
     end
   end
