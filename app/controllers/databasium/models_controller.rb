@@ -10,17 +10,17 @@ class Databasium::ModelsController < Databasium::ApplicationController
 
   def create
     @content = generate_model_content
-    if params[:commit] == 'Create model file'
+    if params[:commit] == "Create model file"
       write_file(@content)
-      redirect_to schemas_path, notice: 'Model file created successfully'
+      redirect_to schemas_path, notice: "Model file created successfully"
     else
       respond_to do |format|
         format.html
         format.turbo_stream do
           render turbo_stream:
                    turbo_stream.replace(
-                     'model_preview',
-                     partial: 'databasium/models/components/model_preview',
+                     "model_preview",
+                     partial: "databasium/models/components/model_preview",
                      locals: {
                        content: @content
                      }
@@ -33,9 +33,9 @@ class Databasium::ModelsController < Databasium::ApplicationController
   private
 
   def generate_model_content
-    template_path = Databasium::Engine.root.join('lib/databasium/templates/model.rb.tt')
+    template_path = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
 
-    renderer = ERB.new(File.read(template_path), trim_mode: '-')
+    renderer = ERB.new(File.read(template_path), trim_mode: "-")
 
     context =
       Databasium::Model.new(
@@ -50,7 +50,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def write_file(content)
     model_name = model_params[:model_name].downcase
     destination_path = Rails.root.join("app/models/#{model_name}.rb")
-    File.open(destination_path, 'w') { |file| file.write(content) }
+    File.open(destination_path, "w") { |file| file.write(content) }
   end
 
   def model_params

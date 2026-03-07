@@ -3,16 +3,20 @@
 module Components
   module Databasium
     class Global::Flash < Components::Base
+      include Phlex::Rails::Helpers::TurboFrameTag
+
       def initialize(success: nil, error: nil)
         @success = success
         @error = error
       end
 
       def view_template
-        div(class: "absolute top-20 left-1/2 -translate-x-1/2 px-4 z-50 transition-opacity duration-1000 ease-in-out", data: { controller: "flash" }) do
-          render_success if @success
-          render_error if @error
-        end if @success || @error
+        turbo_frame_tag "flash" do
+          div(class: "absolute top-20 left-1/2 -translate-x-1/2 px-4 z-50 transition-opacity duration-1000 ease-in-out", data: { controller: "flash" }) do
+            render_success if @success
+            render_error if @error
+          end if @success || @error
+        end
       end
 
       private

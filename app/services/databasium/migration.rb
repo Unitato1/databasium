@@ -45,6 +45,7 @@ class Databasium::Migration
       else
         migration_context.run(:down, version.to_i)
       end
+      [ true, nil ]
     rescue => e
       [ false, e ]
     end
@@ -53,7 +54,7 @@ class Databasium::Migration
   def run_migration(version)
     begin
       migration_context.run(:up, version.to_i)
-      true
+      [ true, nil ]
     rescue => e
       [ false, e ]
     end
