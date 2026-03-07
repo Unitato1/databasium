@@ -38,7 +38,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
     if @turbo_frame_id == "foreign_records"
-      render "foreign_records"
+      render Components::Databasium::Records::ForeignRecords.new(model: @model, columns_names_types: @columns_names_types)
     else
       render Components::Databasium::Records.new(
                records: @records,
