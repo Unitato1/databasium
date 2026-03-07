@@ -21,6 +21,8 @@ module Views
         end
       end
 
+      private
+
       def render_sidebar
         raw helpers.render(partial: "databasium/records/components/sidebar")
       end
