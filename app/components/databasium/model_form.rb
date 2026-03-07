@@ -23,7 +23,7 @@ module Components
           scope: :record,
           class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit mb-4 hidden",
           id: "add_record"
-        ) { |form| form_content(form) }
+        ) { |form| form_content(form) } if @model
       end
 
       private

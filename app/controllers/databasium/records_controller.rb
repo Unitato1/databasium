@@ -7,7 +7,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @model, @error = @schema_service.get_model_from_table(params[:table])
     @columns_names_types = @schema_service.get_columns(@model)
 
-    render Views::Databasium::Records::Index.new(model: @model)
+    render Views::Databasium::Records::Index.new(model: @model, columns_names_types: @columns_names_types, table: params[:table], tables: @tables, pagy_tables: @pagy_tables)
   end
 
   def create
@@ -20,10 +20,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
           render turbo_stream:
                    turbo_stream.append(
                      "records_list",
-                     partial: "record",
-                     locals: {
-                       record: record
-                     }
+                     Components::Databasium::Records::NewRecordsRow.new(record: record)
                    )
         end
       end
