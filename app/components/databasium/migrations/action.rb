@@ -3,7 +3,7 @@ module Components
     class Migrations::Action < Components::Base
       include Phlex::Rails::Helpers::TurboStream
 
-      def initialize(success:, error:, migration_version:, status:)
+      def initialize(success:, error:, migration_version: nil, status: nil)
         @success = success
         @error = error
         @migration_version = migration_version
@@ -11,8 +11,8 @@ module Components
       end
 
       def view_template
-        render_flash_stream
-        render_migration_status_stream
+        render_flash_stream if @success || @error
+        render_migration_status_stream if @status
       end
 
       private

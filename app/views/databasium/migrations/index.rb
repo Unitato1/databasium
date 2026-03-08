@@ -34,8 +34,7 @@ module Views
                 "#{m.name}",
                 helpers.migration_path(m.version),
                 data: {
-                  turbo_frame: "migration",
-                  turbo_action: "replace"
+                  turbo_frame: "migration"
                 },
                 class: "text-blue-600 hover:underline block"
               )
@@ -45,17 +44,13 @@ module Views
               helpers.run_pending_migrations_migrations_path,
               method: :post,
               class: "text-white bg-blue-600 rounded-xl p-2 mt-3",
-              data: {
-                turbo_action: "replace"
-              }
+
             )
             form_with(
               url: helpers.rollback_migration_migrations_path,
               method: :post,
               class: "w-fit",
-              data: {
-                turbo_action: "replace"
-              }
+
             ) do |form|
               form.number_field :rollback_steps,
                                 placeholder: "Rollback steps",

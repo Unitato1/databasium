@@ -47,13 +47,11 @@ module Components
                       version: @migration.version,
                       till_this_migration: true
                     ),
+                    data: {
+                      turbo: false
+                    },
                     method: :post,
-                    class: "text-blue-600 font-bold hover:underline text-xl",
-                    form: {
-                      data: {
-                        turbo_stream: true
-                      }
-                    }
+                    class: "text-blue-600 font-bold hover:underline text-xl"
 
           button_to "Run Migration",
                     helpers.run_migration_migrations_path(version: @migration.version),

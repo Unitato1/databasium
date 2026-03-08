@@ -69,58 +69,38 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     else
       flash[:error] = "Error running pending migrations: #{error.message}"
     end
-
-    redirect_back fallback_location: migrations_path
+    redirect_to migrations_path
   end
 
   def rollback_migration
     version = rollback_migration_params[:version]
-    success, error =
-      @migration_service.rollback_migration(
-        version,
-        rollback_migration_params[:rollback_steps],
-        rollback_migration_params[:till_this_migration]
-      )
-
-    if success
-      flash[:success] = "Migration rolled back successfully"
+    result, error = @migration_service.rollback_migration(version,
+      rollback_migration_params[:rollback_steps],
+      rollback_migration_params[:till_this_migration])
+    if result == :success
+      success = "Migration rolled back successfully"
     else
-      flash[:error] = "Error rolling back migration: #{error.message}"
+      error = "Error rolling back migration: #{error.message}"
     end
-
-    respond_to do |format|
-      format.turbo_stream do
-        render Components::Databasium::Migrations::Action.new(
-                 success: flash[:success],
-                 error: flash[:error],
-                 migration_version: version,
-                 status: success ? "pending" : "applied"
-               )
-      end
-      format.html { redirect_to migrations_path(version: version) }
+    if rollback_migration_params[:till_this_migration] == "true" || rollback_migration_params[:rollback_steps].present?
+      flash[:success] = success
+      flash[:error] = error
+      puts "redirecting to migrations_path(version: #{version})"
+      redirect_to migrations_path(version: version)
+    else
+      response_to_action(success, error, version, result == :success ? "pending" : nil)
     end
   end
 
   def run_migration
     version = run_migration_params[:version]
-    success, error = @migration_service.run_migration(version)
-    if success
-      flash[:success] = "Migration run successfully"
+    result, error = @migration_service.run_migration(version)
+    if result == :success
+      success = "Migration run successfully"
     else
-      flash[:error] = "Error running migration: #{error.message}"
+      error = "Error running migration: #{error.message}"
     end
-
-    respond_to do |format|
-      format.turbo_stream do
-        render Components::Databasium::Migrations::Action.new(
-                 success: flash[:success],
-                 error: flash[:error],
-                 migration_version: version,
-                 status: success ? "applied" : "pending"
-               )
-      end
-      format.html { redirect_to migrations_path(version: version) }
-    end
+    response_to_action(success, error, version, result == :success ? "applied" : nil)
   end
 
   private
@@ -148,5 +128,24 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def rollback_migration_params
     params.permit(:version, :till_this_migration, :rollback_steps)
+  end
+
+  def new_action_response(success, error, migration_version, status)
+    Components::Databasium::Migrations::Action.new(
+      success: success,
+      error: error,
+      migration_version: migration_version,
+      status: status
+    )
+  end
+
+  def response_to_action(success, error, migration_version, status)
+    respond_to do |format|
+      format.turbo_stream do
+        render new_action_response(success, error, migration_version, status),
+               layout: false
+      end
+      format.html { redirect_to migrations_path(version: migration_version) }
+    end
   end
 end

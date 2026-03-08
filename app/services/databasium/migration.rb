@@ -30,9 +30,9 @@ class Databasium::Migration
       migration_context.pending_migration_versions.each do |version|
         migration_context.run(:up, version)
       end
-      true
+      [ :success, nil ]
     rescue => e
-      [ false, e ]
+      [ :failed, e ]
     end
   end
 
@@ -45,18 +45,18 @@ class Databasium::Migration
       else
         migration_context.run(:down, version.to_i)
       end
-      [ true, nil ]
+      [ :success, nil ]
     rescue => e
-      [ false, e ]
+      [ :failed, e ]
     end
   end
 
   def run_migration(version)
     begin
       migration_context.run(:up, version.to_i)
-      [ true, nil ]
+      [ :success, nil ]
     rescue => e
-      [ false, e ]
+      [ :failed, e ]
     end
   end
 
