@@ -1,0 +1,53 @@
+:root {
+  --databasium-primary: var(--color-blue-500);
+  --databasium-secondary: var(--color-blue-500);
+
+  --databasium-accent: var(--color-blue-500);
+  --databasium-background: var(--color-slate-900);
+  --databasium-text: var(--color-slate-100);
+  --databasium-border: var(--color-slate-600);
+  --databasium-panel: var(--color-slate-800);
+  --databasium-hover: var(--color-yellow-400);
+  --databasium-shadow: 0 0 6px rgba(96, 165, 250, 0.5);
+
+  --databasium-active: var(--color-blue-500);
+  --databasium-focus: var(--color-blue-500);
+  --databasium-disabled: var(--color-blue-500);
+  --databasium-error: var(--color-blue-500);
+  --databasium-success: var(--color-blue-500);
+  --databasium-warning: var(--color-blue-500);
+}
+
+[data-theme="white"] {
+  --app-primary: #ffffff;
+  --app-secondary: yellow;
+  --app-accent: #888888;
+  --app-background: #111111;
+  --app-text: #ffffff;
+}
+
+[data-theme="ocean"] {
+  --app-primary: #0f172a;
+  --app-secondary: #38bdf8;
+  --app-accent: #06b6d4;
+  --app-background: #ecfeff;
+  --app-text: #082f49;
+}
+
+@theme inline {
+  --color-primary: var(--databasium-primary);
+  --color-secondary: var(--databasium-secondary);
+  --color-accent: var(--databasium-accent);
+
+  --color-background: var(--databasium-background);
+  --color-main-text: var(--databasium-text);
+  --color-border: var(--databasium-border);
+  --color-panel: var(--databasium-panel);
+
+  --shadow-accent: var(--databasium-shadow);
+  --color-hover: var(--databasium-hover);
+  --color-active: var(--databasium-active);
+  --color-focus: var(--databasium-focus);
+  --color-disabled: var(--databasium-disabled);
+  --color-error: var(--databasium-error);
+}

@@ -18,10 +18,8 @@ module Views
 
       def view_template
         content_for(:title) { "Records" }
-        div(class: "flex px-4 gap-4") do
-          div(class: "") { render_sidebar }
-          div(class: "w-full") { render_main }
-        end
+        content_for(:sidebar) { render_sidebar }
+        div(class: "flex px-4 gap-4") { div(class: "w-full") { render_main } }
       end
 
       private
