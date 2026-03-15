@@ -25,7 +25,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
           render Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
         end
         format.turbo_stream do
-          render Components::Databasium::Migrations::ShowTurboStream.new(migration: @migration, content: @content)
+          render Components::Databasium::Migrations::ShowTurboStream.new(migration: @migration, content: @content), layout: false
         end
       end
     else
