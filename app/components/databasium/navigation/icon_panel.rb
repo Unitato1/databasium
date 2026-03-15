@@ -3,9 +3,11 @@
 module Components
   module Databasium
     class Navigation::IconPanel < Components::Base
-      def initialize(icons_with_text: [], vertical: nil)
+      include Phlex::Rails::Helpers::LinkTo
+
+      # element format: { icon: "icon-name", text: "text", path: "path" }
+      def initialize(icons_with_text: [])
         @icons_with_text = icons_with_text
-        @vertical = vertical
       end
 
       def view_template(&block)
@@ -15,19 +17,24 @@ module Components
       private
 
       def form(&block)
-        div(class: [ "w-fit align-items-center mb-4 justify-items-center", @vertical ? "flex"  : "flex-column" ], data: { controller: "hide" }) do
+        div(class: "align-items-center justify-items-center flex gap-2", data: { controller: "hide" }) do
           @icons_with_text.each do |element|
-            div(data: { hide: element[:text].to_s.split(" ").join("_"), action: "click->hide#hide" },
-              class: "flex flex-col justify-between items-center border-2
-                border-l-transparent first:border-l-2 first:border-gray-300
-                border-gray-300 px-2 py-1 text-xs w-full text-center cursor-pointer hover:border-green-500"
+            div(class: "flex justify-between items-center gap-2
+                border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
+                data: { hide: element[:text].to_s.split(" ").join("_"), action: "click->hide#hide" }
               ) do
-              raw helpers.heroicon element[:icon], variant: :outline, options: { class: "w-8 h-8" }
+              raw helpers.heroicon element[:icon], variant: :outline, options: { class: "w-4 h-4" }
 
-              div do
-                p { element[:text] }
-              end
-            end
+              p(class: "text-main-text text-base") { element[:text] }
+            end unless element[:path].present?
+
+            link_to(element[:path], class: "flex justify-between items-center gap-2
+              border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
+              data: { turbo_method: :post, turbo_frame: "_top" }
+            ) do
+              raw helpers.heroicon element[:icon], variant: :outline, options: { class: "w-4 h-4" }
+              p(class: "text-main-text text-base") { element[:text] }
+            end if element[:path].present?
           end
         end
       end

@@ -19,13 +19,14 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        div(class: "flex px-4 gap-4") { div(class: "w-full") { render_main } }
+        content_for(:header_actions) { render_header_actions }
+        render_main
       end
 
       private
 
       def render_sidebar
-        div(class: "flex flex-col w-full") do
+        div(class: "flex flex-col w-full px-3") do
           div(data: { controller: "search" }) do
             form_with url: helpers.records_path,
                       method: :get,
@@ -59,30 +60,22 @@ module Views
       def render_main
         turbo_frame_tag("main") do
           if @model
-            render Components::Databasium::Navigation::IconPanel.new(
-                     icons_with_text: [
-                       { icon: "plus-circle", text: "add record" },
-                       { icon: "funnel", text: "filter" }
-                     ],
-                     vertical: true
-                   )
-            render Components::Databasium::Records::Filter.new(
-                     model: @model,
-                     turbo_frame: "records",
-                     columns_names_types: @columns_names_types,
-                     hidden: true
-                   )
-            render Components::Databasium::Forms::Model.new(
-                     columns_names_types: @columns_names_types,
-                     model: @model
-                   )
           end
           turbo_frame_tag "records",
-                          class: "overflow-auto block",
+                          class: "",
                           src: helpers.records_records_path(table: @table, frame_id: "records") do
             "Loading"
           end
         end
+      end
+
+      def render_header_actions
+        render Components::Databasium::Navigation::IconPanel.new(
+          icons_with_text: [
+            { icon: "plus-circle", text: "add record" },
+            { icon: "funnel", text: "filter" }
+          ],
+        )
       end
     end
   end

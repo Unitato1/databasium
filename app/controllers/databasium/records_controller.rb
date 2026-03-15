@@ -52,7 +52,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
                model: @model,
                turbo_frame: @turbo_frame_id || "records",
                pagy: @pagy,
-               feedback: @feedback
+               feedback: @feedback,
+               columns_names_types: @columns_names_types
              )
     end
   end

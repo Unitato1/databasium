@@ -51,7 +51,7 @@ module Components
             end
           end
         end
-        raw form.submit("Add record", class: "bg-blue-500 text-white px-4 py-2 rounded-md")
+        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md")
       end
 
       def type_to_helper(type)
@@ -89,7 +89,7 @@ module Components
           )
 
           link_to(helpers.records_records_path(table: column[:to_table], frame_id: frame_id),
-            class: "border-1 border-blue-500 text-white rounded-md flex justify-center items-center p-1",
+            class: "border-1 border-blue-500 rounded-md flex justify-center items-center p-1",
             data: { turbo_frame: frame_id }) do
               helpers.heroicon "arrow-right-circle", variant: :solid, options: { class: "w-8 h-8 text-blue-500" }
             end

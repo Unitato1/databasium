@@ -5,18 +5,21 @@ module Components
     class Records::Table < Components::Base
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil)
+      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:)
         @records = records
         @model = model
         @turbo_frame = turbo_frame
         @pagy = pagy
         @feedback = feedback
+        @columns_names_types = columns_names_types
       end
 
       def view_template
-        turbo_frame_tag @turbo_frame do
-          render_table
-          render_pagy
+        turbo_frame_tag(@turbo_frame) do
+          div(class: "mt-5 ms-5") do
+            render_table
+            render_pagy
+          end
         end
       end
 
@@ -26,21 +29,33 @@ module Components
         if @feedback || !@model || @records.empty?
           div(
             class:
-              "border-2 border-teal-500 text-center p-2 rounded-xl bg-teal-200 mx-auto w-fit text-gray-700 text-xl"
+              "bg-panel text-accent shadow-accent border-1 border-border text-center p-2 rounded-md mx-auto w-fit"
           ) { @feedback || "Select a table to view its records." }
         else
-          table(class: "table-fixed border-2 border-gray-300 whitespace-nowrap min-w-max") do
-            render_table_head
-            render_table_body
+          render Components::Databasium::Records::Filter.new(
+            model: @model,
+            turbo_frame: "records",
+            columns_names_types: @columns_names_types,
+            hidden: true
+          )
+          render Components::Databasium::Forms::Model.new(
+            columns_names_types: @columns_names_types,
+            model: @model
+          )
+          div(class: "overflow-hidden rounded-xl border border-border w-fit") do
+            table(class: "whitespace-nowrap min-w-max bg-panel border-collapse") do
+              render_table_head
+              render_table_body
+            end
           end
         end
       end
 
       def render_table_head
         thead do
-          tr(class: "border-2 border-gray-300") do
+          tr(class: "bg-accent shadow-accent") do
             @model&.columns&.each do |column|
-              th(class: "text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto") do
+              th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
                 plain column.name
               end
             end
@@ -53,7 +68,7 @@ module Components
           if @records&.any?
             @records.each do |record|
               tr(
-                class: "border-2 border-gray-300 hover:bg-gray-100 hover:cursor-pointer",
+                class: "hover:bg-background hover:cursor-pointer",
                 data: {
                   action: "click->table-select#selectRecord",
                   record_id: record.id
@@ -61,7 +76,7 @@ module Components
               ) do
                 record.attributes.each do |_, value|
                   td(
-                    class: "text-center w-55 max-w-55 py-2 border-2 border-gray-300 overflow-auto"
+                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
                   ) { plain format_cell_value(value) }
                 end
               end

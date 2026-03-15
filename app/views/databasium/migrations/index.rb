@@ -31,7 +31,8 @@ module Views
                 "#{m.name}",
                 helpers.migration_path(m.version),
                 data: {
-                  turbo_frame: "migration"
+                  # turbo_frame: "migration"
+                  turbo_stream: true
                 },
                 class: "text-main-text hover:text-hover flex items-center gap-2 py-1"
               )
@@ -47,7 +48,7 @@ module Views
           "Run Pending Migrations",
           helpers.run_pending_migrations_migrations_path,
           method: :post,
-          class: "text-white bg-blue-600 rounded-xl p-2 mt-3"
+          class: "bg-blue-600 rounded-xl p-2 mt-3"
         )
         form_with(
           url: helpers.rollback_migration_migrations_path,
@@ -57,7 +58,7 @@ module Views
           form.number_field :rollback_steps,
                             placeholder: "Rollback steps",
                             class: "border-2 border-gray-300 rounded-xl p-2 w-full"
-          form.submit "Rollback", class: "text-white bg-blue-600 rounded-xl p-2 mt-3 w-fit"
+          form.submit "Rollback", class: "bg-blue-600 rounded-xl p-2 mt-3 w-fit"
         end
       end
 

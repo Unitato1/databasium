@@ -4,6 +4,7 @@ module Components
       include Phlex::Rails::Helpers::TurboFrameTag
       include Phlex::Rails::Helpers::LinkTo
       include Phlex::Rails::Helpers::ButtonTo
+      include Phlex::Rails::Helpers::ContentFor
 
       def initialize(migration:, content:)
         @migration = migration
@@ -12,9 +13,8 @@ module Components
 
       def view_template
         turbo_frame_tag "migration" do
-          div(class: "px-4 w-full") do
+          div(class: "px-4 w-full text-main-text mt-2", id: "migration") do
             h1(class: "text-xl font-semibold") { "Migration File" }
-            render_header
             render_content
             render_extra_info
           end
@@ -23,50 +23,8 @@ module Components
 
       private
 
-      def render_header
-        div(class: "p-2 sticky top-0") do
-          link_to "Clear",
-                  helpers.migrations_path,
-                  data: {
-                    turbo_frame: "migration",
-                    turbo_action: "replace"
-                  },
-                  class: "text-blue-600 font-bold hover:underline text-xl"
-          button_to "Rollback",
-                    helpers.rollback_migration_migrations_path(version: @migration.version),
-                    method: :post,
-                    class: "text-blue-600 font-bold hover:underline text-xl",
-                    form: {
-                      data: {
-                        turbo_stream: true
-                      }
-                    }
-
-          button_to "Rollback till this migration",
-                    helpers.rollback_migration_migrations_path(
-                      version: @migration.version,
-                      till_this_migration: true
-                    ),
-                    data: {
-                      turbo: false
-                    },
-                    method: :post,
-                    class: "text-blue-600 font-bold hover:underline text-xl"
-
-          button_to "Run Migration",
-                    helpers.run_migration_migrations_path(version: @migration.version),
-                    method: :post,
-                    class: "text-blue-600 font-bold hover:underline text-xl",
-                    form: {
-                      data: {
-                        turbo_stream: true
-                      }
-                    }
-        end
-      end
-
       def render_content
-        pre(class: "bg-gray-100 p-4 overflow-x-auto rounded-2xl") { @content }
+        pre(class: "border-1 border-border bg-panel text-main-text p-4 overflow-x-auto rounded-2xl") { @content }
       end
 
       def render_extra_info

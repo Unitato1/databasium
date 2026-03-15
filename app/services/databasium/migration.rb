@@ -41,7 +41,7 @@ class Databasium::Migration
       if rollback_steps.present?
         migration_context.rollback(rollback_steps.to_i)
       elsif till_this_migration == "true"
-        migration_context.migrate(version.to_i)
+        migration_context.down(version.to_i)
       else
         migration_context.run(:down, version.to_i)
       end

@@ -16,7 +16,7 @@ module Components
                 form: "migration_form",
                 name: "add_migration",
                 value: "Save",
-                class: "bg-blue-500 text-white p-2 rounded-md w-fit mt-4"
+                class: "bg-blue-500 p-2 rounded-md w-fit mt-4"
               ) { "Save" }
             else
               h1(class: "text-xl font-semibold") { "Please fill out the form to see the preview" }

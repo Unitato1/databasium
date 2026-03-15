@@ -64,7 +64,7 @@ module Views
           render_validations(form)
         end
         form.submit "Generate Preview",
-                    class: "bg-blue-500 text-white p-2 rounded-md w-fit",
+                    class: "bg-blue-500 p-2 rounded-md w-fit",
                     name: "add_migration"
       end
 
