@@ -26,39 +26,39 @@ module Views
       def render_sidebar
         div(class: "flex flex-col gap-2") do
           @migrations.each do |m|
-            div(class: "flex items-center justify-between px-4") do
+            status = @pending_migrations.include?(m.version) ? "pending" : "applied"
               link_to(
-                "#{m.name}",
                 helpers.migration_path(m.version),
                 data: {
-                  # turbo_frame: "migration"
                   turbo_stream: true
                 },
-                class: "text-main-text hover:text-hover flex items-center gap-2 py-1"
-              )
-              status = @pending_migrations.include?(m.version) ? "pending" : "applied"
-              render Components::Databasium::Migrations::MigrationStatus.new(
+                class: "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
+                  border-border flex items-center justify-between"
+              ) do
+                p { "#{m.name}" }
+                render Components::Databasium::Migrations::MigrationStatus.new(
                        status: status,
-                       version: m.version
-                     )
+                       version: m.version)
             end
           end
         end
-        button_to(
-          "Run Pending Migrations",
-          helpers.run_pending_migrations_migrations_path,
-          method: :post,
-          class: "bg-blue-600 rounded-xl p-2 mt-3"
-        )
-        form_with(
-          url: helpers.rollback_migration_migrations_path,
-          method: :post,
-          class: "w-fit"
-        ) do |form|
-          form.number_field :rollback_steps,
-                            placeholder: "Rollback steps",
-                            class: "border-2 border-gray-300 rounded-xl p-2 w-full"
-          form.submit "Rollback", class: "bg-blue-600 rounded-xl p-2 mt-3 w-fit"
+        div(class: "flex flex-col gap-2 mt-4") do
+          form_with(
+            url: helpers.rollback_migration_migrations_path,
+            method: :post,
+            class: "w-full flex gap-2 border-1 border-border rounded-md p-2"
+          ) do |form|
+            form.number_field :rollback_steps,
+                              placeholder: "Rollback steps",
+                              class: "p-2 w-full h-full focus:outline-none"
+            form.submit "Rollback", class: "bg-secondary hover:bg-hover hover:cursor-pointer rounded-xl p-2 w-fit"
+          end
+          button_to(
+            "Run Pending Migrations",
+            helpers.run_pending_migrations_migrations_path,
+            method: :post,
+            class: "bg-secondary hover:bg-hover hover:cursor-pointer rounded-xl p-2"
+          )
         end
       end
 
