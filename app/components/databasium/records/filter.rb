@@ -5,7 +5,7 @@ module Components
     class Records::Filter < Components::Base
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::HiddenFieldTag
-
+      include Phlex::Rails::Helpers::LinkTo
       def initialize(model:, turbo_frame:, columns_names_types:, hidden: true)
         @model = model
         @turbo_frame = turbo_frame
@@ -16,7 +16,7 @@ module Components
       def view_template
         if @model
           div(
-            class: class_names("my-4", "hidden" => @hidden),
+            class: class_names("", "" => @hidden),
             id: "filter",
             data: {
               controller: "filter",
@@ -33,7 +33,7 @@ module Components
           url: helpers.records_records_path,
           method: :get,
           class:
-            "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit max-h-50 overflow-y-auto",
+            "max-h-50 overflow-y-auto border-b-2 border-border p-2 flex flex-wrap",
           data: {
             action: "change->search#update",
             filter_target: "form",
@@ -42,9 +42,8 @@ module Components
         ) do |form|
           hidden_field_tag :table, @model.name
           hidden_field_tag :frame_id, @turbo_frame
-          div(class: "flex items-center justify-between") do
+          div(class: "flex items-center gap-5") do
             span(
-              type: "button",
               data: {
                 action: "click->filter#addFilter"
               },

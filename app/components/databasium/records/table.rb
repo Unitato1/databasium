@@ -16,7 +16,7 @@ module Components
 
       def view_template
         turbo_frame_tag(@turbo_frame) do
-          div(class: "mt-5 ms-5") do
+          div(class: "") do
             render_table
             render_pagy
           end
