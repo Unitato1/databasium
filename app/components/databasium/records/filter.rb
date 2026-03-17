@@ -16,7 +16,7 @@ module Components
       def view_template
         if @model
           div(
-            class: class_names("", "" => @hidden),
+            class: class_names("hidden" => @hidden),
             id: "filter",
             data: {
               controller: "filter",

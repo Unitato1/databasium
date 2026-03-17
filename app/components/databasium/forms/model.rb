@@ -21,7 +21,7 @@ module Components
         form_with(
           method: :post,
           scope: :record,
-          class: "border-1 border-gray-300 p-4 bg-gray-100 rounded-xl min-w-125 w-fit mb-4 hidden",
+          class: "border-b-1 border-border p-4 rounded-xl w-full mb-4 hidden max-h-100 overflow-y-auto",
           id: "add_record"
         ) { |form| form_content(form) } if @model
       end
@@ -29,11 +29,9 @@ module Components
       private
 
       def form_content(form)
-        render Components::Databasium::Collapsable.new(name: "Add New Record", form: form, data_targets: {}) do
-          hidden_field_tag(:table, @model.name)
-          div(class: "flex flex-col gap-2") do
-            fields_content(form)
-          end
+        hidden_field_tag(:table, @model.name)
+        div(class: "flex flex-col gap-4") do
+          fields_content(form)
         end
       end
 
@@ -42,12 +40,15 @@ module Components
           next if column[:name].in?(SKIPPED_COLUMNS)
 
 
-          div(class: "flex gap-2") do
-            raw form.label(column[:name], class: "underline p-1 h-full w-1/3")
+          div(class: "flex items-center gap-5") do
+            raw form.label(column[:name], class: "underline p-1 h-full text-sm")
             if column[:foreign_key]
               foreign_key_content(form, column)
             else
-              raw form.public_send(type_to_helper(column[:type]), column[:name], class: "border-2 rounded-xl p-1 border-gray-300 w-2/3")
+              div(class: "flex flex-col relative") do
+                p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") { column[:type] }
+                raw form.public_send(type_to_helper(column[:type]), column[:name], class: "border-1 rounded-xl p-1 border-border bg-panel text-sm")
+              end
             end
           end
         end
