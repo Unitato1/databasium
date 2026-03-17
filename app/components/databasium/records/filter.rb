@@ -33,7 +33,7 @@ module Components
           url: helpers.records_records_path,
           method: :get,
           class:
-            "max-h-50 overflow-y-auto border-b-2 border-border p-2 flex flex-wrap",
+            "max-h-100 overflow-y-auto border-b-2 border-border p-2 flex flex-col gap-2",
           data: {
             action: "change->search#update",
             filter_target: "form",
@@ -42,14 +42,16 @@ module Components
         ) do |form|
           hidden_field_tag :table, @model.name
           hidden_field_tag :frame_id, @turbo_frame
-          div(class: "flex items-center gap-5") do
-            span(
+          div(class: "w-full flex gap-4 items-center col-span-2") do
+            button(
               data: {
                 action: "click->filter#addFilter"
               },
               class: "ps-4 py-1 rounded underline w-fit"
             ) { "Add Filter" }
-            form.submit "Run Filters", class: "bg-blue-500 px-4 py-2 rounded-md"
+            div(class: "flex items-center gap-5") do
+              form.submit "Run Filters", class: "bg-blue-500 px-4 py-2 rounded-md"
+            end
           end
           raw helpers.heroicon "x-mark",
                                variant: :solid,

@@ -81,7 +81,7 @@ export default class extends Controller {
       e.preventDefault();
     }
     const containerDiv = document.createElement("div");
-    containerDiv.classList = "flex items-center py-1";
+    containerDiv.classList = "flex items-center py-1 border-l-1 border-border ps-1 ms-1";
 
     const select = document.createElement("select");
     const placeholder = new Option("Column", "");
