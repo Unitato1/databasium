@@ -9,7 +9,20 @@ module Components
       include Phlex::Rails::Helpers::LinkTo
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      TYPES = %w[string text integer float double decimal boolean date datetime timestamp time binary].freeze
+      TYPES = %w[
+        string
+        text
+        integer
+        float
+        double
+        decimal
+        boolean
+        date
+        datetime
+        timestamp
+        time
+        binary
+      ].freeze
       SKIPPED_COLUMNS = %w[created_at updated_at id].freeze
 
       def initialize(columns_names_types:, model:)
@@ -18,27 +31,27 @@ module Components
       end
 
       def view_template
-        form_with(
-          method: :post,
-          scope: :record,
-          class: "border-b-1 border-border p-4 rounded-xl w-full mb-4 hidden max-h-100 overflow-y-auto",
-          id: "add_record"
-        ) { |form| form_content(form) } if @model
+        if @model
+          form_with(
+            method: :post,
+            scope: :record,
+            class:
+              "border-b-1 border-border p-4 rounded-xl w-full mb-4 hidden max-h-100 overflow-y-auto",
+            id: "add_record"
+          ) { |form| form_content(form) }
+        end
       end
 
       private
 
       def form_content(form)
         hidden_field_tag(:table, @model.name)
-        div(class: "flex flex-col gap-4") do
-          fields_content(form)
-        end
+        div(class: "flex flex-col gap-4") { fields_content(form) }
       end
 
       def fields_content(form)
         @columns_names_types.each do |column|
           next if column[:name].in?(SKIPPED_COLUMNS)
-
 
           div(class: "flex items-center gap-5") do
             raw form.label(column[:name], class: "underline p-1 h-full text-sm")
@@ -46,8 +59,14 @@ module Components
               foreign_key_content(form, column)
             else
               div(class: "flex flex-col relative") do
-                p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") { column[:type] }
-                raw form.public_send(type_to_helper(column[:type]), column[:name], class: "border-1 rounded-xl p-1 border-border bg-panel text-sm")
+                p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") do
+                  column[:type]
+                end
+                raw form.public_send(
+                      type_to_helper(column[:type]),
+                      column[:name],
+                      class: "border-1 rounded-xl p-1 border-border bg-panel text-sm"
+                    )
               end
             end
           end
@@ -57,7 +76,7 @@ module Components
 
       def type_to_helper(type)
         unless type.in?(TYPES)
-          raise ArgumentError, "Invalid type: #{type}. Known types are: #{TYPES.join(', ')}"
+          raise ArgumentError, "Invalid type: #{type}. Known types are: #{TYPES.join(", ")}"
         end
 
         case type
@@ -84,18 +103,29 @@ module Components
         frame_id = "foreign_records"
         div(data: { controller: "table-select" }, class: "flex") do
           raw form.public_send(
-            type_to_helper(column[:type]), column[:name],
-            class: "border-2 rounded-xl p-1 border-gray-300 me-2 w-full",
-            data: { table_select_target: "foreignKeyInput" }
-          )
+                type_to_helper(column[:type]),
+                column[:name],
+                class: "border-2 rounded-xl p-1 border-gray-300 me-2 w-full",
+                data: {
+                  table_select_target: "foreignKeyInput"
+                }
+              )
 
-          link_to(helpers.records_records_path(table: column[:to_table], frame_id: frame_id),
+          link_to(
+            helpers.records_records_path(table: column[:to_table], frame_id: frame_id),
             class: "border-1 border-blue-500 rounded-md flex justify-center items-center p-1",
-            data: { turbo_frame: frame_id }) do
-              helpers.heroicon "arrow-right-circle", variant: :solid, options: { class: "w-8 h-8 text-blue-500" }
-            end
+            data: {
+              turbo_frame: frame_id
+            }
+          ) do
+            helpers.heroicon "arrow-right-circle",
+                             variant: :solid,
+                             options: {
+                               class: "w-8 h-8 text-blue-500"
+                             }
+          end
 
-            turbo_frame_tag(frame_id)
+          turbo_frame_tag(frame_id)
         end
       end
     end

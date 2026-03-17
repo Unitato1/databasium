@@ -7,7 +7,13 @@ class Components::Databasium::Migrations::ShowTurboStream < Components::Base
   end
 
   def view_template
-    turbo_stream.replace("migration", Components::Databasium::Migrations::File.new(migration: @migration, content: @content))
-    turbo_stream.replace("header_actions", Components::Databasium::Migrations::HeaderActions.new(migration: @migration))
+    turbo_stream.replace(
+      "migration",
+      Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
+    )
+    turbo_stream.replace(
+      "header_actions",
+      Components::Databasium::Migrations::HeaderActions.new(migration: @migration)
+    )
   end
 end

@@ -23,7 +23,9 @@ module Components
       private
 
       def render_content
-        pre(class: "border-1 border-border bg-panel text-main-text p-4 overflow-x-auto rounded-2xl") { @content }
+        pre(
+          class: "border-1 border-border bg-panel text-main-text p-4 overflow-x-auto rounded-2xl"
+        ) { @content }
       end
 
       def render_extra_info

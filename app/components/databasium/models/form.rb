@@ -33,19 +33,30 @@ module Components
       end
 
       def view_template
-        form_with(url: databasium.models_path, method: :post, scope: :model, html: { id: "model_form" }, data: { controller: "model" }) do |form|
+        form_with(
+          url: databasium.models_path,
+          method: :post,
+          scope: :model,
+          html: {
+            id: "model_form"
+          },
+          data: {
+            controller: "model"
+          }
+        ) do |form|
           render_form
           render_model_name(form)
           render_add_attribute(form)
           render_attributes_container
-          form.submit "Create preview for model", class: "bg-accent shadow-accent rounded-xl p-1 px-4 py-2 mt-2"
+          form.submit "Create preview for model",
+                      class: "bg-accent shadow-accent rounded-xl p-1 px-4 py-2 mt-2"
         end
       end
 
       private
 
       def render_attributes_container
-        div(data: { model_target: "attributesContainer" }) { }
+        div(data: { model_target: "attributesContainer" }) {}
       end
 
       def render_add_attribute(form)
@@ -59,16 +70,15 @@ module Components
             },
             type: "button",
             class: "bg-accent shadow-accent rounded-md p-1"
-          ) do
-            helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" }
-          end
+          ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
         end
       end
 
       def render_model_name(form)
         div(class: "flex flex-col mb-4") do
           form.label :model_name, "Model Name"
-          form.text_field :model_name, class: "border-1 rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2"
+          form.text_field :model_name,
+                          class: "border-1 rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2"
         end
       end
 

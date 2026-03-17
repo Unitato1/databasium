@@ -18,21 +18,34 @@ module Components
       private
 
       def form(&block)
-        div(class: @class_name ? @class_name : "flex gap-4 border-b-2 border-border pb-4", data: @data_targets) do
+        div(
+          class: @class_name ? @class_name : "flex gap-2 border-b-2 border-border pb-2",
+          data: @data_targets
+        ) do
           div(class: "relative w-full", data: { controller: "collapse" }) do
-            button(data: { action: "click->collapse#toggle" }, class: "flex items-center justify-between w-full h-fit hover:cursor-pointer") do
+            button(
+              data: {
+                action: "click->collapse#toggle"
+              },
+              class: "flex items-center justify-between w-full h-fit hover:cursor-pointer"
+            ) do
               if @form
                 raw @form.label(@name, class: "text-lg font-semibold")
               else
                 h2(class: "text-lg font-semibold", **@name_params) { @name }
               end
-              raw helpers.heroicon("chevron-down", variant: :solid, options: { class: "w-8 h-8 text-red-500", data_collapse_target: "collapseIcon" })
+              raw helpers.heroicon(
+                    "chevron-down",
+                    variant: :solid,
+                    options: {
+                      class: "w-8 h-8 text-red-500",
+                      data_collapse_target: "collapseIcon"
+                    }
+                  )
             end
             div(class: "flex flex-col mt-2 hidden", data: { collapse_target: "content" }) do
               div(class: "relative w-full") do
-                div(class: "flex flex-col gap-2 mt-2") do
-                  yield if block_given?
-                end
+                div(class: "flex flex-col gap-2 mt-2") { yield if block_given? }
               end
             end
           end

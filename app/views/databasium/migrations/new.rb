@@ -12,19 +12,8 @@ module Views
       end
 
       def view_template
-        form_with(
-          url: helpers.migrations_path,
-          method: :post,
-          id: "migration_form",
-          class: "flex p-4 gap-4",
-          data: {
-            controller: "new-migration"
-          }
-        ) do |form|
-          div(
-            class:
-              "flex flex-col gap-4 min-w-fit w-1/3 bg-gray-100 rounded-xl p-4 border-2 border-gray-300"
-          ) { render_form(form) }
+        div(class: "flex p-4 gap-4") do
+          render Components::Databasium::Migrations::Form.new(tables: @tables, content: @content)
           div(class: "flex-1 pe-4") do
             render Components::Databasium::Migrations::Preview.new(content: @content)
           end

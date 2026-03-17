@@ -10,9 +10,7 @@ module Components
       def view_template
         tr(class: "border-border border-1") do
           @record.attributes.each do |_, value|
-            td(class: "text-center w-55 py-2 border-border border-1 overflow-auto") do
-              value
-            end
+            td(class: "text-center w-55 py-2 border-border border-1 overflow-auto") { value }
           end
         end
       end

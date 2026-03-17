@@ -33,15 +33,15 @@ module Components
           ) { @feedback || "Select a table to view its records." }
         else
           render Components::Databasium::Records::Filter.new(
-            model: @model,
-            turbo_frame: "records",
-            columns_names_types: @columns_names_types,
-            hidden: true
-          )
+                   model: @model,
+                   turbo_frame: "records",
+                   columns_names_types: @columns_names_types,
+                   hidden: true
+                 )
           render Components::Databasium::Forms::Model.new(
-            columns_names_types: @columns_names_types,
-            model: @model
-          )
+                   columns_names_types: @columns_names_types,
+                   model: @model
+                 )
           div(class: "overflow-hidden rounded-xl border border-border w-fit") do
             table(class: "whitespace-nowrap min-w-max bg-panel border-collapse") do
               render_table_head

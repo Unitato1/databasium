@@ -16,6 +16,7 @@ module Components
       end
 
       private
+
       def render_flash_stream
         turbo_stream.replace(
           "flash",

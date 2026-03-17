@@ -17,24 +17,52 @@ module Components
       private
 
       def form(&block)
-        div(class: "align-items-center justify-items-center flex gap-2", data: { controller: "hide" }) do
+        div(
+          class: "align-items-center justify-items-center flex gap-2",
+          data: {
+            controller: "hide"
+          }
+        ) do
           @icons_with_text.each do |element|
-            div(class: "flex justify-between items-center gap-2
+            unless element[:path].present?
+              div(
+                class:
+                  "flex justify-between items-center gap-2
                 border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
-                data: { hide: element[:text].to_s.split(" ").join("_"), action: "click->hide#hide" }
+                data: {
+                  hide: element[:text].to_s.split(" ").join("_"),
+                  action: "click->hide#hide"
+                }
               ) do
-              raw helpers.heroicon element[:icon], variant: :outline, options: { class: "w-4 h-4" }
+                raw helpers.heroicon element[:icon],
+                                     variant: :outline,
+                                     options: {
+                                       class: "w-4 h-4"
+                                     }
 
-              p(class: "text-main-text text-base") { element[:text] }
-            end unless element[:path].present?
+                p(class: "text-main-text text-base") { element[:text] }
+              end
+            end
 
-            link_to(element[:path], class: "flex justify-between items-center gap-2
+            if element[:path].present?
+              link_to(
+                element[:path],
+                class:
+                  "flex justify-between items-center gap-2
               border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
-              data: { turbo_method: :post, turbo_frame: "_top" }
-            ) do
-              raw helpers.heroicon element[:icon], variant: :outline, options: { class: "w-4 h-4" }
-              p(class: "text-main-text text-base") { element[:text] }
-            end if element[:path].present?
+                data: {
+                  turbo_method: :post,
+                  turbo_frame: "_top"
+                }
+              ) do
+                raw helpers.heroicon element[:icon],
+                                     variant: :outline,
+                                     options: {
+                                       class: "w-4 h-4"
+                                     }
+                p(class: "text-main-text text-base") { element[:text] }
+              end
+            end
           end
         end
       end
