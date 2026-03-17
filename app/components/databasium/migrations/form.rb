@@ -45,14 +45,14 @@ module Components
           div(class: "flex gap-2 items-end hidden", data: { new_migration_target: "validation" }) do
             select(
               name: "validation[][column_name]",
-              class: "p-2 border-2 border-border rounded-md w-fit",
+              class: "p-2 border-2 border-border rounded-md w-fit bg-background",
               data: {
                 new_migration_target: "validation_column_name"
               }
             ) { option(value: "") { "Select column" } }
             select(
               name: "validation[][type]",
-              class: "p-2 border-2 border-border rounded-md w-fit",
+              class: "p-2 border-2 border-border rounded-md w-fit bg-background",
               data: {
                 new_migration_target: "validation_column_type"
               }
@@ -70,7 +70,7 @@ module Components
           end
           button(
             type: "button",
-            class: "text-blue-500",
+            class: "text-accent",
             data: {
               action: "click->new-migration#addValidation"
             }
@@ -92,13 +92,13 @@ module Components
                 form.select :column_name,
                             @model.columns.map(&:name),
                             include_blank: "Select a column name",
-                            class: "p-2 border-2 border-border rounded-md w-fit"
+                            class: "p-2 border-2 border-border rounded-md w-fit bg-background"
               else
                 form.label "Column Name", class: "text-sm font-semibold"
                 form.text_field(
                   :column_name,
                   name: "columns[][column_name]",
-                  class: "p-1 border-2 rounded-xl border-border h-fit",
+                  class: "p-1 border-2 rounded-xl border-border h-fit bg-background",
                   data: {
                     action: "change->new-migration#updateColumnNames"
                   }
@@ -134,7 +134,7 @@ module Components
           data_targets: {
             new_migration_target: "table_name"
           }
-        ) { form.text_field :table_name, class: "p-2 border-2 border-border w-fit" }
+        ) { form.text_field :table_name, class: "p-2 border-2 border-border w-fit bg-background" }
       end
 
       def render_collapsable(form, name:, data_targets:, &block)
@@ -158,7 +158,7 @@ module Components
           form.select :migration_action,
                       %w[create remove add],
                       {},
-                      class: "p-2 border-2 border-border rounded-md w-fit",
+                      class: "p-2 border-2 border-border rounded-md w-fit bg-background",
                       data: {
                         action: "change->new-migration#set_action"
                       }
@@ -181,14 +181,14 @@ module Components
             form.select :table_name_from,
                         @tables,
                         { include_blank: "Select a table" },
-                        class: "p-2 border-2 border-border rounded-md w-fit"
+                        class: "p-2 border-2 border-border rounded-md w-fit bg-background"
           end
           div(class: "flex flex-col hidden", data: { new_migration_target: "table_name_to" }) do
             form.label :table_name_to, "Table to add to"
             form.select :table_name_to,
                         @tables,
                         { include_blank: "Select a table" },
-                        class: "p-2 border-2 border-border rounded-md w-fit"
+                        class: "p-2 border-2 border-border rounded-md w-fit bg-background"
           end
         end
       end
