@@ -8,7 +8,7 @@ module Components
       end
 
       def view_template
-        select(name: @name, class: "border-2 rounded-xl p-1 border-gray-300 h-full") do
+        select(name: @name, class: "border-2 rounded-xl px-2 py-1 border-border h-full bg-background focus:outline-none") do
           option(value: "text") { "Text" }
           option(value: "string") { "String" }
           option(value: "integer") { "Integer" }

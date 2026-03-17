@@ -13,8 +13,7 @@ module Components
 
       def view_template
         turbo_frame_tag "migration" do
-          div(class: "px-4 w-full text-main-text mt-2", id: "migration") do
-            h1(class: "text-xl font-semibold") { "Migration File" }
+          div(class: "px-4 w-full text-main-text mt-5", id: "migration") do
             render_content
             render_extra_info
           end
@@ -33,7 +32,7 @@ module Components
           div(class: "flex gap-4") do
             ul(class: "list-disc list-inside w-fit") do
               li { "Timestamp: " }
-              li { "Date: " }
+              li { "Last time modified: " }
               li { "Name: " }
               li { "File path: " }
             end

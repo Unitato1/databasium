@@ -18,7 +18,7 @@ module Components
       private
 
       def form(&block)
-        div(class: @class_name ? @class_name : "flex gap-4 border-b border-gray-300 pb-4", data: @data_targets) do
+        div(class: @class_name ? @class_name : "flex gap-4 border-b-2 border-border pb-4", data: @data_targets) do
           div(class: "relative w-full", data: { controller: "collapse" }) do
             button(data: { action: "click->collapse#toggle" }, class: "flex items-center justify-between w-full h-fit hover:cursor-pointer") do
               if @form
