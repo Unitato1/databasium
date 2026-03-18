@@ -32,7 +32,7 @@ module Components
         form_with(
           url: helpers.records_records_path,
           method: :get,
-          class: "max-h-100 overflow-y-auto border-b-2 border-border p-2 flex flex-col gap-2",
+          class: "max-h-100 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
           data: {
             action: "change->search#update",
             filter_target: "form",

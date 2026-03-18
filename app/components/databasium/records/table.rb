@@ -16,8 +16,22 @@ module Components
 
       def view_template
         turbo_frame_tag(@turbo_frame) do
-          render_table
-          render_pagy
+          div(id: "records_utilities") do
+            render Components::Databasium::Records::Filter.new(
+              model: @model,
+              turbo_frame: "records",
+              columns_names_types: @columns_names_types,
+              hidden: true
+            )
+            render Components::Databasium::Forms::Model.new(
+              columns_names_types: @columns_names_types,
+              model: @model
+            )
+          end
+          turbo_frame_tag("records_list") do
+            render_table
+            render_pagy
+          end
         end
       end
 
@@ -30,17 +44,8 @@ module Components
               "bg-panel text-accent shadow-accent border-1 border-border text-center p-2 rounded-md mx-auto w-fit"
           ) { @feedback || "Select a table to view its records." }
         else
-          render Components::Databasium::Records::Filter.new(
-                   model: @model,
-                   turbo_frame: "records",
-                   columns_names_types: @columns_names_types,
-                   hidden: true
-                 )
-          render Components::Databasium::Forms::Model.new(
-                   columns_names_types: @columns_names_types,
-                   model: @model
-                 )
-          div(class: "rounded-xl border border-border overflow-x-auto") do
+
+          div(class: "rounded-xl border border-border overflow-x-auto mt-4") do
             table(class: "whitespace-nowrap min-w-max bg-panel border-collapse") do
               render_table_head
               render_table_body

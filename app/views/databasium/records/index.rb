@@ -20,7 +20,10 @@ module Views
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
         content_for(:header_actions) { render_header_actions }
-        render_main
+        turbo_frame_tag "records",
+          src: helpers.records_records_path(table: @table, frame_id: "records") do
+          "Loading"
+        end
       end
 
       private
@@ -44,9 +47,9 @@ module Views
             @tables&.each do |table|
               div(class: "border-b-2 border-b-gray-300 py-2 px-3") do
                 link_to "#{table}",
-                        helpers.records_path(table: table),
+                        databasium.records_records_path(table: table),
                         data: {
-                          turbo_frame: "main"
+                          turbo_frame: "records"
                         }
               end
             end
@@ -58,14 +61,10 @@ module Views
       end
 
       def render_main
-        turbo_frame_tag("main") do
-          if @model
-          end
-          turbo_frame_tag "records",
-                          class: "",
-                          src: helpers.records_records_path(table: @table, frame_id: "records") do
-            "Loading"
-          end
+        turbo_frame_tag "records",
+                        class: "",
+                        src: helpers.records_records_path(table: @table, frame_id: "records") do
+          "Loading"
         end
       end
 

@@ -7,6 +7,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
       pagy(@schema_service.get_tables(params[:search]), limit: 5, root_key: "tables")
     @model, @error = @schema_service.get_model_from_table(params[:table])
     @columns_names_types = @schema_service.get_columns(@model)
+    puts "index turbo_frame_id: #{@turbo_frame_id}"
 
     render Views::Databasium::Records::Index.new(
              model: @model,
@@ -41,6 +42,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @records = @schema_service.filter_records(@records, params[:filter])
     @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
+    puts "records turbo_frame_id: #{@turbo_frame_id}"
     if @turbo_frame_id == "foreign_records"
       render Components::Databasium::Records::ForeignRecords.new(
                model: @model,
