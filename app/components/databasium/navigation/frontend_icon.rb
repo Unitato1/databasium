@@ -1,16 +1,20 @@
 module Components
   module Databasium
-    class Navigation::GetIcon < Navigation::BaseIcon
+    class Navigation::FrontendIcon < Navigation::BaseIcon
       include Phlex::Rails::Helpers::LinkTo
 
-
-      def initialize(element:, turbo_frame: nil)
+      def initialize(element:)
         super(element: element)
-        @turbo_frame = turbo_frame
       end
 
       def view_template
-        link_to(element[:path], class: icon_classes, data: { turbo_method: :get, turbo_stream: true }) do
+        div(
+          class: icon_classes,
+          data: {
+            hide: element[:text].to_s.split(" ").join("_"),
+            action: "click->hide#hide"
+          }
+        ) do
           render_icon(element[:icon])
           p(class: "text-main-text text-base") { element[:text] }
         end

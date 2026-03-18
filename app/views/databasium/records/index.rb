@@ -19,9 +19,9 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        content_for(:header_actions) { render_header_actions }
+        # content_for(:header_actions) { render_header_actions }
         turbo_frame_tag "records",
-          src: helpers.records_records_path(table: @table, frame_id: "records") do
+          src: helpers.records_records_path(table: @table, frame_id: "records", limit: 10) do
           "Loading"
         end
       end
@@ -49,7 +49,7 @@ module Views
                 link_to "#{table}",
                         databasium.records_records_path(table: table),
                         data: {
-                          turbo_frame: "records"
+                          turbo_stream: true
                         }
               end
             end
@@ -66,15 +66,6 @@ module Views
                         src: helpers.records_records_path(table: @table, frame_id: "records") do
           "Loading"
         end
-      end
-
-      def render_header_actions
-        render Components::Databasium::Navigation::IconPanel.new(
-          icons_with_text: [
-            { icon: "plus-circle", text: "add record" },
-            { icon: "funnel", text: "filter" }
-          ],
-        )
       end
     end
   end

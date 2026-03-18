@@ -4,10 +4,9 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def index
     @pagy_tables, @tables =
-      pagy(@schema_service.get_tables(params[:search]), limit: 5, root_key: "tables")
+      pagy(@schema_service.get_tables(params[:search]), limit: 10, root_key: "tables")
     @model, @error = @schema_service.get_model_from_table(params[:table])
     @columns_names_types = @schema_service.get_columns(@model)
-    puts "index turbo_frame_id: #{@turbo_frame_id}"
 
     render Views::Databasium::Records::Index.new(
              model: @model,
@@ -40,23 +39,30 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @records = @model&.all
     @columns_names_types = @schema_service.get_columns(@model)
     @records = @schema_service.filter_records(@records, params[:filter])
-    @pagy, @records = pagy(@records, limit: 10, root_key: "records") if @records
+    @pagy, @records = pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
-    puts "records turbo_frame_id: #{@turbo_frame_id}"
+    @limit = params[:limit].presence || 10
+
     if @turbo_frame_id == "foreign_records"
       render Components::Databasium::Records::ForeignRecords.new(
                model: @model,
                columns_names_types: @columns_names_types
              )
     else
-      render Components::Databasium::Records::Table.new(
-               records: @records,
-               model: @model,
-               turbo_frame: @turbo_frame_id || "records",
-               pagy: @pagy,
-               feedback: @feedback,
-               columns_names_types: @columns_names_types
-             )
+      respond_to do |format|
+        format.html { render Components::Databasium::Records::Table.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types) }
+        format.turbo_stream do
+          render Components::Databasium::Records::ShowTurboStream.new(table: params[:table], records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types, limit: @limit), layout: false
+        end
+      end
+      # render Components::Databasium::Records::Table.new(
+      #          records: @records,
+      #          model: @model,
+      #          turbo_frame: @turbo_frame_id || "records",
+      #          pagy: @pagy,
+      #          feedback: @feedback,
+      #          columns_names_types: @columns_names_types
+      #        )
     end
   end
 

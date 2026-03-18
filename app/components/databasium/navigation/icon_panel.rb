@@ -5,7 +5,7 @@ module Components
     class Navigation::IconPanel < Components::Base
       include Phlex::Rails::Helpers::LinkTo
 
-      # element format: { icon: "icon-name", text: "text", path: "path" }
+      # element format: { icon: "icon-name", text: "text", path: "path", method: :get | :post | frontend, turbo_frame: "frame_id" }
       def initialize(icons_with_text: [])
         @icons_with_text = icons_with_text
       end

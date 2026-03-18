@@ -13,8 +13,9 @@ module Components
       protected
 
       def icon_classes
-        "flex justify-between items-center gap-2
-          border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-hover"
+        class_names("flex justify-between items-center gap-2
+          border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-hover",
+          "bg-accent shadow-accent" => element[:active])
       end
 
       def render_icon(icon)
