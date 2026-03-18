@@ -42,7 +42,7 @@ module Components
               action: "click->flash#close"
             }
           ) do
-            helpers.heroicon(
+            heroicon(
               "x-mark",
               variant: :solid,
               options: {
@@ -68,7 +68,7 @@ module Components
               action: "click->flash#close"
             }
           ) do
-            helpers.heroicon(
+            heroicon(
               "x-mark",
               variant: :solid,
               options: {

@@ -70,7 +70,7 @@ module Components
             },
             type: "button",
             class: "bg-accent shadow-accent rounded-md p-1"
-          ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
         end
       end
 

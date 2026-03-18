@@ -63,7 +63,7 @@ module Components
                 },
                 type: "button",
                 class: "text-blue-500"
-              ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+              ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
             end
           end
         end
@@ -90,7 +90,7 @@ module Components
                 },
                 type: "button",
                 class: "text-blue-500"
-              ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+              ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
             end
           end
         end

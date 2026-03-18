@@ -52,12 +52,12 @@ module Components
               form.submit "Run Filters", class: "bg-blue-500 px-4 py-2 rounded-md"
             end
           end
-          raw helpers.heroicon "x-mark",
-                               variant: :solid,
-                               options: {
-                                 class: "w-8 h-8 hidden mr-2",
-                                 data_filter_target: "removeIcon"
-                               }
+        heroicon "x-mark",
+                       variant: :solid,
+                       options: {
+                         class: "w-8 h-8 hidden mr-2",
+                         data_filter_target: "removeIcon"
+                       }
         end
       end
     end

@@ -117,11 +117,11 @@ module Components
               turbo_frame: frame_id
             }
           ) do
-            helpers.heroicon "arrow-right-circle",
-                             variant: :solid,
-                             options: {
-                               class: "w-8 h-8 text-blue-500"
-                             }
+            heroicon "arrow-right-circle",
+                     variant: :solid,
+                     options: {
+                       class: "w-8 h-8 text-blue-500"
+                     }
           end
 
           turbo_frame_tag(frame_id)

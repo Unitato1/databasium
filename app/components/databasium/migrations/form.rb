@@ -66,7 +66,7 @@ module Components
               data: {
                 action: "click->new-migration#removeValidation"
               }
-            ) { helpers.heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
+            ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
           end
           button(
             type: "button",
@@ -74,7 +74,7 @@ module Components
             data: {
               action: "click->new-migration#addValidation"
             }
-          ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
         end
       end
 
@@ -115,7 +115,7 @@ module Components
               data: {
                 action: "click->new-migration#removeColumn"
               }
-            ) { helpers.heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
+            ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
           end
           button(
             type: "button",
@@ -123,7 +123,7 @@ module Components
             data: {
               action: "click->new-migration#addColumn"
             }
-          ) { helpers.heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
         end
       end
 

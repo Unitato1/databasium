@@ -31,7 +31,7 @@ class Components::Databasium::Global::Sidebar < Components::Base
                 "bg-accent shadow-accent" => current_page?(path)
               )
           ) do
-            raw helpers.heroicon(page[:icon], variant: :outline, options: { class: "w-6 h-6" })
+            heroicon(page[:icon], variant: :outline, options: { class: "w-6 h-6" })
             span(class: "ml-2") { page[:text] }
           end
         end

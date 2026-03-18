@@ -34,7 +34,7 @@ module Components
               else
                 h2(class: "text-lg font-semibold", **@name_params) { @name }
               end
-              raw helpers.heroicon(
+              heroicon(
                     "chevron-down",
                     variant: :solid,
                     options: {

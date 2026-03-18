@@ -38,7 +38,7 @@ module Components
             data: {
               action: "click->table-select#toggleVisibility"
             }
-          ) { helpers.heroicon("x-mark", variant: :solid, options: { class: "w-8 h-8" }) }
+          ) { heroicon("x-mark", variant: :solid, options: { class: "w-8 h-8" }) }
         end
       end
 

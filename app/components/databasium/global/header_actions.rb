@@ -27,7 +27,7 @@ module Components
               action: "click->layout#toggleSidebar"
             }
           ) do
-            raw helpers.heroicon(
+            heroicon(
                   "arrows-right-left",
                   variant: :outline,
                   options: {

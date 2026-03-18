@@ -24,45 +24,7 @@ module Components
           }
         ) do
           @icons_with_text.each do |element|
-            unless element[:path].present?
-              div(
-                class:
-                  "flex justify-between items-center gap-2
-                border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
-                data: {
-                  hide: element[:text].to_s.split(" ").join("_"),
-                  action: "click->hide#hide"
-                }
-              ) do
-                raw helpers.heroicon element[:icon],
-                                     variant: :outline,
-                                     options: {
-                                       class: "w-4 h-4"
-                                     }
-
-                p(class: "text-main-text text-base") { element[:text] }
-              end
-            end
-
-            if element[:path].present?
-              link_to(
-                element[:path],
-                class:
-                  "flex justify-between items-center gap-2
-              border-1 border-border p-1 px-3 rounded-xl cursor-pointer hover:border-green-500",
-                data: {
-                  turbo_method: :post,
-                  turbo_frame: "_top"
-                }
-              ) do
-                raw helpers.heroicon element[:icon],
-                                     variant: :outline,
-                                     options: {
-                                       class: "w-4 h-4"
-                                     }
-                p(class: "text-main-text text-base") { element[:text] }
-              end
-            end
+            render Navigation::Icon.new(element: element)
           end
         end
       end
