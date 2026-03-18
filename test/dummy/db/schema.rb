@@ -10,18 +10,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_26_204519) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_18_170858) do
   create_table "cars", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "name"
+    t.text "engine"
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_cars_on_name", unique: true
+    t.index ["engine"], name: "index_cars_on_engine", unique: true
   end
 
   create_table "schools", force: :cascade do |t|
     t.datetime "created_at", null: false
-    t.text "name", null: false
+    t.integer "height", null: false
+    t.text "name"
     t.datetime "updated_at", null: false
     t.index ["name"], name: "index_schools_on_name", unique: true
   end
+
+  create_table "trucks", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "name"
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.integer "age"
+    t.date "birthday"
+    t.datetime "buy_subs"
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.string "email"
+    t.boolean "is_paying"
+    t.float "money"
+    t.string "name"
+    t.time "register_at"
+    t.binary "specific"
+    t.datetime "started"
+    t.integer "truck_id"
+    t.datetime "updated_at", null: false
+    t.decimal "volume"
+    t.index ["truck_id"], name: "index_users_on_truck_id"
+  end
+
+  add_foreign_key "users", "trucks"
 end

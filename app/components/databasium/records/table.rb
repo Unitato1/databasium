@@ -16,10 +16,8 @@ module Components
 
       def view_template
         turbo_frame_tag(@turbo_frame) do
-          div(class: "") do
-            render_table
-            render_pagy
-          end
+          render_table
+          render_pagy
         end
       end
 
@@ -42,7 +40,7 @@ module Components
                    columns_names_types: @columns_names_types,
                    model: @model
                  )
-          div(class: "overflow-hidden rounded-xl border border-border w-fit") do
+          div(class: "rounded-xl border border-border overflow-x-auto") do
             table(class: "whitespace-nowrap min-w-max bg-panel border-collapse") do
               render_table_head
               render_table_body

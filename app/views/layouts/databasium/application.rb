@@ -20,9 +20,9 @@ module Views
           end
           body(class: "overflow-x-hidden flex h-screen bg-background text-main-text", data: { controller: "layout" }) do
             render Components::Databasium::Global::Sidebar.new(sidebar: content_for(:sidebar))
-            div(class: "flex flex-col w-full flex-1") do
+            div(class: "flex-1 w-full overflow-x-auto") do
               render Components::Databasium::Global::HeaderActions.new(actions: content_for(:header_actions))
-              div(class: "flex-1 overflow-y-auto") do
+              div(class: "overflow-y-auto mx-4") do
                 yield block_given? ? block : block.call
               end
             end

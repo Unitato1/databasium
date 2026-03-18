@@ -35,8 +35,9 @@ module Components
           form_with(
             method: :post,
             scope: :record,
+            url: databasium.records_path,
             class:
-              "border-b-1 border-border p-4 rounded-xl w-full mb-4 hidden max-h-100 overflow-y-auto",
+              "border-b-1 border-border p-4 rounded-xl mb-4 hidden max-h-100 overflow-y-auto flex-1",
             id: "add_record"
           ) { |form| form_content(form) }
         end
@@ -46,14 +47,13 @@ module Components
 
       def form_content(form)
         hidden_field_tag(:table, @model.name)
-        div(class: "flex flex-col gap-4") { fields_content(form) }
+        div(class: "grid grid-cols-2 gap-4 w-fit") { fields_content(form) }
       end
 
       def fields_content(form)
         @columns_names_types.each do |column|
           next if column[:name].in?(SKIPPED_COLUMNS)
 
-          div(class: "flex items-center gap-5") do
             raw form.label(column[:name], class: "underline p-1 h-full text-sm")
             if column[:foreign_key]
               foreign_key_content(form, column)
@@ -69,9 +69,8 @@ module Components
                     )
               end
             end
-          end
         end
-        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md")
+        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md w-fit")
       end
 
       def type_to_helper(type)

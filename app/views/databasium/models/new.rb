@@ -23,12 +23,3 @@ module Views
     end
   end
 end
-
-# <div class="flex gap-4 p-4">
-#   <div class="w-1/4">
-#     <%= render "databasium/models/components/form" %>
-#   </div>
-#   <div class="flex-1">
-#     <%= render "databasium/models/components/model_preview", content: @content %>
-#   </div>
-# </div>
