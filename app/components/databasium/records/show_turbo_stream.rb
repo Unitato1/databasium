@@ -14,7 +14,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
 
   def view_template
     turbo_stream.replace(
-      "records",
+      "records_list",
       Components::Databasium::Records::Table.new(records: @records, model: @model, turbo_frame: @turbo_frame, pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types)
     )
     turbo_stream.replace(

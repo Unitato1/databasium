@@ -19,7 +19,6 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        # content_for(:header_actions) { render_header_actions }
         turbo_frame_tag "records",
           src: helpers.records_records_path(table: @table, frame_id: "records", limit: 10) do
           "Loading"

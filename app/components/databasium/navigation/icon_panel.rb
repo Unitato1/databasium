@@ -19,9 +19,7 @@ module Components
       def form(&block)
         div(
           class: "align-items-center justify-items-center flex gap-2",
-          data: {
-            controller: "hide"
-          }
+
         ) do
           @icons_with_text.each do |element|
             render Navigation::Icon.new(element: element)

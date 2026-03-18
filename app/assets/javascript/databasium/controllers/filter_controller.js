@@ -97,7 +97,7 @@ export default class extends Controller {
       "data-action",
       "change->filter#chooseColumn mousedown->filter#rememberValue"
     );
-    select.classList = "px-4 py-2 rounded-md border-1 border-border w-fit h-10";
+    select.classList = "px-4 py-2 rounded-md border-1 border-border w-fit h-10 bg-panel";
 
     const button = document.createElement("button");
 
@@ -138,7 +138,8 @@ export default class extends Controller {
   createOperatorField(selectedAttribute) {
     const selectOperator = document.createElement("select");
     selectOperator.name = "filter[" + selectedAttribute.name + "][operator]";
-    selectOperator.classList = "px-4 py-2 rounded-md border-1 border-border w-fit h-10";
+    selectOperator.classList =
+      "px-4 py-2 rounded-md border-1 border-border w-fit h-10 bg-background";
 
     selectOperator.add(new Option("Operator", ""));
     // can create a map and use it will do in refactoring
@@ -173,7 +174,8 @@ export default class extends Controller {
   createOperatorTypeField() {
     const selectOperatorType = document.createElement("select");
     selectOperatorType.name = "filter[operator_types][]";
-    selectOperatorType.classList = "px-4 py-2 rounded-md border-1 border-border w-fit h-10";
+    selectOperatorType.classList =
+      "px-4 py-2 rounded-md border-1 border-border w-fit h-10 bg-background";
     selectOperatorType.add(new Option("Operator Type", "and"));
     selectOperatorType.add(new Option("AND", "and"));
     selectOperatorType.add(new Option("OR", "or"));

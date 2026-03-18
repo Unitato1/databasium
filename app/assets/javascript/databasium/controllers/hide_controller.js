@@ -1,13 +1,14 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="hide"
 export default class extends Controller {
-
   connect() {
     this.lastShown = null;
   }
 
-  hide(e){
+  hide(e) {
+    console.log("hide controller connected");
+    console.log(this.lastShown);
     const id = e.currentTarget.dataset.hide;
     const element = document.getElementById(id);
     if (this.lastShown) {
@@ -15,7 +16,7 @@ export default class extends Controller {
     }
     if (element) {
       this.lastShown = element;
-      element.classList.toggle("hidden")
+      element.classList.toggle("hidden");
     }
   }
 }
