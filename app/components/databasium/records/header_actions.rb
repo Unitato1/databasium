@@ -8,7 +8,8 @@ module Components
       include Phlex::Rails::Helpers::TurboFrameTag
       include Phlex::Rails::Helpers::ButtonTo
       LIMITS = [ 10, 20, 50, 100 ].freeze
-      def initialize(table:, limit:)
+      def initialize(filter:, table:, limit:)
+        @filter = filter
         @table = table
         @limit = limit
       end
@@ -20,7 +21,7 @@ module Components
             icons_with_text: [
               { icon: "plus-circle", text: "add record", method: :frontend },
               { icon: "funnel", text: "filter", method: :frontend },
-              { icon: "chevron-double-up", text: "10", method: :get, turbo_frame: "records", path: records_path, active: limit == 10 },
+              { icon: "chevron-double-up", text: "10", method: :get, turbo_frame: "records", path: records_path(), active: limit == 10 },
               { icon: "chevron-double-up", text: "20", method: :get, turbo_frame: "records", path: records_path(limit: 20), active: limit == 20 },
               { icon: "chevron-double-up", text: "50", method: :get, turbo_frame: "records", path: records_path(limit: 50), active: limit == 50 },
               { icon: "chevron-double-up", text: "100", method: :get, turbo_frame: "records", path: records_path(limit: 100), active: limit == 100 }
@@ -32,7 +33,7 @@ module Components
       private
 
       def records_path(limit: 10)
-        databasium.records_records_path(table: @table, frame_id: "records", limit: limit)
+        databasium.records_records_path(table: @table, frame_id: "records", filter: @filter, limit: limit)
       end
     end
   end

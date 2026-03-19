@@ -36,9 +36,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def records
     @model, @feedback = @schema_service.get_model_from_table(params[:table])
+    @filter = filter_params
     @records = @model&.all
     @columns_names_types = @schema_service.get_columns(@model)
-    @records = @schema_service.filter_records(@records, params[:filter])
+    @records = @schema_service.filter_records(@records, @filter)
     @pagy, @records = pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
     @limit = params[:limit].presence || 10
@@ -52,17 +53,9 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html { render Components::Databasium::Records::Table.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types) }
         format.turbo_stream do
-          render Components::Databasium::Records::ShowTurboStream.new(table: params[:table], records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types, limit: @limit), layout: false
+          render Components::Databasium::Records::ShowTurboStream.new(filter: @filter, table: params[:table], records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types, limit: @limit), layout: false
         end
       end
-      # render Components::Databasium::Records::Table.new(
-      #          records: @records,
-      #          model: @model,
-      #          turbo_frame: @turbo_frame_id || "records",
-      #          pagy: @pagy,
-      #          feedback: @feedback,
-      #          columns_names_types: @columns_names_types
-      #        )
     end
   end
 
@@ -73,9 +66,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
   end
 
   def filter_params
-    allowed_columns = @model.columns.map { |c| c.name.to_s }
+    return nil if @model.nil?
+    allowed_columns = @model&.columns.map { |c| c.name.to_s }
 
-    params.require(:filter).permit(
+    params.fetch(:filter, {}).permit(
       allowed_columns.index_with { |_col| %i[operator value] },
       operator_types: []
     )

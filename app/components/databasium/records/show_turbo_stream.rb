@@ -1,7 +1,8 @@
 class Components::Databasium::Records::ShowTurboStream < Components::Base
   include Phlex::Rails::Helpers::TurboStream
 
-  def initialize(table:, records:, model:, turbo_frame:, pagy:, feedback:, columns_names_types:, limit:)
+  def initialize(filter:, table:, records:, model:, turbo_frame:, pagy:, feedback:, columns_names_types:, limit:)
+    @filter = filter
     @table = table
     @records = records
     @model = model
@@ -19,7 +20,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
     )
     turbo_stream.replace(
       "header_actions",
-      Components::Databasium::Records::HeaderActions.new(table: @table, limit: @limit)
+      Components::Databasium::Records::HeaderActions.new(filter: @filter, table: @table, limit: @limit)
     )
   end
 end
