@@ -14,7 +14,7 @@ module Components
         turbo_frame_tag("foreign_records") do
           div(class: "relative") do
             div(
-              class: "absolute z-10 bg-blue-100 p-4 rounded-xl border-1 border-blue-300 w-fit",
+              class: "absolute z-10 bg-panel p-4 rounded-xl border-1 border-border w-fit",
               id: "foreign_records",
               data: {
                 table_select_target: "table"
@@ -31,10 +31,10 @@ module Components
       private
 
       def render_title
-        div(class: "flex justify-between items-center mb-2 border-b-1 border-blue-300 pb-2 mb-2") do
+        div(class: "flex justify-between items-center mb-2 border-b-1 border-border pb-2 mb-2") do
           h1(class: "w-ful text-2xl font-bold") { "Records of #{@model_name}" }
           button(
-            class: "text-blue-700 hover:text-blue-900",
+            class: "text-accent hover:text-accent-dark",
             data: {
               action: "click->table-select#toggleVisibility"
             }
@@ -59,7 +59,7 @@ module Components
                             table: @model&.name,
                             frame_id: "foreign_records_list",
                             lazy: true
-                          ) {}
+                          ) { }
       end
     end
   end

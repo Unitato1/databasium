@@ -38,15 +38,15 @@ module Views
                         action: "input->search#update"
                       } do |form|
               raw form.search_field :search,
-                                    class: "border-2 border-gray-300 rounded-md p-2",
+                                    class: "border-2 border-border bg-background rounded-md p-2",
                                     placeholder: "Search for a table"
             end
           end
           turbo_frame_tag("results") do
             @tables&.each do |table|
-              div(class: "border-b-2 border-b-gray-300 py-2 px-3") do
+              div(class: "border-b-2 border-b-border py-2 px-3") do
                 link_to "#{table}",
-                        databasium.records_records_path(table: table),
+                        databasium.records_records_path(table: table, refresh: true),
                         data: {
                           turbo_stream: true
                         }

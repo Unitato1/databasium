@@ -42,7 +42,7 @@ module Components
           div(
             class:
               "bg-panel text-accent shadow-accent border-1 border-border text-center p-2 rounded-md mx-auto w-fit"
-          ) { @feedback || "Select a table to view its records." }
+          ) { @feedback || "No records found." }
         else
 
           div(class: "rounded-xl border border-border overflow-x-auto mt-4") do

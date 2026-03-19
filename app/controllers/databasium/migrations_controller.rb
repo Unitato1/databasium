@@ -18,8 +18,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     flash[:error] = error&.message
     if @migration
       @content = File.read(@migration.filename)
-      # render Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
-      # render Components::Databasium::Migrations::ShowTurboStream.new(migration: @migration, content: @content)
       respond_to do |format|
         format.html do
           render Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
