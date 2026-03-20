@@ -17,6 +17,8 @@ module Components
           render Navigation::GetIcon.new(element: element, turbo_frame: element[:turbo_frame])
         when :post
           render Navigation::PostIcon.new(element: element)
+        else
+          p { "Please provide method to icon component" }
         end
       end
     end

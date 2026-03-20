@@ -28,20 +28,12 @@ module Views
       private
 
       def render_sidebar
-        div(class: "flex flex-col w-full px-3") do
-          div(data: { controller: "search" }) do
-            form_with url: helpers.records_path,
-                      method: :get,
-                      class: "flex gap-2",
-                      data: {
-                        turbo_frame: "results",
-                        action: "input->search#update"
-                      } do |form|
-              raw form.search_field :search,
-                                    class: "border-2 border-border bg-background rounded-md p-2",
-                                    placeholder: "Search for a table"
-            end
-          end
+        div(class: "flex flex-col w-full") do
+          render Components::Databasium::Forms::Search.new(
+            url: databasium.records_path,
+            turbo_frame: "results",
+            placeholder: "Search for a table"
+          )
           turbo_frame_tag("results") do
             @tables&.each do |table|
               div(class: "border-b-2 border-b-border py-2 px-3") do

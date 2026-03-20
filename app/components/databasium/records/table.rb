@@ -30,7 +30,6 @@ module Components
           end
           turbo_frame_tag("records_list") do
             render_table
-            render_pagy
           end
         end
       end
@@ -39,14 +38,10 @@ module Components
 
       def render_table
         if @feedback || !@model || @records.empty?
-          div(
-            class:
-              "bg-panel text-accent shadow-accent border-1 border-border text-center p-2 rounded-md mx-auto w-fit"
-          ) { @feedback || "No records found." }
+          render Components::Databasium::Global::Suggestion.new(suggestions: [ @feedback || "No records found for #{@model&.name} table." ])
         else
-
-          div(class: "rounded-xl border border-border overflow-x-auto mt-4") do
-            table(class: "whitespace-nowrap min-w-max bg-panel border-collapse") do
+          div(class: "rounded-xl border border-border overflow-auto mt-4 min-h-0 flex") do
+            table(class: "whitespace-nowrap min-w-max bg-panel border-collapse flex-1") do
               render_table_head
               render_table_body
             end
@@ -100,7 +95,7 @@ module Components
       end
 
       def render_pagy
-        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
+        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy && @records&.any?
       end
     end
   end

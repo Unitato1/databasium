@@ -1,16 +1,17 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
   before_action :create_migration_service
+  include Pagy::Method
 
   def index
-    @migrations = @migration_service.migrations
+    @pagy, @migrations = pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
     @pending_migrations = @migration_service.pending_migrations
-    @applied_migrations = @migration_service.applied_migrations
 
     render Views::Databasium::Migrations::Index.new(
-             migrations: @migrations,
-             pending_migrations: @pending_migrations,
-             migration_id: params[:version]
-           )
+            migrations: @migrations,
+            pending_migrations: @pending_migrations,
+            migration_id: params[:version],
+            pagy: @pagy
+          )
   end
 
   def show
@@ -33,10 +34,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def new
     @tables = Databasium::Schema.new.tables
-    # if params[:migration]
-    #   @migration = @migration_service.find_migration!(params[:migration])
-    #   @content = File.read(@migration.filename)
-    # end
     render Views::Databasium::Migrations::New.new(tables: @tables, content: @content)
   end
 

@@ -1,6 +1,6 @@
 
 class Databasium::Migration
-  attr_reader :migration_context, :migrations, :pending_migrations, :applied_migrations
+  attr_reader :migration_context, :migrations, :pending_migrations
   MIGRATIONS_PATHS = [ "db/migrate" ] # TODO: make this configurable and maybe move to a constant readonly
   MIGRATIONS_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/migration.rb.tt")
   CREATE_TABLE_MIGRATIONS_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/create_table_migration.rb.tt")
@@ -8,7 +8,11 @@ class Databasium::Migration
     @migration_context = ActiveRecord::MigrationContext.new(MIGRATIONS_PATHS)
     @migrations = @migration_context.migrations
     @pending_migrations = @migration_context.pending_migration_versions
-    @applied_migrations = @migration_context.get_all_versions
+  end
+
+  def get_migrations(search)
+    @migrations = @migrations.select { |m| m.name =~ /#{search}/i } if search
+    @migrations
   end
 
   def generate_migration
