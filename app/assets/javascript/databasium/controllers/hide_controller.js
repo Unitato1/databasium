@@ -7,8 +7,6 @@ export default class extends Controller {
   }
 
   hide(e) {
-    console.log("hide controller connected");
-    console.log(this.lastShown);
     const id = e.currentTarget.dataset.hide;
     const element = document.getElementById(id);
     if (this.lastShown) {

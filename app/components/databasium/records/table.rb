@@ -15,87 +15,21 @@ module Components
       end
 
       def view_template
-        turbo_frame_tag(@turbo_frame) do
+        turbo_frame_tag(@turbo_frame, class: "flex min-h-0 min-w-0 flex-1 flex-col") do
           div(id: "records_utilities") do
-            render Components::Databasium::Records::Filter.new(
-              model: @model,
-              turbo_frame: "records",
-              columns_names_types: @columns_names_types,
-              hidden: true
-            )
-            render Components::Databasium::Forms::Model.new(
-              columns_names_types: @columns_names_types,
-              model: @model
-            )
           end
-          turbo_frame_tag("records_list") do
-            render_table
-          end
+          render_table
         end
       end
 
       private
 
       def render_table
-        if @feedback || !@model || @records.empty?
-          render Components::Databasium::Global::Suggestion.new(suggestions: [ @feedback || "No records found for #{@model&.name} table." ])
-        else
-          div(class: "rounded-xl border border-border overflow-auto mt-4 min-h-0 flex") do
-            table(class: "whitespace-nowrap min-w-max bg-panel border-collapse flex-1") do
-              render_table_head
-              render_table_body
-            end
-          end
+        turbo_frame_tag("records_list") do
+          render Components::Databasium::Global::Suggestion.new(
+            suggestions: [ @feedback || "No records found for #{@model&.name} table." ]
+          )
         end
-      end
-
-      def render_table_head
-        thead do
-          tr(class: "bg-accent shadow-accent") do
-            @model&.columns&.each do |column|
-              th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
-                plain column.name
-              end
-            end
-          end
-        end
-      end
-
-      def render_table_body
-        tbody(id: "#{@turbo_frame}_list") do
-          if @records&.any?
-            @records.each do |record|
-              tr(
-                class: "hover:bg-background hover:cursor-pointer",
-                data: {
-                  action: "click->table-select#selectRecord",
-                  record_id: record.id
-                }
-              ) do
-                record.attributes.each do |_, value|
-                  td(
-                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
-                  ) { plain format_cell_value(value) }
-                end
-              end
-            end
-          end
-        end
-      end
-
-      def format_cell_value(value)
-        case value
-        when Time, DateTime, ActiveSupport::TimeWithZone
-          value.strftime("%Y-%m-%d %H:%M:%S")
-        when Date
-          value.strftime("%Y-%m-%d")
-        else
-          value.to_s
-        end
-      end
-
-      def render_pagy
-        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy && @records&.any?
       end
     end
   end

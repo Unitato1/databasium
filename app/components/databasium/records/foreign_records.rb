@@ -32,7 +32,7 @@ module Components
 
       def render_title
         div(class: "flex justify-between items-center mb-2 border-b-1 border-border pb-2 mb-2") do
-          h1(class: "w-ful text-2xl font-bold") { "Records of #{@model_name}" }
+          h1(class: "w-ful text-2xl font-bold") { "Records of #{@model&.name}" }
           button(
             class: "text-accent hover:text-accent-dark",
             data: {

@@ -18,11 +18,13 @@ module Views
             stylesheet_link_tag "databasium", "data-turbo-track": Rails.env.production? ? "reload" : ""
             javascript_importmap_tags "databasium/application"
           end
-          body(class: "flex h-dvh bg-background text-main-text scrollbar-thin", data: { controller: "layout" }) do
+          body(class: "flex h-dvh overflow-hidden bg-background text-main-text scrollbar-thin", data: { controller: "layout" }) do
             render Components::Databasium::Global::Sidebar.new(sidebar: content_for(:sidebar))
-            div(class: "flex-1 overflow-hidden flex flex-col max-h-full border-2 border-red m-2", data: { controller: "hide" }) do
+            div(class: "flex flex-1 flex-col overflow-hidden", data: { controller: "hide" }) do
               render Components::Databasium::Global::HeaderActions.new(actions: content_for(:header_actions))
-              yield block_given? ? block : block.call
+              div(class: "flex min-h-0 min-w-0 flex-1 flex-col") do
+                yield block_given? ? block : block.call
+              end
             end
           end
         end

@@ -17,9 +17,9 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
   def view_template
     turbo_stream.replace(
       "records_list",
-      Components::Databasium::Records::Table.new(records: @records, model: @model, turbo_frame: @turbo_frame, pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types)
+      Components::Databasium::Records::CleanTable.new(records: @records, model: @model, turbo_frame: @turbo_frame, pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types)
     )
-    turbo_stream.replace(
+    turbo_stream.update(
       "header_actions",
       Components::Databasium::Records::HeaderActions.new(filter: @filter, table: @table, limit: @limit)
     )
@@ -31,6 +31,10 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
       turbo_stream.replace(
         "add_record",
         Components::Databasium::Forms::Model.new(columns_names_types: @columns_names_types, model: @model)
+      )
+      turbo_stream.replace(
+        "records_utilities",
+        Components::Databasium::Records::Utilities.new(model: @model, columns_names_types: @columns_names_types)
       )
     end
   end

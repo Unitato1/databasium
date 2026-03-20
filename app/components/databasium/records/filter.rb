@@ -30,7 +30,7 @@ module Components
 
       def render_filter
         form_with(
-          url: helpers.records_records_path(table: @model.name, frame_id: @turbo_frame),
+          url: databasium.records_records_path(table: @model.name, frame_id: @turbo_frame),
           method: :get,
           class: "max-h-100 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
           data: {

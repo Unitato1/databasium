@@ -19,7 +19,7 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        turbo_frame_tag "records",
+        turbo_frame_tag "records", class: "flex min-h-0 min-w-0 flex-1 flex-col",
           src: helpers.records_records_path(table: @table, frame_id: "records", limit: 10) do
           "Loading"
         end
