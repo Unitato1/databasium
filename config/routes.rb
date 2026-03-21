@@ -10,6 +10,9 @@ Databasium::Engine.routes.draw do
     post :run_migration, on: :collection
     post :rollback_migration, on: :collection
   end
-  resources :models, only: [ :new, :create ]
+  resources :models, only: [ :new, :create ] do
+    get :model_data, on: :collection
+    get :get_model, on: :collection
+  end
   resources :schemas, only: [ :index, :new, :create ]
 end

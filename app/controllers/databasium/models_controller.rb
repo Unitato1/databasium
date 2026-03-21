@@ -1,12 +1,50 @@
 class Databasium::ModelsController < Databasium::ApplicationController
+  include Pagy::Method
+
   def new
+    @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
+    @pagy, @models = pagy(@models, limit: 10, root_key: "models")
+
     @model =
       Databasium::Model.new(
         model_name: params[:model_name],
         attributes: params[:attributes],
         relations: params[:relations]
       )
-    render Views::Databasium::Models::New.new(model: @model, content: nil)
+    render Views::Databasium::Models::New.new(model: @model, content: nil, models: @models, pagy: @pagy)
+  end
+
+  def get_model
+    @content = File.read(Rails.root.join("app/models/#{params[:model].downcase}.rb"))
+    respond_to do |format|
+      format.html
+      format.turbo_stream do
+        render turbo_stream:
+                 turbo_stream.replace(
+                   "model_preview",
+                   Components::Databasium::Models::ModelPreview.new(content: @content)
+                 )
+      end
+    end
+  end
+
+  def model_data
+    @model_names = Databasium::Models.new.get_all_models_from_dir
+    Databasium::Models.new.get_model_data_from_file("User")
+    if params[:model]
+      model = params[:model].safe_constantize
+      @model = {}
+      @model[model.name] = {
+        columns: model.column_names,
+        validations: model.validators.map { |v| { attributes: v.attributes, kind: v.kind } }
+      }
+    else
+      @models = {}
+      @model_names.each do |model|
+        @models[model.name] = Databasium::Models.new.get_model_data(model)
+      end
+    end
+    render Views::Databasium::Models::GetModel.new(model: @models)
   end
 
   def create
@@ -21,10 +59,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
           render turbo_stream:
                    turbo_stream.replace(
                      "model_preview",
-                     partial: "databasium/models/components/model_preview",
-                     locals: {
-                       content: @content
-                     }
+                     Components::Databasium::Models::ModelPreview.new(content: @content)
                    )
         end
       end

@@ -56,7 +56,7 @@ module Components
       private
 
       def render_attributes_container
-        div(data: { model_target: "attributesContainer" }) {}
+        div(data: { model_target: "attributesContainer" }) { }
       end
 
       def render_add_attribute(form)
@@ -84,10 +84,8 @@ module Components
 
       def render_form
         render Components::Databasium::Models::Templates::Attribute.new
-        # render partial("databasium/models/components/attribute_template")
         render Components::Databasium::Models::Templates::Relation.new
         render Components::Databasium::Models::Templates::Validation.new
-        # render partial("databasium/models/components/relation_template")
       end
     end
   end
