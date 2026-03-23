@@ -36,7 +36,7 @@ module Components
 
       def render_validations(form)
         render_collapsable(
-          form,
+          form: form,
           name: "validations",
           data_targets: {
             new_migration_target: "validations"
@@ -80,7 +80,7 @@ module Components
 
       def render_columns(form)
         render_collapsable(
-          form,
+          form: form,
           name: "columns",
           data_targets: {
             new_migration_target: "columns"
@@ -129,7 +129,7 @@ module Components
 
       def render_table_name(form)
         render_collapsable(
-          form,
+          form: form,
           name: "table_name",
           data_targets: {
             new_migration_target: "table_name"
@@ -137,19 +137,9 @@ module Components
         ) { form.text_field :table_name, class: "p-2 border-2 border-border w-fit bg-background" }
       end
 
-      def render_collapsable(form, name:, data_targets:, &block)
-        render Components::Databasium::Collapsable.new(
-                 name: name,
-                 form: form,
-                 data_targets: data_targets
-               ) do
-          yield if block_given?
-        end
-      end
-
       def render_migration_action(form)
         render_collapsable(
-          form,
+          form: form,
           name: "migration_action",
           data_targets: {
             new_migration_target: "migration_action"

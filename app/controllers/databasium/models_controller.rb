@@ -5,19 +5,15 @@ class Databasium::ModelsController < Databasium::ApplicationController
     @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
     @pagy, @models = pagy(@models, limit: 10, root_key: "models")
 
-    @model =
-      Databasium::Model.new(
-        model_name: params[:model_name],
-        attributes: params[:attributes],
-        relations: params[:relations]
-      )
-    render Views::Databasium::Models::New.new(model: @model, content: nil, models: @models, pagy: @pagy)
+    render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
   end
 
   def get_model
     @content = File.read(Rails.root.join("app/models/#{params[:model].downcase}.rb"))
+    @attributes = Databasium::Models.new.get_model_data_from_file(params[:model])
+    @model = params[:model] if params[:model]
     respond_to do |format|
-      format.html
+      format.html { render Views::Databasium::Models::New.new(content: @content, model: @model, attributes: @attributes, models: @models, pagy: @pagy) }
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(

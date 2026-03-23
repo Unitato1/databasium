@@ -34,7 +34,7 @@ module Components
             link_to(
               databasium.get_model_models_path(model: model),
               data: {
-                turbo_stream: true
+                turbo_frame: "main"
               },
               class: "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
                 border-border flex items-center justify-between"

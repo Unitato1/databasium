@@ -1,22 +1,22 @@
 module Components
   module Databasium
     class Models::Templates::Attribute < Models::Templates::Base
-      def initialize
+      def initialize(attribute: nil, validations: nil)
+        @attribute = attribute
+        @validations = validations
       end
 
       def view_template
-        template(data: { model_target: "attribute" }) do
-          div(data: { controller: "attribute" }) { render_attribute_fields }
-        end
+        div(data: { controller: "attribute" }) { render_attribute_fields }
       end
 
       private
 
-      def render_attribute_fields
+      def render_attribute_fields(attribute: nil)
         render_collapsable(
           name: "Attribute",
           form: nil,
-          name_params: {
+          data_targets: {
             data: {
               attribute_target: "name"
             }
@@ -28,6 +28,7 @@ module Components
             input(
               type: "text",
               name: "model[attributes][][name]",
+              value: @attribute&.fetch(:name, nil),
               data: {
                 action: "input->attribute#updateName",
                 attribute_target: "nameInput"
@@ -35,9 +36,9 @@ module Components
               placeholder: "Attribute Name (e.g. email)",
               class: "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background"
             )
-            render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]")
+            render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @attribute&.fetch(:type, nil))
+
             render_validations
-            render_relations
           end
         end
       end
@@ -46,7 +47,7 @@ module Components
         render_collapsable(
           name: "Validation",
           form: nil,
-          name_params: {
+          data_targets: {
             data: {
               attribute_target: "validations"
             }
@@ -64,33 +65,9 @@ module Components
                 type: "button",
                 class: "text-blue-500"
               ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
-            end
-          end
-        end
-      end
-
-      def render_relations
-        render_collapsable(
-          name: "Relation",
-          form: nil,
-          name_params: {
-            data: {
-              attribute_target: "relations"
-            }
-          }
-        ) do
-          div(data: { model_target: "relationsContainer" }, class: "relationsContainer") do
-            div(class: "flex items-center gap-2") do
-              span(class: "font-semibold") { "Add new Relation" }
-              button(
-                data: {
-                  action: "click->model#add",
-                  model_target_param: "relation",
-                  model_container_param: "relationsContainer"
-                },
-                type: "button",
-                class: "text-blue-500"
-              ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+              @validations&.each do |validation|
+                render Models::Templates::Validation.new(validation: validation)
+              end
             end
           end
         end

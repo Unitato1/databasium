@@ -5,7 +5,9 @@ module Components
     class Models::Form < Components::Base
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize
+      def initialize(attributes: nil, model: nil)
+        @attributes = attributes
+        @model = model
       end
 
       def view_template
@@ -20,8 +22,8 @@ module Components
             controller: "model"
           }
         ) do |form|
-          render_form
           render_model_name(form)
+          render_form
           render_add_attribute(form)
           render_attributes_container
           render_add_relation(form)
@@ -75,14 +77,22 @@ module Components
         div(class: "flex flex-col mb-4") do
           form.label :model_name, "Model Name"
           form.text_field :model_name,
+                          value: @model,
                           class: "border-1 rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2"
         end
       end
 
       def render_form
-        render Components::Databasium::Models::Templates::Attribute.new
-        render Components::Databasium::Models::Templates::Relation.new
-        render Components::Databasium::Models::Templates::Validation.new
+        render Components::Databasium::Models::Attributes.new(attributes: @attributes)
+        template(data: { model_target: "attribute" }) do
+          render Components::Databasium::Models::Templates::Attribute.new
+        end
+        template(data: { model_target: "relation" }) do
+          render Components::Databasium::Models::Templates::Relation.new
+        end
+        template(data: { model_target: "validation" }) do
+          render Components::Databasium::Models::Templates::Validation.new
+        end
       end
     end
   end
