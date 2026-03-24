@@ -14,29 +14,31 @@ module Components
 
       def render_attribute_fields
         render_collapsable(
-          name: "Attribute",
+          name: @name || "Attribute",
           form: nil,
-          data_targets: {
+          name_params: {
             data: {
               attribute_target: "name"
             }
           }
         ) do
           div(
-            class: "flex flex-col gap-2 mb-2 group bg-panel border-1 border-border rounded-xl p-2"
+            class: "flex flex-col gap-2 bg-panel border-1 border-border rounded-xl p-2"
           ) do
-            input(
-              type: "text",
-              name: "model[attributes][][name]",
-              value: @name,
-              data: {
-                action: "input->attribute#updateName",
-                attribute_target: "nameInput"
-              },
-              placeholder: "Attribute Name (e.g. email)",
-              class: "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background"
-            )
-            render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @params&.fetch(:type, nil))
+            div(class: "flex items-center gap-2") do
+              input(
+                type: "text",
+                name: "model[attributes][][name]",
+                value: @name,
+                data: {
+                  action: "input->attribute#updateName",
+                  attribute_target: "nameInput"
+                },
+                placeholder: "Attribute Name (e.g. email)",
+                class: "border-2 rounded-xl px-2 py-1 border-border w-full h-full bg-background focus:outline-none"
+              )
+              render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @params&.fetch(:type, nil))
+            end
             attr_validations = @params&.fetch(:validations, nil)
             render_validations(validations: attr_validations)
           end

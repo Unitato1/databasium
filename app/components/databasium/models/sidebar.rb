@@ -39,7 +39,7 @@ module Components
               class: "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
                 border-border flex items-center justify-between"
             ) do
-              p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{model.name}" }
+              p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{model}" }
             end
         end
       end

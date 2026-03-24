@@ -14,10 +14,8 @@ class Databasium::Models
       model_files += Dir.glob(Rails.root.join("app", path, "**/*.rb"))
     end
     # puts model_files.map { |file| File.basename(file) }.join("\n")
-    model_names = model_files.map { |file| File.basename(file).sub(/\.rb$/, "").classify }.reject { |name| [ "ApplicationRecord", "Concerns" ].include?(name) }
+    model_names = model_files.map { |file| File.basename(file).sub(/\.rb$/, "").classify }.reject { |name| [ "ApplicationRecord", "Concerns" ].include?(name) }.map(&:downcase)
     model_names = model_names.select { |name| name =~ /#{search}/i } if search
-    model_names.map!(&:safe_constantize)
-    puts model_names.inspect
     model_names
   end
 

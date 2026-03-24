@@ -5,9 +5,10 @@ module Components
     class Models::Form < Components::Base
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize(attributes: nil, model: nil)
+      def initialize(attributes: nil, model: nil, models: nil)
         @attributes = attributes
         @model = model
+        @models = models
       end
 
       def view_template
@@ -74,21 +75,21 @@ module Components
       end
 
       def render_model_name(form)
-        div(class: "flex flex-col mb-4") do
+        div(class: "flex flex-col mb-4 px-1") do
           form.label :model_name, "Model Name"
           form.text_field :model_name,
                           value: @model,
-                          class: "border-1 rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2"
+                          class: "border-1 w-full rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2 text-xl"
         end
       end
 
       def render_form
-        render Components::Databasium::Models::Attributes.new(attributes: @attributes) if @attributes.present?
+        render Components::Databasium::Models::Attributes.new(attributes: @attributes, models: @models) if @attributes.present?
         template(data: { model_target: "attribute" }) do
           render Components::Databasium::Models::Templates::Attribute.new
         end
         template(data: { model_target: "relation" }) do
-          render Components::Databasium::Models::Templates::Relation.new
+          render Components::Databasium::Models::Templates::Relation.new(models: @models)
         end
         template(data: { model_target: "validation" }) do
           render Components::Databasium::Models::Templates::Validation.new

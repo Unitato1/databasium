@@ -3,13 +3,14 @@
 module Components
   module Databasium
     class Models::Templates::Relation < Models::Templates::Base
-      def initialize(relation: nil)
+      def initialize(relation: nil, models: nil)
         @relation = relation
+        @models = models
       end
 
       def view_template
         selected_relation = @relation&.fetch(:name, nil)
-
+        type = @relation&.fetch(:type, nil)&.singularize
         div(class: "flex gap-2 mt-2") do
           select(
             name: "model[relations][][type]",
@@ -25,14 +26,16 @@ module Components
               option(value: value, selected: selected_relation == value) { label }
             end
           end
-          input(
-            type: "text",
+          select(
             name: "model[relations][][table_name]",
-            value: @relation&.fetch(:type, nil),
-            placeholder: "Table name (e.g. user)",
+            placeholder: "Currently there is no model to select",
             class:
               "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background focus:outline-none"
-          )
+          ) do
+            @models&.each do |model|
+              option(value: model, selected: type == model) { model }
+            end
+          end
         end
       end
     end

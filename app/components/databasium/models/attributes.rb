@@ -1,8 +1,9 @@
 module Components
   module Databasium
     class Models::Attributes < Components::Base
-      def initialize(attributes: nil)
+      def initialize(attributes: nil, models: nil)
         @attributes = attributes
+        @models = models
       end
 
       def view_template
@@ -30,7 +31,7 @@ module Components
             class_name: "bg-background border-1 border-border rounded-xl p-2"
           ) do
             @attributes&.fetch(:relations)&.each do |relation|
-              render Models::Templates::Relation.new(relation: relation)
+              render Models::Templates::Relation.new(relation: relation, models: @models)
             end
           end
         end
