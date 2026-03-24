@@ -16,7 +16,7 @@ module Views
       def view_template
         content_for(:title) { "New Model" }
         content_for(:sidebar) { render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy) }
-        div(class: "flex gap-4 p-4") do
+        div(class: "flex gap-4 p-4 overflow-y-auto") do
           div(class: "w-1/4") do
             render Components::Databasium::Models::Form.new(attributes: @attributes, model: @model)
           end

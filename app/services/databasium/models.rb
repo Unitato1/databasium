@@ -33,36 +33,51 @@ class Databasium::Models
   end
 
   def get_model_data_from_file(model_name)
+    raw_model = model_name.safe_constantize
     model = {
       validations: [],
       columns: [],
       unknown: [],
-      relations: []
+      relations: [],
+      columns_hash: {}
     }
+    raw_model.columns.each do |column|
+      model[:columns_hash][column.name] = { type: column.type, validations: [] }
+    end
     index = 0
     File.foreach(Rails.root.join("app/models/#{model_name.downcase}.rb")) do |line|
       line = line.strip.lstrip
       parsed_line = {}
       if line.start_with?("#")
-        scan = line.scan(/(\w+): (\w+)(.*)/).map { |match| { name: match[0], type: match[1], unknown: match[2] } }
-        parsed_line = { type: :columns, content: scan.first } if scan.any?
-        parsed_line = { type: :unknown, content: {} } if scan.empty?
+        parsed_line = parse_column(line)
       elsif line.start_with?("validates :")
         scan = line.scan(/validates :(\w+), (\w+): (\w+)/).map { |match| { name: match[0], type: match[1], value: match[2] } }
         parsed_line = { type: :validations, content: scan.first } if scan.any?
         parsed_line = { type: :unknown, content: {} } if scan.empty?
+        scan_name = scan.first[:name]
+        model_column = model[:columns_hash].fetch(scan_name, nil)
+        model_column[:validations] << { type: scan.first[:type], value: scan.first[:value] } if model_column.present?
       elsif line.match?(RELATIONS_REGEX)
         scan = line.scan(/(\w+) :(\w+)(.*)/).map { |match| { name: match[0], type: match[1], unknown: match[2] } }
-        parsed_line = { type: :relations, content: scan.first } if scan.any?
         parsed_line = { type: :unknown, content: {} } if scan.empty?
+        parsed_line = { type: :relations, content: scan.first } if scan.any?
       else
         parsed_line = { type: :unknown, content: {} }
       end
-      parsed_line[:content].merge!({ index: index, line: line })
-      model[parsed_line[:type]] << parsed_line[:content]
-      index += 1
+      if parsed_line.present?
+        parsed_line[:content].merge!({ index: index, line: line })
+        model[parsed_line[:type]] << parsed_line[:content]
+        index += 1
+      end
     end
     puts model.inspect
     model
+  end
+
+  def parse_column(line)
+    scan = line.scan(/(\w+): (\w+)(.*)/).map { |match| { name: match[0], type: match[1], unknown: match[2] } }
+    parsed_line = { type: :columns, content: scan.first } if scan.any?
+    parsed_line = { type: :unknown, content: {} } if scan.empty?
+    parsed_line
   end
 end

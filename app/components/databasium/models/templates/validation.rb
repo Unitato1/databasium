@@ -3,8 +3,9 @@
 module Components
   module Databasium
     class Models::Templates::Validation < Models::Templates::Base
-      def initialize(validation: nil)
+      def initialize(validation: nil, name: nil)
         @validation = validation
+        @name = name
       end
 
       def view_template
@@ -13,7 +14,7 @@ module Components
           input(
             type: "text",
             name: "model[attributes][][validations][][name]",
-            value: @validation&.fetch(:name, nil),
+            value: @name,
             data: {
               attribute_target: "nameValidationInput"
             },

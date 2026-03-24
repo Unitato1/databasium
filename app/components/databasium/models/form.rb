@@ -83,7 +83,7 @@ module Components
       end
 
       def render_form
-        render Components::Databasium::Models::Attributes.new(attributes: @attributes)
+        render Components::Databasium::Models::Attributes.new(attributes: @attributes) if @attributes.present?
         template(data: { model_target: "attribute" }) do
           render Components::Databasium::Models::Templates::Attribute.new
         end

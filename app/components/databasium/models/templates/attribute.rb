@@ -1,9 +1,9 @@
 module Components
   module Databasium
     class Models::Templates::Attribute < Models::Templates::Base
-      def initialize(attribute: nil, validations: nil)
-        @attribute = attribute
-        @validations = validations
+      def initialize(name: nil, params: nil)
+        @name = name
+        @params = params
       end
 
       def view_template
@@ -12,7 +12,7 @@ module Components
 
       private
 
-      def render_attribute_fields(attribute: nil)
+      def render_attribute_fields
         render_collapsable(
           name: "Attribute",
           form: nil,
@@ -28,7 +28,7 @@ module Components
             input(
               type: "text",
               name: "model[attributes][][name]",
-              value: @attribute&.fetch(:name, nil),
+              value: @name,
               data: {
                 action: "input->attribute#updateName",
                 attribute_target: "nameInput"
@@ -36,14 +36,14 @@ module Components
               placeholder: "Attribute Name (e.g. email)",
               class: "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background"
             )
-            render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @attribute&.fetch(:type, nil))
-
-            render_validations
+            render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @params&.fetch(:type, nil))
+            attr_validations = @params&.fetch(:validations, nil)
+            render_validations(validations: attr_validations)
           end
         end
       end
 
-      def render_validations
+      def render_validations(validations: nil)
         render_collapsable(
           name: "Validation",
           form: nil,
@@ -65,8 +65,8 @@ module Components
                 type: "button",
                 class: "text-blue-500"
               ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
-              @validations&.each do |validation|
-                render Models::Templates::Validation.new(validation: validation)
+              validations&.each do |validation|
+                render Models::Templates::Validation.new(validation: validation, name: @name)
               end
             end
           end

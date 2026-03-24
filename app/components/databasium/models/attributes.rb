@@ -16,8 +16,8 @@ module Components
           },
           class_name: "bg-panel border-1 border-border rounded-xl p-2"
         ) do
-          @attributes&.fetch(:columns)&.each do |attribute|
-            render Models::Templates::Attribute.new(attribute: attribute, validations: @attributes&.fetch(:validations, nil))
+          @attributes&.fetch(:columns_hash)&.each do |name, attribute|
+            render Models::Templates::Attribute.new(name: name, params: attribute)
           end
           render_collapsable(
             name: "Relations",
