@@ -11,11 +11,11 @@ module Components
       def view_template
         selected_relation = @relation&.fetch(:name, nil)
         type = @relation&.fetch(:type, nil)&.singularize
-        div(class: "flex gap-2 mt-2") do
+        div(class: "flex gap-2") do
           select(
             name: "model[relations][][type]",
             class:
-              "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background focus:outline-none"
+              "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) do
             [
               [ "belongs_to", "Belongs To" ],
@@ -30,7 +30,7 @@ module Components
             name: "model[relations][][table_name]",
             placeholder: "Currently there is no model to select",
             class:
-              "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background focus:outline-none"
+              "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) do
             @models&.each do |model|
               option(value: model, selected: type == model) { model }

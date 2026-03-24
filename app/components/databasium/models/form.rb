@@ -19,15 +19,10 @@ module Components
           html: {
             id: "model_form"
           },
-          data: {
-            controller: "model"
-          }
         ) do |form|
           render_model_name(form)
           render_form
-          render_add_attribute(form)
           render_attributes_container
-          render_add_relation(form)
           render_relations_container
           form.submit "Create preview for model",
                       class: "bg-accent shadow-accent rounded-xl p-1 px-4 py-2 mt-2"
@@ -37,49 +32,19 @@ module Components
       private
 
       def render_attributes_container
-        div(data: { model_target: "attributesContainer" }) { }
+        render_collapsable(name: @model.present? ? "New Attributes" : "Attributes", form: nil, target_container: { model_target: "attributesContainer" }, class_name: "bg-panel border-1 border-border rounded-xl p-2 flex flex-col gap-2") { }
       end
 
       def render_relations_container
-        div(data: { model_target: "relationsContainer" }) { }
-      end
-
-      def render_add_relation(form)
-        div(class: "flex items-center gap-2 bg-panel border-1 border-border rounded-xl p-2") do
-          span(class: "font-semibold") { "Add new Relation" }
-          button(
-            data: {
-              action: "click->model#add",
-              model_target_param: "relation",
-              model_container_param: "relationsContainer"
-            },
-            type: "button",
-            class: "bg-accent shadow-accent rounded-md p-1"
-          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
-        end
-      end
-
-      def render_add_attribute(form)
-        div(class: "flex items-center gap-2 bg-panel border-1 border-border rounded-xl p-2") do
-          span(class: "font-semibold") { "Add new Attribute" }
-          button(
-            data: {
-              action: "click->model#add",
-              model_target_param: "attribute",
-              model_container_param: "attributesContainer"
-            },
-            type: "button",
-            class: "bg-accent shadow-accent rounded-md p-1"
-          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
-        end
+        render_collapsable(name: @model.present? ? "New Relations" : "Relations", form: nil, target_container: { model_target: "relationsContainer" }, class_name: "bg-panel border-1 border-border rounded-xl p-2 flex flex-col gap-2 mt-2") { }
       end
 
       def render_model_name(form)
-        div(class: "flex flex-col mb-4 px-1") do
-          form.label :model_name, "Model Name"
+        div(class: "flex items-center mb-3 text-xl") do
+          form.label :model_name, "Name:", class: "font-semibold pe-2"
           form.text_field :model_name,
                           value: @model,
-                          class: "border-1 w-full rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2 text-xl"
+                          class: "border-1 w-full rounded-xl p-1 border-border bg-panel w-fit focus:outline-none"
         end
       end
 

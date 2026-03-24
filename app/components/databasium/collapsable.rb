@@ -3,12 +3,13 @@
 module Components
   module Databasium
     class Collapsable < Components::Base
-      def initialize(name: nil, form: nil, class_name: nil, data_targets: {}, name_params: nil)
+      def initialize(name: nil, form: nil, class_name: nil, data_targets: {}, name_params: nil, target_container: nil)
         @name = name
         @form = form
         @class_name = class_name
         @data_targets = data_targets
         @name_params = name_params || {}
+        @target_container = target_container
       end
 
       def view_template(&block)
@@ -45,7 +46,7 @@ module Components
             end
             div(class: "flex flex-col mt-2 hidden", data: { collapse_target: "content" }) do
               div(class: "relative w-full") do
-                div(class: "flex flex-col gap-2 mt-2") { yield if block_given? }
+                div(class: "flex flex-col gap-2 mt-2", data: @target_container) { yield if block_given? }
               end
             end
           end

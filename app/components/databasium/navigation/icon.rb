@@ -12,7 +12,7 @@ module Components
       def view_template
         case element[:method]
         when :frontend
-          render Navigation::FrontendIcon.new(element: element)
+          render Navigation::FrontendIcon.new(element: element, data_params: element[:data_params])
         when :get
           render Navigation::GetIcon.new(element: element, turbo_frame: element[:turbo_frame])
         when :post

@@ -32,14 +32,14 @@ module Components
       def render_models
         @models&.each do |model|
             link_to(
-              databasium.get_model_models_path(model: model),
+              databasium.get_model_models_path(model: model.upcase_first),
               data: {
                 turbo_frame: "main"
               },
               class: "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
                 border-border flex items-center justify-between"
             ) do
-              p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{model}" }
+              p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{model.upcase_first}" }
             end
         end
       end
