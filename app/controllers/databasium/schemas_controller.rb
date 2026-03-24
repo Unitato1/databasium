@@ -1,13 +1,6 @@
 class Databasium::SchemasController < Databasium::ApplicationController
   def index
-    @tables = set_tables
-    schema_service = Databasium::Schema.new
-    @schema = schema_service.schema
-  end
-
-  private
-
-  def set_tables
-    @tables = (ActiveRecord::Base.connection.data_sources - %w[ar_internal_metadata schema_migrations])
+    @schema = Databasium::Schema.new.schema
+    render Views::Databasium::Schemas::Index.new(schema: @schema)
   end
 end

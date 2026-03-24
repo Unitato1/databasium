@@ -1,0 +1,26 @@
+@layer components {
+  .scrollbar-thin {
+    /* The height makes the horizontal scroll thin */
+    &::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+      @apply rounded-full;
+    }
+
+    &::-webkit-scrollbar-track {
+      @apply bg-background;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply bg-panel;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      @apply bg-hover;
+    }
+
+    /* Support for Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: theme("colors.panel") theme("colors.background");
+  }
+}

@@ -29,3 +29,9 @@ gem "heroicon"
 gem "pagy", "~> 43.2"
 
 gem "phlex-rails", "~> 2.4"
+
+group :development do
+  gem "ruby-lsp"
+  gem "ruby-lsp-rails"
+  gem "syntax_tree"
+end
