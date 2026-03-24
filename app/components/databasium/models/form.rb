@@ -25,14 +25,14 @@ module Components
           render_attributes_container
           render_relations_container
           form.submit "Create preview for model",
-                      class: "bg-accent shadow-accent rounded-xl p-1 px-4 py-2 mt-2"
+                      class: "bg-accent shadow-accent rounded-xl p-1 p-2 mt-2 w-full text-center"
         end
       end
 
       private
 
       def render_attributes_container
-        render_collapsable(name: @model.present? ? "New Attributes" : "Attributes", form: nil, target_container: { model_target: "attributesContainer" }, class_name: "bg-panel border-1 border-border rounded-xl p-2 flex flex-col gap-2") { }
+        render_collapsable(name: @model.present? ? "New Attributes" : "Attributes", form: nil, target_container: { model_target: "attributesContainer" }, class_name: "bg-panel border-1 border-border rounded-xl p-2 flex flex-col gap-2 mt-2") { }
       end
 
       def render_relations_container

@@ -17,11 +17,11 @@ module Views
         content_for(:title) { "New Model" }
         content_for(:sidebar) { render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy) }
         content_for(:header_actions) { render Components::Databasium::Models::HeaderActions.new(model: @model) }
-        div(class: "flex gap-4 p-4 overflow-y-hidden") do
+        div(class: "flex gap-4 p-4 overflow-y-hidden flex-1") do
           div(class: "w-1/4 overflow-y-auto") do
             render Components::Databasium::Models::Form.new(attributes: @attributes, model: @model, models: @models)
           end
-          div(class: "flex-1") do
+          div(class: "flex-1 overflow-y-auto") do
             render Components::Databasium::Models::ModelPreview.new(content: @content)
           end
         end
