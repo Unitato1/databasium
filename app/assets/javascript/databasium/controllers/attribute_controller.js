@@ -25,4 +25,8 @@ export default class extends Controller {
   remove() {
     this.element.remove();
   }
+
+  removeValidation(e) {
+    e.currentTarget.parentElement.remove();
+  }
 }

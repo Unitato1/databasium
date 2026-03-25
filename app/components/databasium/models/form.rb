@@ -35,7 +35,7 @@ module Components
         render_collapsable(
           name: @model.present? ? "New Attributes" : "Attributes",
           form: nil,
-          class_name: "bg-panel rounded-xl py-2"
+          class_name: "bg-panel rounded-xl py-2 mt-2"
         ) do
           div(
             class: "rounded-b-xl border border-border overflow-hidden divide-y divide-border mt-2", data: { model_target: "attributesContainer" }

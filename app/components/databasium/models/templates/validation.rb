@@ -48,6 +48,13 @@ module Components
             class:
               "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background focus:outline-none"
           )
+          button(
+            type: "button",
+            class: "text-red-500",
+            data: {
+              action: "click->attribute#removeValidation"
+            }
+          ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
         end
       end
     end
