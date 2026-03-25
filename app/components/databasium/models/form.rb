@@ -47,7 +47,10 @@ module Components
         render_collapsable(
           name: @model.present? ? "New Relations" : "Relations",
           form: nil,
-          class_name: "bg-panel rounded-xl py-2 mt-2"
+          class_name: "bg-panel rounded-xl py-2 mt-2",
+          data_targets: {
+            controller: "relation"
+          }
         ) do
           div(
             class: "flex flex-col gap-2 py-2 px-3", data: { model_target: "relationsContainer" }

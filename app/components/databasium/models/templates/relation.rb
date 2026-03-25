@@ -17,10 +17,10 @@ module Components
             class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) do
             [
-              ["belongs_to", "Belongs To"],
-              ["has_many", "Has Many"],
-              ["has_one", "Has One"],
-              ["has_and_belongs_to_many", "Has And Belongs To Many"]
+              [ "belongs_to", "Belongs To" ],
+              [ "has_many", "Has Many" ],
+              [ "has_one", "Has One" ],
+              [ "has_and_belongs_to_many", "Has And Belongs To Many" ]
             ].each do |value, label|
               option(value: value, selected: selected_relation == value) { label }
             end
@@ -30,6 +30,13 @@ module Components
             placeholder: "Currently there is no model to select",
             class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) { @models&.each { |model| option(value: model, selected: type == model) { model } } }
+          button(
+            type: "button",
+            class: "text-red-500",
+            data: {
+              action: "click->relation#removeRelation"
+            }
+          ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
         end
       end
     end

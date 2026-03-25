@@ -10,11 +10,6 @@ module Components
         render_collapsable(
           name: "Pre-filled attributes",
           form: nil,
-          data_targets: {
-            data: {
-              attribute_target: "attributes"
-            }
-          },
           class_name: "bg-panel rounded-xl py-2"
         ) do
           div(
@@ -31,9 +26,7 @@ module Components
           name: "Pre-filled relations",
           form: nil,
           data_targets: {
-            data: {
-              attribute_target: "relations"
-            }
+            controller: "relation"
           },
           class_name: "bg-panel mt-2 rounded-xl py-2"
         ) do
