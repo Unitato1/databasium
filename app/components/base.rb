@@ -13,8 +13,18 @@ module Databasium
         super
       end
     end
+
     protected
-    def render_collapsable(form: nil, name:, data_targets: {}, name_params: {}, class_name: nil, target_container: nil, &block)
+
+    def render_collapsable(
+      form: nil,
+      name:,
+      data_targets: {},
+      name_params: {},
+      class_name: nil,
+      target_container: nil,
+      &block
+    )
       render Components::Databasium::Collapsable.new(
                name: name,
                form: form,

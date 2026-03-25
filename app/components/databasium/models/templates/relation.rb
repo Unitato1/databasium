@@ -14,14 +14,13 @@ module Components
         div(class: "flex gap-2") do
           select(
             name: "model[relations][][type]",
-            class:
-              "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
+            class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) do
             [
-              [ "belongs_to", "Belongs To" ],
-              [ "has_many", "Has Many" ],
-              [ "has_one", "Has One" ],
-              [ "has_and_belongs_to_many", "Has And Belongs To Many" ]
+              ["belongs_to", "Belongs To"],
+              ["has_many", "Has Many"],
+              ["has_one", "Has One"],
+              ["has_and_belongs_to_many", "Has And Belongs To Many"]
             ].each do |value, label|
               option(value: value, selected: selected_relation == value) { label }
             end
@@ -29,13 +28,8 @@ module Components
           select(
             name: "model[relations][][table_name]",
             placeholder: "Currently there is no model to select",
-            class:
-              "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
-          ) do
-            @models&.each do |model|
-              option(value: model, selected: type == model) { model }
-            end
-          end
+            class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
+          ) { @models&.each { |model| option(value: model, selected: type == model) { model } } }
         end
       end
     end

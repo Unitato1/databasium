@@ -18,7 +18,13 @@ module Views
 
       def view_template
         content_for(:title) { "Migrations" }
-        content_for(:sidebar) { render Components::Databasium::Migrations::Sidebar.new(migrations: @migrations, pending_migrations: @pending_migrations, pagy: @pagy) }
+        content_for(:sidebar) do
+          render Components::Databasium::Migrations::Sidebar.new(
+                   migrations: @migrations,
+                   pending_migrations: @pending_migrations,
+                   pagy: @pagy
+                 )
+        end
         render_migration_frame
       end
 
@@ -33,7 +39,9 @@ module Views
           end
         else
           turbo_frame_tag "migration", class: "flex-1" do
-            render Components::Databasium::Global::Suggestion.new(suggestions: [ "Select a migration to see the file" ])
+            render Components::Databasium::Global::Suggestion.new(
+                     suggestions: ["Select a migration to see the file"]
+                   )
           end
         end
       end

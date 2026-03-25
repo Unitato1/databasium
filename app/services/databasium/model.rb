@@ -12,9 +12,7 @@ class Databasium::Model
   end
 
   def longest_name_length
-    attributes
-      .map { |a| (a[:name] || a["name"]).to_s.length }
-      .max || 0
+    attributes.map { |a| (a[:name] || a["name"]).to_s.length }.max || 0
   end
 
   private

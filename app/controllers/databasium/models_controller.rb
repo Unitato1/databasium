@@ -14,7 +14,15 @@ class Databasium::ModelsController < Databasium::ApplicationController
     @model = params[:model] if params[:model]
     @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
     respond_to do |format|
-      format.html { render Views::Databasium::Models::New.new(content: @content, model: @model, attributes: @attributes, models: @models, pagy: @pagy) }
+      format.html do
+        render Views::Databasium::Models::New.new(
+                 content: @content,
+                 model: @model,
+                 attributes: @attributes,
+                 models: @models,
+                 pagy: @pagy
+               )
+      end
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(
@@ -70,7 +78,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def model_params
     params.require(:model).permit(
       :model_name,
-      attributes: [ :name, :type, validations: %i[name type value] ],
+      attributes: [:name, :type, validations: %i[name type value]],
       relations: %i[type table_name]
     )
   end

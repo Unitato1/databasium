@@ -24,7 +24,7 @@ module Views
             controller: "graph",
             graph_tables_value: @schema.to_json
           }
-        ) { }
+        ) {}
       end
     end
   end

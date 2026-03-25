@@ -19,8 +19,14 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        turbo_frame_tag "records", class: "flex min-h-0 min-w-0 flex-1 flex-col",
-          src: helpers.records_records_path(table: @table, frame_id: "records", limit: 10) do
+        turbo_frame_tag "records",
+                        class: "flex min-h-0 min-w-0 flex-1 flex-col",
+                        src:
+                          helpers.records_records_path(
+                            table: @table,
+                            frame_id: "records",
+                            limit: 10
+                          ) do
           "Loading"
         end
       end
@@ -30,10 +36,10 @@ module Views
       def render_sidebar
         div(class: "flex flex-col w-full") do
           render Components::Databasium::Forms::Search.new(
-            url: databasium.records_path,
-            turbo_frame: "results",
-            placeholder: "Search for a table"
-          )
+                   url: databasium.records_path,
+                   turbo_frame: "results",
+                   placeholder: "Search for a table"
+                 )
           turbo_frame_tag("results") do
             @tables&.each do |table|
               div(class: "border-b-2 border-b-border py-2 px-3") do

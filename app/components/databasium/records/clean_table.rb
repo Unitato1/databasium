@@ -13,7 +13,7 @@ module Components
       def view_template
         div(id: "records_list", class: "flex min-h-0 min-w-0 flex-1 flex-col") do
           div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
-          table(class: "whitespace-nowrap bg-panel min-w-max") do
+            table(class: "whitespace-nowrap bg-panel min-w-max") do
               render_table_head
               render_table_body
             end
@@ -71,7 +71,9 @@ module Components
       end
 
       def render_pagy
-        div(class: "m-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy && @records&.any?
+        if @pagy && @records&.any?
+          div(class: "m-4 flex justify-start") { raw @pagy.series_nav.html_safe }
+        end
       end
     end
   end

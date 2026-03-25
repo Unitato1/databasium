@@ -8,31 +8,41 @@ module Components
 
       def view_template
         render_collapsable(
-          name: "Pre filled attributes and relations",
+          name: "Pre-filled attributes",
           form: nil,
           data_targets: {
             data: {
               attribute_target: "attributes"
             }
           },
-          class_name: "bg-panel border-1 border-border rounded-xl p-2"
+          class_name: "bg-panel rounded-xl py-2"
         ) do
-          @attributes&.fetch(:columns_hash)&.each do |name, attribute|
-            render Models::Templates::Attribute.new(name: name, params: attribute)
-          end
-          render_collapsable(
-            name: "Relations",
-            form: nil,
-            data_targets: {
-              data: {
-                attribute_target: "relations"
-              }
-            },
-            class_name: "bg-background border-1 border-border rounded-xl p-2"
+          div(
+            class: "rounded-b-xl border border-border overflow-hidden divide-y divide-border mt-2"
           ) do
-            @attributes&.fetch(:relations)&.each do |relation|
-              render Models::Templates::Relation.new(relation: relation, models: @models)
-            end
+            @attributes
+              &.fetch(:columns_hash)
+              &.each do |name, attribute|
+                render Models::Templates::Attribute.new(name: name, params: attribute)
+              end
+          end
+        end
+        render_collapsable(
+          name: "Pre-filled relations",
+          form: nil,
+          data_targets: {
+            data: {
+              attribute_target: "relations"
+            }
+          },
+          class_name: "bg-panel mt-2 rounded-xl py-2"
+        ) do
+          div(class: "flex flex-col gap-2 py-2 px-3") do
+            @attributes
+              &.fetch(:relations)
+              &.each do |relation|
+                render Models::Templates::Relation.new(relation: relation, models: @models)
+              end
           end
         end
       end

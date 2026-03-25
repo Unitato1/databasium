@@ -20,11 +20,10 @@ module Components
             data: {
               attribute_target: "name"
             }
-          }
+          },
+          class_name: ""
         ) do
-          div(
-            class: "flex flex-col gap-2 bg-panel border-1 border-border rounded-xl p-2"
-          ) do
+          div(class: "flex flex-col gap-2 bg-background p-3") do
             div(class: "flex items-center gap-2") do
               input(
                 type: "text",
@@ -35,28 +34,44 @@ module Components
                   attribute_target: "nameInput"
                 },
                 placeholder: "Attribute Name (e.g. email)",
-                class: "border-2 rounded-xl px-2 py-1 border-border w-full h-full bg-background focus:outline-none"
+                class:
+                  "border-2 rounded-xl px-2 py-1 border-border w-full h-full bg-background focus:outline-none"
               )
-              render Components::Databasium::TypeSelect.new(name: "model[attributes][][type]", value: @params&.fetch(:type, nil))
+              render Components::Databasium::TypeSelect.new(
+                       name: "model[attributes][][type]",
+                       value: @params&.fetch(:type, nil)
+                     )
             end
             attr_validations = @params&.fetch(:validations, nil)
             render_validations(validations: attr_validations)
+            render_remove_button
           end
         end
       end
 
+      def render_remove_button
+        button(
+          type: "button",
+          class: "text-red-500",
+          data: {
+            action: "click->attribute#remove"
+          }
+        ) { span { "Remove" } }
+      end
+
       def render_validations(validations: nil)
         render_collapsable(
-          name: "Validation",
+          name: "Validations",
           form: nil,
           data_targets: {
             data: {
               attribute_target: "validations"
             }
-          }
+          },
+          class_name: "border-collapse border-1 border-border py-2 rounded-xl"
         ) do
           div(data: { model_target: "validationsContainer" }, class: "validationsContainer") do
-            div(class: "flex items-center gap-2") do
+            div(class: "flex items-center gap-2 py-1 px-3") do
               span(class: "font-semibold") { "Add new Validation" }
               button(
                 data: {

@@ -12,24 +12,22 @@ module Components
         select(
           name: @name,
           class:
-            "border-2 rounded-xl px-2 py-1 border-border h-full bg-background focus:outline-none",
+            "border-2 rounded-xl px-2 py-1 border-border h-full bg-background focus:outline-none"
         ) do
           [
-            [ "text", "Text" ],
-            [ "string", "String" ],
-            [ "integer", "Integer" ],
-            [ "float", "Float" ],
-            [ "decimal", "Decimal" ],
-            [ "time", "Time" ],
-            [ "date", "Date" ],
-            [ "datetime", "Datetime" ],
-            [ "timestamp", "Timestamp" ],
-            [ "binary", "Binary" ],
-            [ "boolean", "Boolean" ],
-            [ "references", "Reference" ]
-          ].each do |value, label|
-            option(value: value, selected: @value == value) { label }
-          end
+            %w[text Text],
+            %w[string String],
+            %w[integer Integer],
+            %w[float Float],
+            %w[decimal Decimal],
+            %w[time Time],
+            %w[date Date],
+            %w[datetime Datetime],
+            %w[timestamp Timestamp],
+            %w[binary Binary],
+            %w[boolean Boolean],
+            %w[references Reference]
+          ].each { |value, label| option(value: value, selected: @value == value) { label } }
         end
       end
     end

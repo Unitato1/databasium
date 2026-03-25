@@ -6,8 +6,21 @@ class Databasium::Schema
   end
 
   def get_associations(table)
-    model = ActiveRecord::Base.descendants.find { |m| m.table_name == table } || table.classify.safe_constantize
-    model ? model.reflect_on_all_associations.map { |r| { name: r.name.to_s.pluralize, macro: r.macro, class_name: r.class_name, foreign_key: r.foreign_key } } : []
+    model =
+      ActiveRecord::Base.descendants.find { |m| m.table_name == table } ||
+        table.classify.safe_constantize
+    if model
+      model.reflect_on_all_associations.map do |r|
+        {
+          name: r.name.to_s.pluralize,
+          macro: r.macro,
+          class_name: r.class_name,
+          foreign_key: r.foreign_key
+        }
+      end
+    else
+      []
+    end
   end
 
   def schema
@@ -15,12 +28,19 @@ class Databasium::Schema
   end
 
   def get_foreign_keys(table)
-    @all_references ||= @conn.foreign_keys(table).map { |fk| { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key } }
+    @all_references ||=
+      @conn
+        .foreign_keys(table)
+        .map do |fk|
+          { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key }
+        end
     @all_references
   end
 
   def get_columns_from_table(table)
-    @conn.columns(table).map { |c| { name: c.name, sql_type: c.sql_type, null: c.null, default: c.default } }
+    @conn
+      .columns(table)
+      .map { |c| { name: c.name, sql_type: c.sql_type, null: c.null, default: c.default } }
   end
 
   def get_columns_names(table)
@@ -46,10 +66,10 @@ class Databasium::Schema
   end
 
   def get_model_from_table(table)
-    return [ nil, "Select a table to view its records." ] if table.nil?
+    return nil, "Select a table to view its records." if table.nil?
     table_name = table.downcase.pluralize.to_sym
     unless ActiveRecord::Base.connection.table_exists?(table_name)
-      return [ nil, "Table #{table} does not exist" ]
+      return nil, "Table #{table} does not exist"
     end
     begin
       # If there is no model for this table it will raise a NameError
@@ -58,10 +78,10 @@ class Databasium::Schema
     rescue NameError
       @model = nil
       @error =
-        'No model found for this table,
-        if you would like to interact with this table, you need to create a model for it.'
+        "No model found for this table,
+        if you would like to interact with this table, you need to create a model for it."
     end
-    [ @model, @error ]
+    [@model, @error]
   end
 
   def filter_records(records, filter)

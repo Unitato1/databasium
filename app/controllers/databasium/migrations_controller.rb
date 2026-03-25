@@ -3,15 +3,16 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   include Pagy::Method
 
   def index
-    @pagy, @migrations = pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
+    @pagy, @migrations =
+      pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
     @pending_migrations = @migration_service.pending_migrations
 
     render Views::Databasium::Migrations::Index.new(
-            migrations: @migrations,
-            pending_migrations: @pending_migrations,
-            migration_id: params[:version],
-            pagy: @pagy
-          )
+             migrations: @migrations,
+             pending_migrations: @pending_migrations,
+             migration_id: params[:version],
+             pagy: @pagy
+           )
   end
 
   def show
@@ -21,10 +22,17 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       @content = File.read(@migration.filename)
       respond_to do |format|
         format.html do
-          render Components::Databasium::Migrations::File.new(migration: @migration, content: @content)
+          render Components::Databasium::Migrations::File.new(
+                   migration: @migration,
+                   content: @content
+                 )
         end
         format.turbo_stream do
-          render Components::Databasium::Migrations::ShowTurboStream.new(migration: @migration, content: @content), layout: false
+          render Components::Databasium::Migrations::ShowTurboStream.new(
+                   migration: @migration,
+                   content: @content
+                 ),
+                 layout: false
         end
       end
     else
@@ -78,15 +86,19 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def rollback_migration
     version = rollback_migration_params[:version]
-    result, error = @migration_service.rollback_migration(version,
-      rollback_migration_params[:rollback_steps],
-      rollback_migration_params[:till_this_migration])
+    result, error =
+      @migration_service.rollback_migration(
+        version,
+        rollback_migration_params[:rollback_steps],
+        rollback_migration_params[:till_this_migration]
+      )
     if result == :success
       success = "Migration rolled back successfully"
     else
       error = "Error rolling back migration: #{error.message}"
     end
-    if rollback_migration_params[:till_this_migration] == "true" || rollback_migration_params[:rollback_steps].present?
+    if rollback_migration_params[:till_this_migration] == "true" ||
+         rollback_migration_params[:rollback_steps].present?
       flash[:success] = success
       flash[:error] = error
       redirect_to migrations_path
@@ -146,8 +158,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   def response_to_action(success, error, migration_version, status)
     respond_to do |format|
       format.turbo_stream do
-        render new_action_response(success, error, migration_version, status),
-               layout: false
+        render new_action_response(success, error, migration_version, status), layout: false
       end
       format.html { redirect_to migrations_path(version: migration_version) }
     end

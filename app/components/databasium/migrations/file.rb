@@ -14,7 +14,9 @@ module Components
       def view_template
         turbo_frame_tag "migration" do
           div(class: "mt-4 w-full scrollbar-thin overflow-y-auto", id: "migration") do
-            h1(class: "text-2xl font-bold mb-4 text-ellipsis overflow-hidden break-all") { @migration.name }
+            h1(class: "text-2xl font-bold mb-4 text-ellipsis overflow-hidden break-all") do
+              @migration.name
+            end
             render_content
             render_extra_info
           end
@@ -40,12 +42,12 @@ module Components
           end
           div do
             p(class: "font-bold text-wrap") { @migration.version }
-            p(class: "font-bold") {
+            p(class: "font-bold") do
               Time
                 .strptime(@migration.version.to_s, "%Y%m%d%H%M%S")
                 .localtime
                 .strftime("%Y-%m-%d at %H:%M:%S")
-            }
+            end
             p(class: "font-bold") { @migration.name }
             p(class: "font-bold") { @migration.filename }
           end

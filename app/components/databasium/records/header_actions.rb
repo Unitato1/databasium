@@ -7,7 +7,7 @@ module Components
       include Phlex::Rails::Helpers::Routes
       include Phlex::Rails::Helpers::TurboFrameTag
       include Phlex::Rails::Helpers::ButtonTo
-      LIMITS = [ 10, 20, 50, 100 ].freeze
+      LIMITS = [10, 20, 50, 100].freeze
       def initialize(filter:, table:, limit:)
         @filter = filter
         @table = table
@@ -18,28 +18,71 @@ module Components
         div(id: "header_actions") do
           limit = @limit.to_i
           render Components::Databasium::Navigation::IconPanel.new(
-            icons_with_text: [
-              { icon: "plus-circle", text: "add record", method: :frontend, data_params: {
-                hide: "add_record",
-                action: "click->hide#hide"
-              } },
-              { icon: "funnel", text: "filter", method: :frontend, data_params: {
-                hide: "filter",
-                action: "click->hide#hide"
-              } },
-              { icon: "chevron-double-up", text: "10", method: :get, turbo_frame: "records", path: records_path(), active: limit == 10 },
-              { icon: "chevron-double-up", text: "20", method: :get, turbo_frame: "records", path: records_path(limit: 20), active: limit == 20 },
-              { icon: "chevron-double-up", text: "50", method: :get, turbo_frame: "records", path: records_path(limit: 50), active: limit == 50 },
-              { icon: "chevron-double-up", text: "100", method: :get, turbo_frame: "records", path: records_path(limit: 100), active: limit == 100 }
-            ]
-          )
+                   icons_with_text: [
+                     {
+                       icon: "plus-circle",
+                       text: "add record",
+                       method: :frontend,
+                       data_params: {
+                         hide: "add_record",
+                         action: "click->hide#hide"
+                       }
+                     },
+                     {
+                       icon: "funnel",
+                       text: "filter",
+                       method: :frontend,
+                       data_params: {
+                         hide: "filter",
+                         action: "click->hide#hide"
+                       }
+                     },
+                     {
+                       icon: "chevron-double-up",
+                       text: "10",
+                       method: :get,
+                       turbo_frame: "records",
+                       path: records_path(),
+                       active: limit == 10
+                     },
+                     {
+                       icon: "chevron-double-up",
+                       text: "20",
+                       method: :get,
+                       turbo_frame: "records",
+                       path: records_path(limit: 20),
+                       active: limit == 20
+                     },
+                     {
+                       icon: "chevron-double-up",
+                       text: "50",
+                       method: :get,
+                       turbo_frame: "records",
+                       path: records_path(limit: 50),
+                       active: limit == 50
+                     },
+                     {
+                       icon: "chevron-double-up",
+                       text: "100",
+                       method: :get,
+                       turbo_frame: "records",
+                       path: records_path(limit: 100),
+                       active: limit == 100
+                     }
+                   ]
+                 )
         end
       end
 
       private
 
       def records_path(limit: 10)
-        databasium.records_records_path(table: @table, frame_id: "records", filter: @filter, limit: limit)
+        databasium.records_records_path(
+          table: @table,
+          frame_id: "records",
+          filter: @filter,
+          limit: limit
+        )
       end
     end
   end

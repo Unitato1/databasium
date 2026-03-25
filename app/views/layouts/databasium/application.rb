@@ -17,13 +17,27 @@ module Views
             csrf_meta_tags
             csp_meta_tag
             yield :head
-            stylesheet_link_tag "databasium", "data-turbo-track": Rails.env.production? ? "reload" : ""
+            stylesheet_link_tag "databasium",
+                                "data-turbo-track": Rails.env.production? ? "reload" : ""
             javascript_importmap_tags "databasium/application"
           end
-          body(class: "flex h-dvh overflow-hidden bg-background text-main-text scrollbar-thin", data: { controller: "layout" }) do
+          body(
+            class: "flex h-dvh overflow-hidden bg-background text-main-text scrollbar-thin",
+            data: {
+              controller: "layout"
+            }
+          ) do
             render Components::Databasium::Global::Sidebar.new(sidebar: content_for(:sidebar))
-            turbo_frame_tag("main", class: "flex flex-1 flex-col overflow-hidden", data: { controller: "hide model" }) do
-              render Components::Databasium::Global::HeaderActions.new(actions: content_for(:header_actions))
+            turbo_frame_tag(
+              "main",
+              class: "flex flex-1 flex-col overflow-hidden",
+              data: {
+                controller: "hide model"
+              }
+            ) do
+              render Components::Databasium::Global::HeaderActions.new(
+                       actions: content_for(:header_actions)
+                     )
               div(class: "flex min-h-0 min-w-0 flex-1 flex-col") do
                 yield block_given? ? block : block.call
               end

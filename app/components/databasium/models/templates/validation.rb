@@ -10,7 +10,7 @@ module Components
 
       def view_template
         selected_validation = @validation&.fetch(:type, nil)
-        div(class: "flex gap-2 mt-2") do
+        div(class: "flex gap-2 px-2") do
           input(
             type: "text",
             name: "model[attributes][][validations][][name]",
@@ -26,16 +26,16 @@ module Components
               "border-2 rounded-xl p-1 border-border w-full mt-2 bg-background focus:outline-none"
           ) do
             [
-              [ "presence", "Presence" ],
-              [ "uniqueness", "Uniqueness" ],
-              [ "format", "Format" ],
-              [ "inclusion", "Inclusion" ],
-              [ "exclusion", "Exclusion" ],
-              [ "numericality", "Numericality" ],
-              [ "length", "Length" ],
-              [ "comparison", "Comparison" ],
-              [ "confirmation", "Confirmation" ],
-              [ "acceptance", "Acceptance" ]
+              %w[presence Presence],
+              %w[uniqueness Uniqueness],
+              %w[format Format],
+              %w[inclusion Inclusion],
+              %w[exclusion Exclusion],
+              %w[numericality Numericality],
+              %w[length Length],
+              %w[comparison Comparison],
+              %w[confirmation Confirmation],
+              %w[acceptance Acceptance]
             ].each do |value, label|
               option(value: value, selected: selected_validation == value) { label }
             end

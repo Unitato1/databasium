@@ -42,13 +42,7 @@ module Components
               action: "click->flash#close"
             }
           ) do
-            heroicon(
-              "x-mark",
-              variant: :solid,
-              options: {
-                class: "w-8 h-8 hover:cursor-pointer"
-              }
-            )
+            heroicon("x-mark", variant: :solid, options: { class: "w-8 h-8 hover:cursor-pointer" })
           end
           h2(class: "font-bold border-b-1 border-b-gray-300") { "Success!" }
           p(class: "block") { @success }
@@ -68,13 +62,7 @@ module Components
               action: "click->flash#close"
             }
           ) do
-            heroicon(
-              "x-mark",
-              variant: :solid,
-              options: {
-                class: "w-8 h-8 hover:cursor-pointer"
-              }
-            )
+            heroicon("x-mark", variant: :solid, options: { class: "w-8 h-8 hover:cursor-pointer" })
           end
           h2(class: "font-bold") { "Error!" }
           p(class: "block") { @error }

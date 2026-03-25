@@ -1,19 +1,18 @@
-import { Controller } from "@hotwired/stimulus"
+import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="collapse"
 export default class extends Controller {
-  static targets = ["content", "collapseIcon"]
+  static targets = ["content", "collapseIcon"];
 
-  connect() {
-  }
+  connect() {}
 
-  toggle(e){
+  toggle(e) {
     e.preventDefault();
     if (this.hasContentTarget) {
-        this.contentTargets.forEach(target => {
-            target.classList.toggle("hidden")
-        })
+      this.contentTargets.forEach((target) => {
+        target.classList.toggle("hidden");
+      });
     }
-    this.collapseIconTarget.classList.toggle("rotate-180")
+    this.collapseIconTarget.classList.toggle("rotate-180");
   }
 }

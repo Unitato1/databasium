@@ -32,7 +32,8 @@ module Components
         form_with(
           url: databasium.records_records_path(table: @model.name, frame_id: @turbo_frame),
           method: :get,
-          class: "max-h-100 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
+          class:
+            "max-h-100 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
           data: {
             action: "change->search#update",
             filter_target: "form",
@@ -49,15 +50,21 @@ module Components
               class: "ps-4 py-1 rounded underline w-fit"
             ) { "Add Filter" }
             div(class: "flex items-center gap-5") do
-              form.submit("Run Filters", class: "bg-accent px-4 py-2 rounded-md", data: { turbo_stream: true })
+              form.submit(
+                "Run Filters",
+                class: "bg-accent px-4 py-2 rounded-md",
+                data: {
+                  turbo_stream: true
+                }
+              )
             end
           end
-        heroicon "x-mark",
-                       variant: :solid,
-                       options: {
-                         class: "w-8 h-8 hidden mr-2",
-                         data_filter_target: "removeIcon"
-                       }
+          heroicon "x-mark",
+                   variant: :solid,
+                   options: {
+                     class: "w-8 h-8 hidden mr-2",
+                     data_filter_target: "removeIcon"
+                   }
         end
       end
     end

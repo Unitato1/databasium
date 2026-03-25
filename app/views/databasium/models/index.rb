@@ -18,9 +18,7 @@ module Views
       private
 
       def render_models
-        div(
-          class: "",
-        ) do
+        div(class: "") do
           @models.each do |model|
             div(class: "border-1 border-border rounded-xl p-4") do
               h2(class: "text-lg font-semibold mb-2") { model.name }

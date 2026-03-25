@@ -21,4 +21,8 @@ export default class extends Controller {
       target.value = name;
     });
   }
+
+  remove() {
+    this.element.remove();
+  }
 }
