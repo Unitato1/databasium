@@ -44,7 +44,7 @@ class Databasium::Schema
   end
 
   def get_columns_names(table)
-    @conn.columns(table).map { it.name }
+    @conn.columns(table).map { |c| c.name }
   end
 
   def get_tables(search)
@@ -81,7 +81,7 @@ class Databasium::Schema
         "No model found for this table,
         if you would like to interact with this table, you need to create a model for it."
     end
-    [@model, @error]
+    [ @model, @error ]
   end
 
   def filter_records(records, filter)
