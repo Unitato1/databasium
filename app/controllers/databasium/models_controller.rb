@@ -25,25 +25,6 @@ class Databasium::ModelsController < Databasium::ApplicationController
     end
   end
 
-  def model_data
-    @model_names = Databasium::Models.new.get_all_models_from_dir
-    Databasium::Models.new.get_model_data_from_file("User")
-    if params[:model]
-      model = params[:model].safe_constantize
-      @model = {}
-      @model[model.name] = {
-        columns: model.column_names,
-        validations: model.validators.map { |v| { attributes: v.attributes, kind: v.kind } }
-      }
-    else
-      @models = {}
-      @model_names.each do |model|
-        @models[model.name] = Databasium::Models.new.get_model_data(model)
-      end
-    end
-    render Views::Databasium::Models::GetModel.new(model: @models)
-  end
-
   def create
     @content = generate_model_content
     if params[:commit] == "Create model file"

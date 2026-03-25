@@ -6,8 +6,7 @@ class Components::Databasium::Global::Sidebar < Components::Base
     { icon: "arrow-path", path: :migrations_path, text: "Migrations" },
     { icon: "cube", path: :new_model_path, text: "Models" },
     { icon: "table-cells", path: :schemas_path, text: "Schema" },
-    { icon: "pencil-square", path: :new_migration_path, text: "Edits" },
-    { icon: "database", path: :model_data_models_path, text: "Model Data" }
+    { icon: "pencil-square", path: :new_migration_path, text: "Edits" }
   ].freeze
 
   def initialize(sidebar: nil)
