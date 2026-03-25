@@ -38,8 +38,11 @@ module Components
           class_name: "bg-panel rounded-xl py-2 mt-2"
         ) do
           div(
-            class: "rounded-b-xl border border-border overflow-hidden divide-y divide-border mt-2", data: { model_target: "attributesContainer" }
-          ) { }
+            class: "rounded-b-xl border border-border overflow-hidden divide-y divide-border mt-2",
+            data: {
+              model_target: "attributesContainer"
+            }
+          ) {}
         end
       end
 
@@ -53,8 +56,11 @@ module Components
           }
         ) do
           div(
-            class: "flex flex-col gap-2 py-2 px-3", data: { model_target: "relationsContainer" }
-          ) { }
+            class: "flex flex-col gap-2 py-2 px-3",
+            data: {
+              model_target: "relationsContainer"
+            }
+          ) {}
         end
       end
 
