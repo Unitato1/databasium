@@ -1,20 +1,13 @@
 module Components
   module Databasium
     class Navigation::FrontendIcon < Navigation::BaseIcon
-      include Phlex::Rails::Helpers::LinkTo
-
-      def initialize(element:)
+      def initialize(element:, data_params: {})
         super(element: element)
+        @data_params = data_params
       end
 
       def view_template
-        div(
-          class: icon_classes,
-          data: {
-            hide: element[:text].to_s.split(" ").join("_"),
-            action: "click->hide#hide"
-          }
-        ) do
+        div(class: icon_classes, data: @data_params) do
           render_icon(element[:icon])
           p(class: "text-main-text text-base") { element[:text] }
         end

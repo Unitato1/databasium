@@ -54,21 +54,19 @@ module Components
         @columns_names_types.each do |column|
           next if column[:name].in?(SKIPPED_COLUMNS)
 
-            raw form.label(column[:name], class: "underline p-1 h-full text-sm")
-            if column[:foreign_key]
-              foreign_key_content(form, column)
-            else
-              div(class: "flex flex-col relative") do
-                p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") do
-                  column[:type]
-                end
-                raw form.public_send(
-                      type_to_helper(column[:type]),
-                      column[:name],
-                      class: "border-1 rounded-xl p-1 border-border bg-panel text-sm"
-                    )
-              end
+          raw form.label(column[:name], class: "underline p-1 h-full text-sm")
+          if column[:foreign_key]
+            foreign_key_content(form, column)
+          else
+            div(class: "flex flex-col relative") do
+              p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") { column[:type] }
+              raw form.public_send(
+                    type_to_helper(column[:type]),
+                    column[:name],
+                    class: "border-1 rounded-xl p-1 border-border bg-panel text-sm"
+                  )
             end
+          end
         end
         raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md w-fit")
       end

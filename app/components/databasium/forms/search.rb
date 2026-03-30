@@ -21,7 +21,8 @@ module Components
                       action: "input->search#update"
                     } do |form|
             raw form.search_field :search,
-                                  class: "border-2 border-border bg-background rounded-md p-2 w-full",
+                                  class:
+                                    "border-2 border-border bg-background rounded-md p-2 w-full",
                                   placeholder: @placeholder
           end
         end

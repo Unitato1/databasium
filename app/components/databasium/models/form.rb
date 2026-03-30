@@ -5,9 +5,10 @@ module Components
     class Models::Form < Components::Base
       include Phlex::Rails::Helpers::FormWith
 
-      def initialize(attributes: nil, model: nil)
+      def initialize(attributes: nil, model: nil, models: nil)
         @attributes = attributes
         @model = model
+        @models = models
       end
 
       def view_template
@@ -17,78 +18,74 @@ module Components
           scope: :model,
           html: {
             id: "model_form"
-          },
-          data: {
-            controller: "model"
           }
         ) do |form|
           render_model_name(form)
           render_form
-          render_add_attribute(form)
           render_attributes_container
-          render_add_relation(form)
           render_relations_container
           form.submit "Create preview for model",
-                      class: "bg-accent shadow-accent rounded-xl p-1 px-4 py-2 mt-2"
+                      class: "bg-accent shadow-accent rounded-xl p-1 p-2 mt-2 w-full text-center"
         end
       end
 
       private
 
       def render_attributes_container
-        div(data: { model_target: "attributesContainer" }) { }
-      end
-
-      def render_relations_container
-        div(data: { model_target: "relationsContainer" }) { }
-      end
-
-      def render_add_relation(form)
-        div(class: "flex items-center gap-2 bg-panel border-1 border-border rounded-xl p-2") do
-          span(class: "font-semibold") { "Add new Relation" }
-          button(
+        render_collapsable(
+          name: @model.present? ? "New Attributes" : "Attributes",
+          form: nil,
+          class_name: "bg-panel rounded-xl py-2 mt-2"
+        ) do
+          div(
+            class: "rounded-b-xl border border-border overflow-hidden divide-y divide-border mt-2",
             data: {
-              action: "click->model#add",
-              model_target_param: "relation",
-              model_container_param: "relationsContainer"
-            },
-            type: "button",
-            class: "bg-accent shadow-accent rounded-md p-1"
-          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+              model_target: "attributesContainer"
+            }
+          ) {}
         end
       end
 
-      def render_add_attribute(form)
-        div(class: "flex items-center gap-2 bg-panel border-1 border-border rounded-xl p-2") do
-          span(class: "font-semibold") { "Add new Attribute" }
-          button(
+      def render_relations_container
+        render_collapsable(
+          name: @model.present? ? "New Relations" : "Relations",
+          form: nil,
+          class_name: "bg-panel rounded-xl py-2 mt-2",
+          data_targets: {
+            controller: "relation"
+          }
+        ) do
+          div(
+            class: "flex flex-col gap-2 py-2 px-3",
             data: {
-              action: "click->model#add",
-              model_target_param: "attribute",
-              model_container_param: "attributesContainer"
-            },
-            type: "button",
-            class: "bg-accent shadow-accent rounded-md p-1"
-          ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+              model_target: "relationsContainer"
+            }
+          ) {}
         end
       end
 
       def render_model_name(form)
-        div(class: "flex flex-col mb-4") do
-          form.label :model_name, "Model Name"
+        div(class: "flex items-center mb-3 text-xl") do
+          form.label :model_name, "Name:", class: "font-semibold pe-2"
           form.text_field :model_name,
                           value: @model,
-                          class: "border-1 rounded-xl p-1 border-border bg-panel text-sm w-fit mt-2"
+                          class:
+                            "border-1 w-full rounded-xl p-1 border-border bg-panel w-fit focus:outline-none"
         end
       end
 
       def render_form
-        render Components::Databasium::Models::Attributes.new(attributes: @attributes)
+        if @attributes.present?
+          render Components::Databasium::Models::Attributes.new(
+                   attributes: @attributes,
+                   models: @models
+                 )
+        end
         template(data: { model_target: "attribute" }) do
           render Components::Databasium::Models::Templates::Attribute.new
         end
         template(data: { model_target: "relation" }) do
-          render Components::Databasium::Models::Templates::Relation.new
+          render Components::Databasium::Models::Templates::Relation.new(models: @models)
         end
         template(data: { model_target: "validation" }) do
           render Components::Databasium::Models::Templates::Validation.new

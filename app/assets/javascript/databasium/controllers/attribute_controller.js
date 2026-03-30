@@ -21,4 +21,12 @@ export default class extends Controller {
       target.value = name;
     });
   }
+
+  remove() {
+    this.element.remove();
+  }
+
+  removeValidation(e) {
+    e.currentTarget.parentElement.remove();
+  }
 }

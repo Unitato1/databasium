@@ -26,15 +26,7 @@ module Components
             data: {
               action: "click->layout#toggleSidebar"
             }
-          ) do
-            heroicon(
-                  "arrows-right-left",
-                  variant: :outline,
-                  options: {
-                    class: "w-4 h-4"
-                  }
-                )
-          end
+          ) { heroicon("arrows-right-left", variant: :outline, options: { class: "w-4 h-4" }) }
           div(id: "header_actions") { raw @actions }
         end
       end

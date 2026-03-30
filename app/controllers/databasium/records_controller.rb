@@ -40,7 +40,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @records = @model&.all
     @columns_names_types = @schema_service.get_columns(@model)
     @records = @schema_service.filter_records(@records, @filter)
-    @pagy, @records = pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
+    @pagy, @records =
+      pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
     @turbo_frame_id = params[:frame_id].presence || "records"
     @limit = params[:limit].presence || 10
     @refresh = params[:refresh].presence || false
@@ -51,9 +52,30 @@ class Databasium::RecordsController < Databasium::ApplicationController
              )
     else
       respond_to do |format|
-        format.html { render Components::Databasium::Records::Table.new(records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types) }
+        format.html do
+          render Components::Databasium::Records::Table.new(
+                   records: @records,
+                   model: @model,
+                   turbo_frame: @turbo_frame_id || "records",
+                   pagy: @pagy,
+                   feedback: @feedback,
+                   columns_names_types: @columns_names_types
+                 )
+        end
         format.turbo_stream do
-          render Components::Databasium::Records::ShowTurboStream.new(refresh: @refresh, filter: @filter, table: params[:table], records: @records, model: @model, turbo_frame: @turbo_frame_id || "records", pagy: @pagy, feedback: @feedback, columns_names_types: @columns_names_types, limit: @limit), layout: false
+          render Components::Databasium::Records::ShowTurboStream.new(
+                   refresh: @refresh,
+                   filter: @filter,
+                   table: params[:table],
+                   records: @records,
+                   model: @model,
+                   turbo_frame: @turbo_frame_id || "records",
+                   pagy: @pagy,
+                   feedback: @feedback,
+                   columns_names_types: @columns_names_types,
+                   limit: @limit
+                 ),
+                 layout: false
         end
       end
     end

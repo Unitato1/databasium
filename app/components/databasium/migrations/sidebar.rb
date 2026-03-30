@@ -25,7 +25,8 @@ module Components
             form.number_field :rollback_steps,
                               placeholder: "Rollback steps",
                               class: "ps-4 w-full h-full focus:outline-none"
-            form.submit "Rollback", class: "hover:cursor-pointer hover:text-hover text-accent p-2 w-fit"
+            form.submit "Rollback",
+                        class: "hover:cursor-pointer hover:text-hover text-accent p-2 w-fit"
           end
           button_to(
             "Run Pending Migrations",
@@ -41,9 +42,7 @@ module Components
       def render_migrations_list
         div(class: "flex flex-col gap-2", data: { controller: "search" }) do
           render_search_for_migrations
-          turbo_frame_tag("results") do
-            render_migrations
-          end
+          turbo_frame_tag("results") { render_migrations }
         end
         div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
@@ -51,28 +50,27 @@ module Components
       def render_migrations
         @migrations.each do |m|
           status = @pending_migrations.include?(m.version) ? "pending" : "applied"
-            link_to(
-              databasium.migration_path(m.version),
-              data: {
-                turbo_stream: true
-              },
-              class: "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
+          link_to(
+            databasium.migration_path(m.version),
+            data: {
+              turbo_stream: true
+            },
+            class:
+              "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
                 border-border flex items-center justify-between"
-            ) do
-              p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{m.name}" }
-              render Migrations::MigrationStatus.new(
-                    status: status,
-                    version: m.version)
+          ) do
+            p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "#{m.name}" }
+            render Migrations::MigrationStatus.new(status: status, version: m.version)
           end
         end
       end
 
       def render_search_for_migrations
         render Components::Databasium::Forms::Search.new(
-          url: databasium.migrations_path,
-          turbo_frame: "results",
-          placeholder: "Search for a migration"
-        )
+                 url: databasium.migrations_path,
+                 turbo_frame: "results",
+                 placeholder: "Search for a migration"
+               )
       end
     end
   end

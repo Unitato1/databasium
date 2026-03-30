@@ -10,10 +10,19 @@ class Databasium::ModelsController < Databasium::ApplicationController
 
   def get_model
     @content = File.read(Rails.root.join("app/models/#{params[:model].downcase}.rb"))
-    @attributes = Databasium::Models.new.get_model_data_from_file(params[:model])
+    @attributes = Databasium::Models.new.get_model_data_from_file(params[:model].upcase_first)
     @model = params[:model] if params[:model]
+    @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
     respond_to do |format|
-      format.html { render Views::Databasium::Models::New.new(content: @content, model: @model, attributes: @attributes, models: @models, pagy: @pagy) }
+      format.html do
+        render Views::Databasium::Models::New.new(
+                 content: @content,
+                 model: @model,
+                 attributes: @attributes,
+                 models: @models,
+                 pagy: @pagy
+               )
+      end
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(
@@ -22,25 +31,6 @@ class Databasium::ModelsController < Databasium::ApplicationController
                  )
       end
     end
-  end
-
-  def model_data
-    @model_names = Databasium::Models.new.get_all_models_from_dir
-    Databasium::Models.new.get_model_data_from_file("User")
-    if params[:model]
-      model = params[:model].safe_constantize
-      @model = {}
-      @model[model.name] = {
-        columns: model.column_names,
-        validations: model.validators.map { |v| { attributes: v.attributes, kind: v.kind } }
-      }
-    else
-      @models = {}
-      @model_names.each do |model|
-        @models[model.name] = Databasium::Models.new.get_model_data(model)
-      end
-    end
-    render Views::Databasium::Models::GetModel.new(model: @models)
   end
 
   def create
@@ -88,7 +78,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def model_params
     params.require(:model).permit(
       :model_name,
-      attributes: [ :name, :type, validations: %i[name type value] ],
+      attributes: [:name, :type, validations: %i[name type value]],
       relations: %i[type table_name]
     )
   end

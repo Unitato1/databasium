@@ -13,13 +13,25 @@ module Databasium
         super
       end
     end
+
     protected
-    def render_collapsable(form: nil, name:, data_targets:, class_name: nil, &block)
+
+    def render_collapsable(
+      form: nil,
+      name:,
+      data_targets: {},
+      name_params: {},
+      class_name: nil,
+      target_container: nil,
+      &block
+    )
       render Components::Databasium::Collapsable.new(
                name: name,
                form: form,
                data_targets: data_targets,
-               class_name: class_name
+               name_params: name_params,
+               class_name: class_name,
+               target_container: target_container
              ) do
         yield if block_given?
       end
