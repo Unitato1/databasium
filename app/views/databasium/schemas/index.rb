@@ -5,13 +5,15 @@ module Views
     class Schemas::Index < Views::Base
       include Phlex::Rails::Helpers::ContentFor
 
-      def initialize(schema:)
+      def initialize(schema:, models:, pagy:)
         @schema = schema
+        @models = models
+        @pagy = pagy
       end
 
       def view_template
         content_for(:title) { "Schema" }
-
+        content_for(:sidebar) { render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy) }
         div(class: "w-full h-full p-4") { render_schema }
       end
 
@@ -24,7 +26,7 @@ module Views
             controller: "graph",
             graph_tables_value: @schema.to_json
           }
-        ) {}
+        ) { }
       end
     end
   end

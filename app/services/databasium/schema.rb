@@ -27,6 +27,21 @@ class Databasium::Schema
     @schema ||= build_schema
   end
 
+  def get_schema_for_model(model)
+    schema[model.downcase.pluralize]
+  end
+
+  def get_model_associations(model)
+    model_associations = schema[model.downcase.pluralize].fetch(:associations, [])
+    result = { "#{model.downcase.pluralize}": get_schema_for_model(model) }
+    model_associations.each do |association|
+      association_key = association[:class_name].downcase.pluralize
+
+      result[association_key] = get_schema_for_model(association[:class_name])
+    end
+    result
+  end
+
   def get_foreign_keys(table)
     @all_references ||=
       @conn
