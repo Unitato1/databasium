@@ -5,6 +5,12 @@ class Databasium::Schema
     @tables = @conn.data_sources - %w[ar_internal_metadata schema_migrations]
   end
 
+  def sync!
+    path = Rails.root.join("storage")
+    FileUtils.mkdir_p(path) unless Dir.exist?(path)
+    File.write(path.join("schema_graph.json"), build_schema.to_json)
+  end
+
   def get_associations(table)
     model =
       ActiveRecord::Base.descendants.find { |m| m.table_name == table } ||
@@ -24,7 +30,31 @@ class Databasium::Schema
   end
 
   def schema
-    @schema ||= build_schema
+    if File.exist?(Rails.root.join("storage/schema_graph.json")) && @schema.nil?
+      @schema ||= JSON.parse(File.read(Rails.root.join("storage/schema_graph.json")))
+    else
+      @schema ||= build_schema
+      sync!
+    end
+    @schema
+  end
+
+  def get_model_and_layers_BFS(model, layers)
+    queue = Queue.new()
+    queue.push([ model.downcase.pluralize, 0 ])
+    result = {}
+    until queue.empty?
+      model, layer = queue.pop
+
+      next if (layers.present? && layer > layers) || result[model].present?
+      result[model] = get_schema_for_model(model)
+
+      model_associations = result[model].fetch("associations", []).map { |a| a["name"] }
+      model_associations.each do |association|
+        queue << [ association, layer + 1 ]
+      end
+    end
+    result
   end
 
   def get_schema_for_model(model)

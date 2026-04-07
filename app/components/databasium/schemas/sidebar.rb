@@ -22,6 +22,18 @@ module Components
       def render_models_list
         div(class: "flex flex-col gap-2", data: { controller: "search" }) do
           render_search_for_models
+          link_to(
+            databasium.schemas_path(layers: 0),
+            data: {
+              turbo_frame: "main"
+            },
+            class:
+              "hover:text-hover hover:cursor-pointer flex items-center justify-between underline p-1"
+          ) do
+            p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") do
+              "Whole schema"
+            end
+          end
           turbo_frame_tag("results") { render_models }
         end
         div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
@@ -30,24 +42,29 @@ module Components
       def render_models
         @models&.each do |model|
           link_to(
-            databasium.schemas_path(model: model.upcase_first),
+            databasium.schemas_path(model: model.upcase_first, layers: 0),
             data: {
               turbo_frame: "main"
             },
             class:
               "text-main-text hover:text-hover hover:cursor-pointer flex items-center gap-2 p-1 border-b
-                border-border flex items-center justify-between"
+                border-border justify-between"
           ) do
             p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") do
               "#{model.upcase_first}"
             end
           end
         end
+        if @models.empty?
+          p(class: "text-main-text text-center p-4") do
+            "No models found"
+          end
+        end
       end
 
       def render_search_for_models
         render Components::Databasium::Forms::Search.new(
-                 url: databasium.new_model_path,
+                 url: databasium.sidebar_schemas_path,
                  turbo_frame: "results",
                  placeholder: "Search for a model"
                )

@@ -6,12 +6,20 @@ Databasium::Engine.routes.draw do
     get :records, on: :collection
   end
   resources :migrations, only: [ :index, :new, :create, :show ] do
-    post :run_pending_migrations, on: :collection
-    post :run_migration, on: :collection
-    post :rollback_migration, on: :collection
+    collection do
+      post :run_pending_migrations
+      post :run_migration
+      post :rollback_migration
+    end
   end
   resources :models, only: [ :new, :create ] do
-    get :get_model, on: :collection
+    collection do
+      get :get_model
+    end
   end
-  resources :schemas, only: [ :index, :new, :create ]
+  resources :schemas, only: [ :index, :new, :create ] do
+    collection do
+      get :sidebar
+    end
+  end
 end
