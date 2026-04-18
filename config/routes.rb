@@ -3,6 +3,9 @@ Databasium::Engine.routes.draw do
   resources :homepage, only: [ :index ]
 
   resources :records, only: [ :index, :create ] do
+    collection do
+      delete :bulk_destroy
+    end
     get :records, on: :collection
   end
   resources :migrations, only: [ :index, :new, :create, :show ] do

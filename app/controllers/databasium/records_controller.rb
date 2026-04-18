@@ -1,6 +1,7 @@
 class Databasium::RecordsController < Databasium::ApplicationController
   before_action :create_schema_service
   include Pagy::Method
+  include ActionView::RecordIdentifier
 
   def index
     @pagy_tables, @tables =
@@ -81,7 +82,29 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
 
+  def bulk_destroy
+    ids = params[:ids]
+    @model, @feedback = @schema_service.get_model_from_table(params[:table])
+    records = @model&.where(id: ids)
+    return head :unprocessable_entity if records.nil?
+    doms_ids = records.map { |record| dom_id(record) }
+    if records&.destroy_all
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: (doms_ids&.map { |dom_id| turbo_stream.remove(dom_id) })
+        end
+        format.html do
+          head :ok
+        end
+      end
+    end
+  end
+
   private
+
+  def destroy_params
+    params.permit([ :id ])
+  end
 
   def create_schema_service
     @schema_service = Databasium::Schema.new
