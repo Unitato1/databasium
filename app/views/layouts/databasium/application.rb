@@ -32,7 +32,7 @@ module Views
               "main",
               class: "flex flex-1 flex-col overflow-hidden",
               data: {
-                controller: "hide model"
+                controller: "hide model table"
               }
             ) do
               render Components::Databasium::Global::HeaderActions.new(

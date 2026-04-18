@@ -7,7 +7,7 @@ module Components
       include Phlex::Rails::Helpers::Routes
       include Phlex::Rails::Helpers::TurboFrameTag
       include Phlex::Rails::Helpers::ButtonTo
-      LIMITS = [10, 20, 50, 100].freeze
+      LIMITS = [ 10, 20, 50, 100 ].freeze
       def initialize(filter:, table:, limit:)
         @filter = filter
         @table = table
@@ -15,8 +15,12 @@ module Components
       end
 
       def view_template
-        div(id: "header_actions") do
+        div(id: "header_actions", class: "flex tems-center") do
           limit = @limit.to_i
+          button(type: "submit", form: "records_list", data: { turbo_stream: true }, class: "hidden bg-accent px-4 py-1 rounded-xl text-base me-2") do
+            span(data: { table_target: "deleteButton" }) {  }
+          end
+
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
                      {

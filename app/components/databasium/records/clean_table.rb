@@ -17,17 +17,17 @@ module Components
       end
 
       def view_template
-        form_with(url: databasium.bulk_destroy_records_path, data: { turbo_method: :destroy }, method: :delete, scope: :table, id: "records_list", class: "flex min-h-0 min-w-0 flex-1 flex-col") do |form|
-          span() { @turbo_frame }
+        form_with(url: databasium.bulk_destroy_records_path,
+          data: { turbo_method: :destroy, action: "submit->table#resetDeleteButton" },
+          method: :delete,
+          scope: :table,
+          id: "records_list", class: "flex min-h-0 min-w-0 flex-1 flex-col") do |form|
           hidden_field_tag(:table, @model.name)
           div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
             table(class: "whitespace-nowrap bg-panel min-w-max") do
               render_table_head
               render_table_body
             end
-          end
-          form.submit(class: "bg-accent px-4 py-2 rounded-md", data: { turbo_stream: true }) do
-            plain "Delete"
           end
           render_pagy
         end
@@ -58,9 +58,8 @@ module Components
                 id: dom_id(record),
                 class: "hover:bg-background hover:cursor-pointer",
                 data: {
-                  action: "click->table-select#selectRecord click->table-row#selectRecord",
-                  record_id: record.id,
-                  controller: "table-row"
+                  action: "click->table-select#selectRecord click->table#selectRecord",
+                  record_id: record.id
                 }
               ) do
                 td(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do

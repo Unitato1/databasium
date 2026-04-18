@@ -7,6 +7,7 @@ module Components
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::HiddenFieldTag
       attr_reader :model, :layers
+
       def initialize(model:, layers:)
         @model = model
         @layers = layers
