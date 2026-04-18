@@ -17,11 +17,17 @@ module Components
       end
 
       def view_template
-        form_with(url: databasium.bulk_destroy_records_path,
-          data: { turbo_method: :destroy, action: "submit->table#resetDeleteButton" },
+        form_with(
+          url: databasium.bulk_destroy_records_path,
+          data: {
+            turbo_method: :destroy,
+            action: "submit->table#resetDeleteButton"
+          },
           method: :delete,
           scope: :table,
-          id: "records_list", class: "flex min-h-0 min-w-0 flex-1 flex-col") do |form|
+          id: "records_list",
+          class: "flex min-h-0 min-w-0 flex-1 flex-col"
+        ) do |form|
           hidden_field_tag(:table, @model.name)
           div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
             table(class: "whitespace-nowrap bg-panel min-w-max") do
@@ -62,12 +68,24 @@ module Components
                   record_id: record.id
                 }
               ) do
-                td(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
-                  input(type: "checkbox", id: "#{record.id}", name: "ids[]", value: record.id, data: { table_row_target: "checkbox" })
-                end if @turbo_frame == "records"
+                if @turbo_frame == "records"
+                  td(
+                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
+                  ) do
+                    input(
+                      type: "checkbox",
+                      id: "#{record.id}",
+                      name: "ids[]",
+                      value: record.id,
+                      data: {
+                        table_row_target: "checkbox"
+                      }
+                    )
+                  end
+                end
                 record.attributes.each do |_, value|
-                td(
-                  class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
+                  td(
+                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
                   ) { plain format_cell_value(value) }
                 end
               end

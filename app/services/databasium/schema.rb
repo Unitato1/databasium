@@ -41,7 +41,7 @@ class Databasium::Schema
 
   def get_model_and_layers_BFS(model, layers)
     queue = Queue.new()
-    queue.push([ model.downcase.pluralize, 0 ])
+    queue.push([model.downcase.pluralize, 0])
     result = {}
     until queue.empty?
       model, layer = queue.pop
@@ -50,9 +50,7 @@ class Databasium::Schema
       result[model] = get_schema_for_model(model)
 
       model_associations = result[model].fetch("associations", []).map { |a| a["name"] }
-      model_associations.each do |association|
-        queue << [ association, layer + 1 ]
-      end
+      model_associations.each { |association| queue << [association, layer + 1] }
     end
     result
   end
@@ -126,7 +124,7 @@ class Databasium::Schema
         "No model found for this table,
         if you would like to interact with this table, you need to create a model for it."
     end
-    [ @model, @error ]
+    [@model, @error]
   end
 
   def filter_records(records, filter)

@@ -6,6 +6,7 @@ export default class extends Controller {
   connect() {
     console.log("table controller connected");
     this.selectedRecords = 0;
+    this.enableUpdate = false;
   }
 
   selectRecord(e) {
@@ -38,5 +39,9 @@ export default class extends Controller {
   resetDeleteButton() {
     this.selectedRecords = 0;
     this.deleteButtonTarget.parentElement.classList.add("hidden");
+  }
+
+  enableUpdate() {
+    this.enableUpdate = true;
   }
 }

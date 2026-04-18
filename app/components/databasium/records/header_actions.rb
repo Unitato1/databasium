@@ -17,9 +17,14 @@ module Components
       def view_template
         div(id: "header_actions", class: "flex tems-center") do
           limit = @limit.to_i
-          button(type: "submit", form: "records_list", data: { turbo_stream: true }, class: "hidden bg-accent px-4 py-1 rounded-xl text-base me-2") do
-            span(data: { table_target: "deleteButton" }) {  }
-          end
+          button(
+            type: "submit",
+            form: "records_list",
+            data: {
+              turbo_stream: true
+            },
+            class: "hidden bg-accent px-4 py-1 rounded-xl text-base me-2"
+          ) { span(data: { table_target: "deleteButton" }) { } }
 
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [

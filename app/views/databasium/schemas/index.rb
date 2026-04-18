@@ -15,8 +15,17 @@ module Views
 
       def view_template
         content_for(:title) { "Schema" }
-        content_for(:sidebar) { render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy) }
-        content_for(:header_actions) { render Components::Databasium::Schemas::HeaderActions.new(model: @model, layers: @layers) } if @model.present?
+        content_for(:sidebar) do
+          render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy)
+        end
+        if @model.present?
+          content_for(:header_actions) do
+            render Components::Databasium::Schemas::HeaderActions.new(
+                     model: @model,
+                     layers: @layers
+                   )
+          end
+        end
         div(class: "w-full h-full p-4") { render_schema }
       end
 
@@ -29,7 +38,7 @@ module Views
             controller: "graph",
             graph_tables_value: @schema.to_json
           }
-        ) { }
+        ) {}
       end
     end
   end

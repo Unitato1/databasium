@@ -1,7 +1,7 @@
 class Databasium::Models
   attr_reader :model_name, :attributes, :relations
   # TODO make this configurable
-  PATHS = [ "models" ].freeze
+  PATHS = ["models"].freeze
   RELATIONS = %w[belongs_to has_many has_one has_and_belongs_to_many].freeze
   RELATIONS_REGEX = /\A(#{Regexp.union(RELATIONS).source})/
 

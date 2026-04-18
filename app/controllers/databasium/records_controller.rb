@@ -93,9 +93,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
         format.turbo_stream do
           render turbo_stream: (doms_ids&.map { |dom_id| turbo_stream.remove(dom_id) })
         end
-        format.html do
-          head :ok
-        end
+        format.html { head :ok }
       end
     end
   end
@@ -103,7 +101,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
   private
 
   def destroy_params
-    params.permit([ :id ])
+    params.permit([:id])
   end
 
   def create_schema_service

@@ -29,11 +29,7 @@ module Components
             },
             class:
               "hover:text-hover hover:cursor-pointer flex items-center justify-between underline p-1"
-          ) do
-            p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") do
-              "Whole schema"
-            end
-          end
+          ) { p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "Whole schema" } }
           turbo_frame_tag("results") { render_models }
         end
         div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
@@ -55,11 +51,7 @@ module Components
             end
           end
         end
-        if @models.empty?
-          p(class: "text-main-text text-center p-4") do
-            "No models found"
-          end
-        end
+        p(class: "text-main-text text-center p-4") { "No models found" } if @models.empty?
       end
 
       def render_search_for_models

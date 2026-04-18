@@ -78,7 +78,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def model_params
     params.require(:model).permit(
       :model_name,
-      attributes: [ :name, :type, validations: %i[name type value] ],
+      attributes: [:name, :type, validations: %i[name type value]],
       relations: %i[type table_name]
     )
   end
