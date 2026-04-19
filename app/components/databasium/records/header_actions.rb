@@ -80,6 +80,9 @@ module Components
                      }
                    ]
                  )
+            button(
+            class: "bg-accent px-4 py-1 rounded-xl text-base me-2"
+          ) { span(data: { table_target: "updateButton" }) { "Update mode" } }
         end
       end
 

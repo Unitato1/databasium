@@ -38,7 +38,8 @@ module Components
             url: databasium.records_path,
             class:
               "border-b-1 border-border p-4 rounded-xl mb-4 hidden max-h-100 overflow-y-auto flex-1",
-            id: "add_record"
+            id: "add_record",
+            data: { table_target: "addRecordForm" }
           ) { |form| form_content(form) }
         end
       end
