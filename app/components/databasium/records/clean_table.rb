@@ -57,54 +57,12 @@ module Components
       end
 
       def render_table_body
-        tbody() do
+        tbody(id: "records_body") do
           if @records&.any?
             @records.each do |record|
-              tr(
-                id: dom_id(record),
-                class: "hover:bg-background hover:cursor-pointer",
-                data: {
-                  action: "click->table-select#selectRecord click->table#selectRecord dblclick->table#appendRecordCard",
-                  record_id: record.id
-                }
-              ) do
-                if @turbo_frame == "records"
-                  td(
-                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
-                  ) do
-                    input(
-                      type: "checkbox",
-                      id: "#{record.id}",
-                      name: "ids[]",
-                      value: record.id,
-                      data: {
-                        table_row_target: "checkbox"
-                      }
-                    )
-                  end
-                end
-                record.attributes.each do |key, value|
-                  td(
-                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
-                      data: { attribute_name: key }
-                  ) { plain format_cell_value(value) }
-                end
-              end
+              render Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame)
             end
           end
-        end
-      end
-
-      def format_cell_value(value)
-        case value.class
-        when Time, DateTime, ActiveSupport::TimeWithZone
-          value.strftime("%Y-%m-%d %H:%M:%S")
-        when Date
-          value.strftime("%Y-%m-%d")
-        when File
-          link_to value.url, value.url, target: "_blank"
-        else
-          value.to_s
         end
       end
 

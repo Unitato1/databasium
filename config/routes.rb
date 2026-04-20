@@ -2,7 +2,7 @@ Databasium::Engine.routes.draw do
   root to: "homepage#index"
   resources :homepage, only: [ :index ]
 
-  resources :records, only: [ :index, :create ] do
+  resources :records, only: [ :index, :create, :update ] do
     collection do
       delete :bulk_destroy
     end

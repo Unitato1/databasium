@@ -80,14 +80,15 @@ export default class extends Controller {
   createAddRecordForm(row) {
     const form = this.element.querySelector("#add_record").cloneNode(true);
     form.classList.remove("hidden");
-    // Map all inputs once
     const inputs = {};
+    form.method = "patch";
+    form.action = `/databasium/records/${row.id.split("_")[1]}`;
+
     form.querySelectorAll("input, select, textarea").forEach((i) => {
-      const match = i.name.match(/\[(\w+)\]/); // Extracts 'name' from 'record[name]'
+      const match = i.name.match(/\[(\w+)\]/);
       if (match) inputs[match[1]] = i;
     });
 
-    // Then the loop is super fast
     [...row.children].forEach((child) => {
       const attr = child.dataset.attributeName;
       const input = inputs[attr];
@@ -143,7 +144,6 @@ export default class extends Controller {
 
   toDatetimeLocal(v) {
     if (!v) return "";
-    // "2025-01-15 10:30:00" | "2025-01-15T10:30:00Z" | ISO with offset
     const d = new Date(v.includes("T") ? v : v.replace(" ", "T"));
     if (isNaN(d)) return "";
     const pad = (n) => String(n).padStart(2, "0");
@@ -163,7 +163,6 @@ export default class extends Controller {
 
   toTime(v) {
     if (!v) return "";
-    // "10:30:00" or a full datetime
     const match = v.match(/(\d{2}):(\d{2})(?::(\d{2}))?/);
     return match ? match[0] : "";
   }

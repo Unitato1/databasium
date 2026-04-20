@@ -27,8 +27,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
         format.turbo_stream do
           render turbo_stream:
                    turbo_stream.append(
-                     "records_list",
-                     Components::Databasium::Records::NewRecordsRow.new(record: record)
+                     "records_body",
+                     Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records")
                    )
         end
       end
@@ -82,6 +82,19 @@ class Databasium::RecordsController < Databasium::ApplicationController
     end
   end
 
+  def update
+    @model, @error = @schema_service.get_model_from_table(params[:table])
+    record = @model&.find(params[:id])
+    if record && record.update(model_columns_params)
+      respond_to do |format|
+        format.html { head :ok }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(dom_id(record), Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records"))
+        end
+      end
+    end
+  end
+
   def bulk_destroy
     ids = params[:ids]
     @model, @feedback = @schema_service.get_model_from_table(params[:table])
@@ -99,10 +112,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
   end
 
   private
-
-  def destroy_params
-    params.permit([:id])
-  end
 
   def create_schema_service
     @schema_service = Databasium::Schema.new
