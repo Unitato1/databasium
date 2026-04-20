@@ -11,11 +11,12 @@ export default class extends Controller {
     "recordTabsContent"
   ];
   connect() {
-    console.log("table controller connected");
     this.selectedRecords = 0;
     this.enableUpdate = false;
     this.opened_tabs = new Map();
     this.opened_form = null;
+    this.opened_tab = null;
+    this.opened_record_id = null;
   }
 
   selectRecord(e) {
@@ -60,12 +61,26 @@ export default class extends Controller {
   appendRecordCard(e) {
     const row = e.currentTarget.closest("tr");
     if (this.opened_tabs.has(row.id)) return;
+    this.opened_record_id = row.id;
+    if (this.opened_form === null) {
+      this.recordTabsContentTarget.innerHTML = "";
+    }
+
+    if (this.opened_tab) {
+      this.opened_tab.classList.remove("bg-accent");
+    }
 
     const copy = this.recordTabTarget.content.cloneNode(true);
-    copy.querySelector("[data-table-target='recordTabTitle']").innerHTML = row.id;
+    copy.firstElementChild.querySelector("[data-table-target='recordTabTitle']").innerHTML = row.id;
     copy.firstElementChild.dataset.recordId = row.id;
-
+    copy.firstElementChild.classList.add("bg-accent");
+    this.opened_tab = copy.firstElementChild;
     this.recordTabsTarget.appendChild(copy);
+    this.opened_tab.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "end"
+    });
 
     const form = this.createAddRecordForm(row);
     this.opened_tabs.set(row.id, form);
@@ -80,6 +95,8 @@ export default class extends Controller {
   createAddRecordForm(row) {
     const form = this.element.querySelector("#add_record").cloneNode(true);
     form.classList.remove("hidden");
+    const addRecordButton = form.querySelector("#add_record_button");
+    addRecordButton.value = `Update record ${row.id}`;
     const inputs = {};
     form.method = "patch";
     form.action = `/databasium/records/${row.id.split("_")[1]}`;
@@ -121,13 +138,41 @@ export default class extends Controller {
   openTab(e) {
     const recordId = e.currentTarget.dataset.recordId;
     if (!this.opened_tabs.has(recordId)) return;
+    this.opened_record_id = recordId;
+    if (this.opened_tab) {
+      this.opened_tab.classList.remove("bg-accent");
+    }
 
     if (this.opened_form) {
       this.opened_form.classList.add("hidden");
     }
     const form = this.opened_tabs.get(recordId);
+
+    e.currentTarget.classList.add("bg-accent");
+    this.opened_tab = e.currentTarget;
+
     form.classList.remove("hidden");
     this.opened_form = form;
+  }
+
+  closeTab(e) {
+    const recordTab = e.currentTarget.parentElement;
+    const recordId = recordTab.dataset.recordId;
+
+    if (!this.opened_tabs.has(recordId)) return;
+
+    recordTab.remove();
+    this.opened_tabs.get(recordId).remove();
+
+    this.opened_tabs.delete(recordId);
+
+    if (this.opened_record_id === recordId) {
+      this.opened_tab.remove();
+      this.opened_form.remove();
+      this.opened_form = null;
+      this.opened_tab = null;
+      this.opened_record_id = null;
+    }
   }
 
   showExistingFile(input, filename) {

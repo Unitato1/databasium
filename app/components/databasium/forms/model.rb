@@ -69,7 +69,7 @@ module Components
             end
           end
         end
-        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md w-fit")
+        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md w-fit", id: "add_record_button")
       end
 
       def type_to_helper(type)
