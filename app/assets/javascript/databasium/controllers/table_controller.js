@@ -1,5 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
+const SPACES_UP_TO_OPEN_FORM = 135;
 // Connects to data-controller="table-row"
 export default class extends Controller {
   static targets = [
@@ -8,7 +9,9 @@ export default class extends Controller {
     "recordTab",
     "recordTabs",
     "addRecordForm",
-    "recordTabsContent"
+    "recordTabsContent",
+    "toggleAllRecordsButton",
+    "checkbox"
   ];
   connect() {
     this.selectedRecords = 0;
@@ -17,26 +20,65 @@ export default class extends Controller {
     this.opened_form = null;
     this.opened_tab = null;
     this.opened_record_id = null;
+    this.allRecordsSelected = false;
   }
 
   selectRecord(e) {
-    if (e.target.closest("input, label, a, button")) return;
-
-    e.preventDefault();
-    const checkbox = e.target.closest("tr").querySelector("input[type='checkbox']");
-
+    let checkbox;
+    if (e.target.closest("input, label, a, button")) {
+      checkbox = e.currentTarget;
+    } else {
+      checkbox = e.target.closest("tr").querySelector("input[type='checkbox']");
+    }
     if (checkbox) {
-      this.updateDeleteButton(checkbox.checked);
       checkbox.checked = !checkbox.checked;
+    }
+    console.log(checkbox.checked);
+    this.updateDeleteButton(checkbox.checked);
+    console.log(this.selectedRecords);
+    console.log(this.checkboxTargets.length);
+    this.allRecordsSelected = this.checkboxTargets.length === this.selectedRecords;
+    this.updateStyleOfToggleAllRecordsButton();
+  }
+
+  toggleAllRecords() {
+    // this.allRecordsSelected = !this.allRecordsSelected;
+    this.checkboxTargets.forEach((checkbox) => {
+      checkbox.checked = !this.allRecordsSelected;
+    });
+    this.allRecordsSelected = !this.allRecordsSelected;
+    this.updateStyleOfToggleAllRecordsButton();
+    this.updateDeleteButtonAllRecordsSelected();
+    this.updateDeleteButtonText();
+  }
+
+  updateStyleOfToggleAllRecordsButton() {
+    if (this.allRecordsSelected) {
+      this.toggleAllRecordsButtonTarget.classList.add("text-selected");
+    } else {
+      this.toggleAllRecordsButtonTarget.classList.remove("text-selected");
     }
   }
 
+  updateDeleteButtonAllRecordsSelected() {
+    if (this.allRecordsSelected) {
+      this.selectedRecords = this.checkboxTargets.length;
+    } else if (this.allRecordsSelected === false) {
+      this.selectedRecords = 0;
+    }
+    this.updateDeleteButtonText();
+  }
+
   updateDeleteButton(checked) {
-    if (checked) {
+    if (!checked) {
       this.selectedRecords--;
     } else {
       this.selectedRecords++;
     }
+    this.updateDeleteButtonText();
+  }
+
+  updateDeleteButtonText() {
     if (this.selectedRecords > 0) {
       this.deleteButtonTarget.parentElement.classList.remove("hidden");
     } else {
@@ -59,6 +101,7 @@ export default class extends Controller {
   }
 
   appendRecordCard(e) {
+    this.openRecordsPanel();
     const row = e.currentTarget.closest("tr");
     if (this.opened_tabs.has(row.id)) return;
     this.opened_record_id = row.id;
@@ -94,7 +137,9 @@ export default class extends Controller {
 
   createAddRecordForm(row) {
     const form = this.element.querySelector("#add_record").cloneNode(true);
-    form.classList.remove("hidden");
+    form.classList.remove("hidden", "max-h-100");
+    // 135px is the space up to the open form cant define as constants because of tailwind dynamic classes
+    form.classList.add(`max-h-[calc(100dvh-135px)]`, "pb-6");
     const addRecordButton = form.querySelector("#add_record_button");
     addRecordButton.value = `Update record ${row.id}`;
     const inputs = {};

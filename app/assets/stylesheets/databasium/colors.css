@@ -8,6 +8,7 @@
   --databasium-border: var(--color-slate-600);
   --databasium-panel: var(--color-slate-800);
   --databasium-hover: var(--color-yellow-400);
+  --databasium-selected: var(--color-green-500);
   --databasium-shadow: 0 0 6px rgba(96, 165, 250, 0.5);
 
   --databasium-active: var(--color-blue-500);
@@ -50,4 +51,5 @@
   --color-focus: var(--databasium-focus);
   --color-disabled: var(--databasium-disabled);
   --color-error: var(--databasium-error);
+  --color-selected: var(--databasium-selected);
 }

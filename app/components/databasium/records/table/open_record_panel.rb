@@ -5,7 +5,7 @@ module Components
       end
 
       def view_template
-        div(class: "absolute right-0 flex flex-col min-h-0 items-end") do
+        div(class: "flex flex-col min-h-0 items-end") do
           div(class: "bg-panel flex-1 min-h-0 overflow-y-auto rounded-bl-xl mb-2 min-h-[calc(100dvh-51px)] flex flex-col min-w-1/3 max-w-125", data: { table_target: "recordsPanel" }) do
             button(
               class: "w-fit text-accent hover:text-accent-dark border-1 border-accent p-1 rounded-xl m-2 ms-auto",

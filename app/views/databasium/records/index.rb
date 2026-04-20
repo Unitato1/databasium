@@ -19,6 +19,7 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
+        div(class: "flex flex min-h-0 min-w-0 flex-1") do
         turbo_frame_tag "records",
                         class: "flex min-h-0 min-w-0 flex-1 flex-col",
                         src:
@@ -30,6 +31,7 @@ module Views
           "Loading"
         end
         render Components::Databasium::Records::Table::OpenRecordPanel.new
+        end
       end
 
       private

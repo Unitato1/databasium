@@ -26,7 +26,7 @@ class Components::Databasium::Records::Table::Row < Components::Base
             name: "ids[]",
             value: record.id,
             data: {
-              table_row_target: "checkbox"
+              table_target: "checkbox"
             }
           )
         end

@@ -45,7 +45,9 @@ module Components
         thead do
           tr(class: "bg-accent shadow-accent") do
             th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
-              plain "Delete"
+              button(type: "button", data: { action: "click->table#toggleAllRecords", table_target: "toggleAllRecordsButton" }, class: "px-4 py-1 rounded-xl text-base me-2 hover:text-hover") do
+                heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" })
+              end
             end
             @model&.columns&.each do |column|
               th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
