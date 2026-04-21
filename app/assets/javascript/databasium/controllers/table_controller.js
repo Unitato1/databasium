@@ -38,21 +38,15 @@ export default class extends Controller {
       this.appendRecordCard(e);
     }
   }
-
   selectRecord(e) {
-    let checkbox;
-    if (e.target.closest("input, label, a, button")) {
-      checkbox = e.currentTarget;
-    } else {
-      checkbox = e.target.closest("tr").querySelector("input[type='checkbox']");
-    }
-    if (checkbox) {
+    const tr = e.target.closest("tr");
+    if (!tr) return;
+    const checkbox = tr.querySelector("input[type='checkbox']");
+    if (!checkbox) return;
+    if (!e.target.closest("input, label, a, button")) {
       checkbox.checked = !checkbox.checked;
     }
-    console.log(checkbox.checked);
     this.updateDeleteButton(checkbox.checked);
-    console.log(this.selectedRecords);
-    console.log(this.checkboxTargets.length);
     this.allRecordsSelected = this.checkboxTargets.length === this.selectedRecords;
     this.updateStyleOfToggleAllRecordsButton();
   }
