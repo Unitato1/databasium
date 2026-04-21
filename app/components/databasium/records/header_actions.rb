@@ -28,22 +28,31 @@ module Components
 
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
+                    {
+                      icon: "funnel",
+                      text: "filter",
+                      method: :frontend,
+                      data_params: {
+                        toggle: "filter",
+                        action: "click->toggle#toggle"
+                      }
+                    },
                      {
                        icon: "plus-circle",
-                       text: "add record",
+                       text: "add",
                        method: :frontend,
                        data_params: {
-                         hide: "add_record",
-                         action: "click->hide#hide"
+                         toggle: "addRecord",
+                         action: "click->toggle#toggle"
                        }
                      },
                      {
-                       icon: "funnel",
-                       text: "filter",
+                       icon: "pencil-square",
+                       text: "edit",
                        method: :frontend,
                        data_params: {
-                         hide: "filter",
-                         action: "click->hide#hide"
+                         toggle: "editRecord",
+                         action: "click->toggle#toggleSticky"
                        }
                      },
                      {
@@ -80,9 +89,6 @@ module Components
                      }
                    ]
                  )
-            button(
-            class: "bg-accent px-4 py-1 rounded-xl text-base me-2"
-          ) { span(data: { table_target: "updateButton" }) { "Update mode" } }
         end
       end
 

@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="hide"
+// Connects to data-controller="model"
 export default class extends Controller {
   static targets = [
     "attribute",

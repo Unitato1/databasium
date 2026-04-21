@@ -19,6 +19,7 @@ module Components
             class: class_names("hidden" => @hidden),
             id: "filter",
             data: {
+              toggle_target: "filter",
               controller: "filter",
               filter_columns_value: @columns_names_types.to_json
             }

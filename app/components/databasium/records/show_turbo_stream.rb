@@ -56,7 +56,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
         )
       )
       turbo_stream.replace(
-        "add_record",
+        "addRecord",
         Components::Databasium::Forms::Model.new(
           columns_names_types: @columns_names_types,
           model: @model

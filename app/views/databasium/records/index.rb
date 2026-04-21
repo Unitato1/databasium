@@ -30,7 +30,7 @@ module Views
                           ) do
           "Loading"
         end
-        render Components::Databasium::Records::Table::OpenRecordPanel.new
+        render Components::Databasium::Records::Table::RecordPanel.new
         end
       end
 

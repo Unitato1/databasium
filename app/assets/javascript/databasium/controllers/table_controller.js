@@ -136,7 +136,7 @@ export default class extends Controller {
   }
 
   createAddRecordForm(row) {
-    const form = this.element.querySelector("#add_record").cloneNode(true);
+    const form = this.element.querySelector("#addRecord").cloneNode(true);
     form.classList.remove("hidden", "max-h-100");
     // 135px is the space up to the open form cant define as constants because of tailwind dynamic classes
     form.classList.add(`max-h-[calc(100dvh-135px)]`, "pb-6");
