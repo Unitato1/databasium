@@ -25,11 +25,13 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html
         format.turbo_stream do
-          render turbo_stream:
+          render turbo_stream: [
                    turbo_stream.append(
                      "records_body",
-                     Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records")
-                   )
+                     Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list")
+                   ),
+                   turbo_stream.remove("suggestion")
+                 ]
         end
       end
     end
@@ -43,7 +45,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @records = @schema_service.filter_records(@records, @filter)
     @pagy, @records =
       pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
-    @turbo_frame_id = params[:frame_id].presence || "records"
+    @turbo_frame_id = params[:frame_id].presence || "records_list"
     @limit = params[:limit].presence || 10
     @refresh = params[:refresh].presence || false
     if @turbo_frame_id == "foreign_records"
@@ -54,10 +56,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
     else
       respond_to do |format|
         format.html do
-          render Components::Databasium::Records::Table.new(
+          render Components::Databasium::Records::CleanTable.new(
                    records: @records,
                    model: @model,
-                   turbo_frame: @turbo_frame_id || "records",
+                   turbo_frame: @turbo_frame_id || "records_list",
                    pagy: @pagy,
                    feedback: @feedback,
                    columns_names_types: @columns_names_types
@@ -89,7 +91,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html { head :ok }
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(dom_id(record), Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records"))
+          render turbo_stream: turbo_stream.replace(dom_id(record), Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list"))
         end
       end
     end

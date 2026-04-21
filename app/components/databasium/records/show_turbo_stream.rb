@@ -31,7 +31,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
       Components::Databasium::Records::CleanTable.new(
         records: @records,
         model: @model,
-        turbo_frame: @turbo_frame,
+        turbo_frame: "records_list",
         pagy: @pagy,
         feedback: @feedback,
         columns_names_types: @columns_names_types

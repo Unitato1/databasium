@@ -1,6 +1,8 @@
 import { Controller } from "@hotwired/stimulus";
 
 const SPACES_UP_TO_OPEN_FORM = 135;
+const CLICK_DELAY = 200;
+
 // Connects to data-controller="table-row"
 export default class extends Controller {
   static targets = [
@@ -21,6 +23,20 @@ export default class extends Controller {
     this.opened_tab = null;
     this.opened_record_id = null;
     this.allRecordsSelected = false;
+    this.clickTimer = null;
+  }
+
+  handleClick(e) {
+    if (this.clickTimer === null) {
+      this.clickTimer = setTimeout(() => {
+        this.clickTimer = null;
+        this.selectRecord(e);
+      }, CLICK_DELAY);
+    } else {
+      clearTimeout(this.clickTimer);
+      this.clickTimer = null;
+      this.appendRecordCard(e);
+    }
   }
 
   selectRecord(e) {
@@ -103,7 +119,11 @@ export default class extends Controller {
   appendRecordCard(e) {
     this.openRecordsPanel();
     const row = e.currentTarget.closest("tr");
-    if (this.opened_tabs.has(row.id)) return;
+    if (this.opened_tabs.has(row.id)) {
+      this.openTab(e, row.id);
+      this.scrollToOpenedTab();
+      return;
+    }
     this.opened_record_id = row.id;
     if (this.opened_form === null) {
       this.recordTabsContentTarget.innerHTML = "";
@@ -119,11 +139,7 @@ export default class extends Controller {
     copy.firstElementChild.classList.add("bg-accent");
     this.opened_tab = copy.firstElementChild;
     this.recordTabsTarget.appendChild(copy);
-    this.opened_tab.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-      inline: "end"
-    });
+    this.scrollToOpenedTab();
 
     const form = this.createAddRecordForm(row);
     this.opened_tabs.set(row.id, form);
@@ -133,6 +149,14 @@ export default class extends Controller {
     }
     this.opened_form = form;
     this.recordTabsContentTarget.appendChild(form);
+  }
+
+  scrollToOpenedTab() {
+    this.opened_tab.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+      inline: "end"
+    });
   }
 
   createAddRecordForm(row) {
@@ -180,8 +204,8 @@ export default class extends Controller {
     return form;
   }
 
-  openTab(e) {
-    const recordId = e.currentTarget.dataset.recordId;
+  openTab(e, givenRecordId = null) {
+    const recordId = givenRecordId || e.currentTarget.dataset.recordId;
     if (!this.opened_tabs.has(recordId)) return;
     this.opened_record_id = recordId;
     if (this.opened_tab) {
@@ -193,8 +217,9 @@ export default class extends Controller {
     }
     const form = this.opened_tabs.get(recordId);
 
-    e.currentTarget.classList.add("bg-accent");
-    this.opened_tab = e.currentTarget;
+    const recordTab = this.recordTabsTarget.querySelector(`[data-record-id="${recordId}"]`);
+    recordTab.classList.add("bg-accent");
+    this.opened_tab = recordTab;
 
     form.classList.remove("hidden");
     this.opened_form = form;

@@ -12,11 +12,11 @@ class Components::Databasium::Records::Table::Row < Components::Base
       id: dom_id(record),
       class: "hover:bg-background hover:cursor-pointer",
       data: {
-        action: "click->table-select#selectRecord click->table#selectRecord dblclick->table#appendRecordCard",
+        action: "click->table#handleClick",
         record_id: record.id
       }
     ) do
-      if @turbo_frame == "records"
+      if @turbo_frame == "records_list"
         td(
           class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
         ) do

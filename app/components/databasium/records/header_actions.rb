@@ -19,7 +19,7 @@ module Components
           limit = @limit.to_i
           button(
             type: "submit",
-            form: "records_list",
+            form: "delete_records_form",
             data: {
               turbo_stream: true
             },

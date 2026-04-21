@@ -6,6 +6,7 @@ module Components
       include Phlex::Rails::Helpers::CheckBoxTag
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::DOMID
+      include Phlex::Rails::Helpers::TurboFrameTag
 
       def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:)
         @records = records
@@ -17,25 +18,27 @@ module Components
       end
 
       def view_template
-        form_with(
-          url: databasium.bulk_destroy_records_path,
-          data: {
-            turbo_method: :destroy,
-            action: "submit->table#resetDeleteButton"
-          },
-          method: :delete,
-          scope: :table,
-          id: "records_list",
-          class: "flex min-h-0 min-w-0 flex-1 flex-col"
-        ) do |form|
-          hidden_field_tag(:table, @model.name)
-          div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
-            table(class: "whitespace-nowrap bg-panel min-w-max") do
-              render_table_head
-              render_table_body
+        turbo_frame_tag(@turbo_frame, class: "flex min-h-0 min-w-0 flex-1 flex-col relative") do
+            form_with(
+              url: databasium.bulk_destroy_records_path,
+              data: {
+                turbo_method: :destroy,
+                action: "submit->table#resetDeleteButton"
+              },
+              method: :delete,
+              scope: :table,
+              id: "delete_records_form",
+              class: "flex min-h-0 min-w-0 flex-1 flex-col"
+            ) do |form|
+              hidden_field_tag(:table, @model.name)
+              div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
+                table(class: "whitespace-nowrap bg-panel min-w-max") do
+                  render_table_head
+                  render_table_body
+                end
+              end
+              render_pagy
             end
-          end
-          render_pagy
         end
       end
 
@@ -64,6 +67,9 @@ module Components
             @records.each do |record|
               render Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame)
             end
+          else
+            render Components::Databasium::Global::Suggestion.new(
+              suggestions: [ @feedback || "No records found for #{@model&.name} table." ])
           end
         end
       end

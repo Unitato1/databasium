@@ -19,18 +19,16 @@ module Views
       def view_template
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
-        div(class: "flex flex min-h-0 min-w-0 flex-1") do
-        turbo_frame_tag "records",
-                        class: "flex min-h-0 min-w-0 flex-1 flex-col",
-                        src:
-                          helpers.records_records_path(
-                            table: @table,
-                            frame_id: "records",
-                            limit: 10
-                          ) do
-          "Loading"
-        end
-        render Components::Databasium::Records::Table::RecordPanel.new
+        div(class: "flex min-h-0 min-w-0 flex-1") do
+          render Components::Databasium::Records::Table.new(
+            records: @records,
+            model: @model,
+            turbo_frame: @turbo_frame_id || "records",
+            pagy: @pagy,
+            feedback: @feedback,
+            columns_names_types: @columns_names_types
+          )
+          render Components::Databasium::Records::Table::RecordPanel.new
         end
       end
 
@@ -49,6 +47,7 @@ module Views
                 link_to "#{table}",
                         databasium.records_records_path(table: table, refresh: true),
                         data: {
+                          turbo_frame: "_top",
                           turbo_stream: true
                         }
               end
