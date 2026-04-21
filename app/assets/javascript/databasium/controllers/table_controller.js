@@ -131,6 +131,8 @@ export default class extends Controller {
     copy.firstElementChild.querySelector("[data-table-target='recordTabTitle']").innerHTML = row.id;
     copy.firstElementChild.dataset.recordId = row.id;
     copy.firstElementChild.classList.add("bg-accent");
+    copy.firstElementChild.id = `record-tab-${row.id}`;
+
     this.opened_tab = copy.firstElementChild;
     this.recordTabsTarget.appendChild(copy);
     this.scrollToOpenedTab();
@@ -155,6 +157,7 @@ export default class extends Controller {
 
   createAddRecordForm(row) {
     const form = this.element.querySelector("#addRecord").cloneNode(true);
+    form.id = `record-form-${row.id}`;
     form.classList.remove("hidden", "max-h-100");
     // 135px is the space up to the open form cant define as constants because of tailwind dynamic classes
     form.classList.add(`max-h-[calc(100dvh-135px)]`, "pb-6");

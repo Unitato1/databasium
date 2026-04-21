@@ -106,7 +106,13 @@ class Databasium::RecordsController < Databasium::ApplicationController
     if records&.destroy_all
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: (doms_ids&.map { |dom_id| turbo_stream.remove(dom_id) })
+          render turbo_stream: doms_ids.flat_map { |dom_id|
+            [
+              turbo_stream.remove(dom_id),
+              turbo_stream.remove("record-tab-#{dom_id}"),
+              turbo_stream.remove("record-form-#{dom_id}")
+            ]
+          }
         end
         format.html { head :ok }
       end
