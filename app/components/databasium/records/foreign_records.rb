@@ -59,7 +59,7 @@ module Components
                             table: @model&.name,
                             frame_id: "foreign_records_list",
                             lazy: true
-                          ) {}
+                          ) { }
       end
     end
   end

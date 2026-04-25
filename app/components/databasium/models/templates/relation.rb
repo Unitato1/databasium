@@ -17,10 +17,10 @@ module Components
             class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
           ) do
             [
-              ["belongs_to", "Belongs To"],
-              ["has_many", "Has Many"],
-              ["has_one", "Has One"],
-              ["has_and_belongs_to_many", "Has And Belongs To Many"]
+              [ "belongs_to", "Belongs To" ],
+              [ "has_many", "Has Many" ],
+              [ "has_one", "Has One" ],
+              [ "has_and_belongs_to_many", "Has And Belongs To Many" ]
             ].each do |value, label|
               option(value: value, selected: selected_relation == value) { label }
             end

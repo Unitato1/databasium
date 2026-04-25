@@ -17,9 +17,7 @@ class Components::Databasium::Records::Table::Row < Components::Base
       }
     ) do
       if @turbo_frame == "records_list"
-        td(
-          class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
-        ) do
+        td(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
           input(
             type: "checkbox",
             id: "#{record.id}",
@@ -34,7 +32,9 @@ class Components::Databasium::Records::Table::Row < Components::Base
       record.class.columns.each do |column|
         td(
           class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
-            data: { attribute_name: column.name }
+          data: {
+            attribute_name: column.name
+          }
         ) { plain format_cell_value(record.public_send(column.name)) }
       end
     end

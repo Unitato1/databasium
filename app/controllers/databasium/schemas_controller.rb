@@ -37,6 +37,6 @@ class Databasium::SchemasController < Databasium::ApplicationController
   def get_models
     @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
     @pagy, @models = pagy(@models, limit: 10, root_key: "models")
-    [@models, @pagy]
+    [ @models, @pagy ]
   end
 end

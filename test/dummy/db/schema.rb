@@ -15,7 +15,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_170858) do
     t.datetime "created_at", null: false
     t.text "engine"
     t.datetime "updated_at", null: false
-    t.index ["engine"], name: "index_cars_on_engine", unique: true
+    t.index [ "engine" ], name: "index_cars_on_engine", unique: true
   end
 
   create_table "schools", force: :cascade do |t|
@@ -23,7 +23,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_170858) do
     t.integer "height", null: false
     t.text "name"
     t.datetime "updated_at", null: false
-    t.index ["name"], name: "index_schools_on_name", unique: true
+    t.index [ "name" ], name: "index_schools_on_name", unique: true
   end
 
   create_table "trucks", force: :cascade do |t|
@@ -48,7 +48,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_18_170858) do
     t.integer "truck_id"
     t.datetime "updated_at", null: false
     t.decimal "volume"
-    t.index ["truck_id"], name: "index_users_on_truck_id"
+    t.index [ "truck_id" ], name: "index_users_on_truck_id"
   end
 
   add_foreign_key "users", "trucks"
