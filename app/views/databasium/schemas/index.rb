@@ -5,13 +5,27 @@ module Views
     class Schemas::Index < Views::Base
       include Phlex::Rails::Helpers::ContentFor
 
-      def initialize(schema:)
+      def initialize(schema:, models:, pagy:, model:, layers:)
         @schema = schema
+        @models = models
+        @pagy = pagy
+        @model = model
+        @layers = layers
       end
 
       def view_template
         content_for(:title) { "Schema" }
-
+        content_for(:sidebar) do
+          render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy)
+        end
+        if @model.present?
+          content_for(:header_actions) do
+            render Components::Databasium::Schemas::HeaderActions.new(
+                     model: @model,
+                     layers: @layers
+                   )
+          end
+        end
         div(class: "w-full h-full p-4") { render_schema }
       end
 

@@ -7,7 +7,7 @@ module Components
       include Phlex::Rails::Helpers::Routes
       include Phlex::Rails::Helpers::TurboFrameTag
       include Phlex::Rails::Helpers::ButtonTo
-      LIMITS = [10, 20, 50, 100].freeze
+      LIMITS = [ 10, 20, 50, 100 ].freeze
       def initialize(filter:, table:, limit:)
         @filter = filter
         @table = table
@@ -15,26 +15,44 @@ module Components
       end
 
       def view_template
-        div(id: "header_actions") do
+        div(id: "header_actions", class: "flex tems-center") do
           limit = @limit.to_i
+          button(
+            type: "submit",
+            form: "delete_records_form",
+            data: {
+              turbo_stream: true
+            },
+            class: "hidden bg-accent px-4 py-1 rounded-xl text-base me-2"
+          ) { span(data: { table_target: "deleteButton" }) { } }
+
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
+                    {
+                      icon: "funnel",
+                      text: "filter",
+                      method: :frontend,
+                      data_params: {
+                        toggle: "filter",
+                        action: "click->toggle#toggle"
+                      }
+                    },
                      {
                        icon: "plus-circle",
-                       text: "add record",
+                       text: "add",
                        method: :frontend,
                        data_params: {
-                         hide: "add_record",
-                         action: "click->hide#hide"
+                         toggle: "addRecord",
+                         action: "click->toggle#toggle"
                        }
                      },
                      {
-                       icon: "funnel",
-                       text: "filter",
+                       icon: "pencil-square",
+                       text: "edit",
                        method: :frontend,
                        data_params: {
-                         hide: "filter",
-                         action: "click->hide#hide"
+                         toggle: "editRecord",
+                         action: "click->toggle#toggleSticky"
                        }
                      },
                      {

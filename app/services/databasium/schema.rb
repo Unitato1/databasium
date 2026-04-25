@@ -5,6 +5,12 @@ class Databasium::Schema
     @tables = @conn.data_sources - %w[ar_internal_metadata schema_migrations]
   end
 
+  def sync!
+    path = Rails.root.join("storage")
+    FileUtils.mkdir_p(path) unless Dir.exist?(path)
+    File.write(path.join("schema_graph.json"), build_schema.to_json)
+  end
+
   def get_associations(table)
     model =
       ActiveRecord::Base.descendants.find { |m| m.table_name == table } ||
@@ -24,7 +30,44 @@ class Databasium::Schema
   end
 
   def schema
-    @schema ||= build_schema
+    if File.exist?(Rails.root.join("storage/schema_graph.json")) && @schema.nil?
+      @schema ||= JSON.parse(File.read(Rails.root.join("storage/schema_graph.json")))
+    else
+      @schema ||= build_schema
+      sync!
+    end
+    @schema
+  end
+
+  def get_model_and_layers_BFS(model, layers)
+    queue = Queue.new()
+    queue.push([model.downcase.pluralize, 0])
+    result = {}
+    until queue.empty?
+      model, layer = queue.pop
+
+      next if (layers.present? && layer > layers) || result[model].present?
+      result[model] = get_schema_for_model(model)
+
+      model_associations = result[model].fetch("associations", []).map { |a| a["name"] }
+      model_associations.each { |association| queue << [association, layer + 1] }
+    end
+    result
+  end
+
+  def get_schema_for_model(model)
+    schema[model.downcase.pluralize]
+  end
+
+  def get_model_associations(model)
+    model_associations = schema[model.downcase.pluralize].fetch(:associations, [])
+    result = { "#{model.downcase.pluralize}": get_schema_for_model(model) }
+    model_associations.each do |association|
+      association_key = association[:class_name].downcase.pluralize
+
+      result[association_key] = get_schema_for_model(association[:class_name])
+    end
+    result
   end
 
   def get_foreign_keys(table)
@@ -81,7 +124,7 @@ class Databasium::Schema
         "No model found for this table,
         if you would like to interact with this table, you need to create a model for it."
     end
-    [ @model, @error ]
+    [@model, @error]
   end
 
   def filter_records(records, filter)

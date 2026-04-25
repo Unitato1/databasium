@@ -1,6 +1,7 @@
 class Databasium::RecordsController < Databasium::ApplicationController
   before_action :create_schema_service
   include Pagy::Method
+  include ActionView::RecordIdentifier
 
   def index
     @pagy_tables, @tables =
@@ -24,11 +25,13 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html
         format.turbo_stream do
-          render turbo_stream:
+          render turbo_stream: [
                    turbo_stream.append(
-                     "records_list",
-                     Components::Databasium::Records::NewRecordsRow.new(record: record)
-                   )
+                     "records_body",
+                     Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list")
+                   ),
+                   turbo_stream.remove("suggestion")
+                 ]
         end
       end
     end
@@ -42,7 +45,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @records = @schema_service.filter_records(@records, @filter)
     @pagy, @records =
       pagy(@records, limit: params[:limit].presence || 10, root_key: "records") if @records
-    @turbo_frame_id = params[:frame_id].presence || "records"
+    @turbo_frame_id = params[:frame_id].presence || "records_list"
     @limit = params[:limit].presence || 10
     @refresh = params[:refresh].presence || false
     if @turbo_frame_id == "foreign_records"
@@ -53,10 +56,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
     else
       respond_to do |format|
         format.html do
-          render Components::Databasium::Records::Table.new(
+          render Components::Databasium::Records::CleanTable.new(
                    records: @records,
                    model: @model,
-                   turbo_frame: @turbo_frame_id || "records",
+                   turbo_frame: @turbo_frame_id || "records_list",
                    pagy: @pagy,
                    feedback: @feedback,
                    columns_names_types: @columns_names_types
@@ -77,6 +80,41 @@ class Databasium::RecordsController < Databasium::ApplicationController
                  ),
                  layout: false
         end
+      end
+    end
+  end
+
+  def update
+    @model, @error = @schema_service.get_model_from_table(params[:table])
+    record = @model&.find(params[:id])
+    if record && record.update(model_columns_params)
+      respond_to do |format|
+        format.html { head :ok }
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(dom_id(record), Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list"))
+        end
+      end
+    end
+  end
+
+  def bulk_destroy
+    ids = params[:ids]
+    @model, @feedback = @schema_service.get_model_from_table(params[:table])
+    records = @model&.where(id: ids)
+    return head :unprocessable_entity if records.nil?
+    doms_ids = records.map { |record| dom_id(record) }
+    if records&.destroy_all
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: doms_ids.flat_map { |dom_id|
+            [
+              turbo_stream.remove(dom_id),
+              turbo_stream.remove("record-tab-#{dom_id}"),
+              turbo_stream.remove("record-form-#{dom_id}")
+            ]
+          }
+        end
+        format.html { head :ok }
       end
     end
   end

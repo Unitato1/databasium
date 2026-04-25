@@ -16,7 +16,7 @@ module Components
 
       def view_template
         turbo_frame_tag(@turbo_frame, class: "flex min-h-0 min-w-0 flex-1 flex-col") do
-          div(id: "records_utilities") {}
+          div(id: "records_utilities") { }
           render_table
         end
       end
@@ -26,7 +26,7 @@ module Components
       def render_table
         turbo_frame_tag("records_list") do
           render Components::Databasium::Global::Suggestion.new(
-                   suggestions: [@feedback || "No records found for #{@model&.name} table."]
+                   suggestions: [ @feedback || "No records found for #{@model&.name} table." ]
                  )
         end
       end

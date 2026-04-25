@@ -1,6 +1,13 @@
 module Components
   module Databasium
     class Records::CleanTable < Components::Base
+      include Phlex::Rails::Helpers::LinkTo
+      include Phlex::Rails::Helpers::HiddenFieldTag
+      include Phlex::Rails::Helpers::CheckBoxTag
+      include Phlex::Rails::Helpers::FormWith
+      include Phlex::Rails::Helpers::DOMID
+      include Phlex::Rails::Helpers::TurboFrameTag
+
       def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:)
         @records = records
         @model = model
@@ -11,15 +18,27 @@ module Components
       end
 
       def view_template
-        div(id: "records_list", class: "flex min-h-0 min-w-0 flex-1 flex-col") do
-          div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
-            table(class: "whitespace-nowrap bg-panel min-w-max") do
-              render_table_head
-              render_table_body
+        turbo_frame_tag(@turbo_frame, class: "flex min-h-0 min-w-0 flex-1 flex-col relative") do
+            form_with(
+              url: databasium.bulk_destroy_records_path,
+              data: {
+                turbo_method: :destroy,
+                action: "submit->table#resetDeleteButton"
+              },
+              method: :delete,
+              scope: :table,
+              id: "delete_records_form",
+              class: "flex min-h-0 min-w-0 flex-1 flex-col"
+            ) do |form|
+              hidden_field_tag(:table, @model.name)
+              div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
+                table(class: "whitespace-nowrap bg-panel min-w-max") do
+                  render_table_head
+                  render_table_body
+                end
+              end
+              render_pagy
             end
-          end
-
-          render_pagy
         end
       end
 
@@ -28,6 +47,11 @@ module Components
       def render_table_head
         thead do
           tr(class: "bg-accent shadow-accent") do
+            th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
+              button(type: "button", data: { action: "click->table#toggleAllRecords", table_target: "toggleAllRecordsButton" }, class: "px-4 py-1 rounded-xl text-base me-2 hover:text-hover") do
+                heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" })
+              end
+            end
             @model&.columns&.each do |column|
               th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
                 plain column.name
@@ -38,35 +62,15 @@ module Components
       end
 
       def render_table_body
-        tbody() do
+        tbody(id: "records_body") do
           if @records&.any?
             @records.each do |record|
-              tr(
-                class: "hover:bg-background hover:cursor-pointer",
-                data: {
-                  action: "click->table-select#selectRecord",
-                  record_id: record.id
-                }
-              ) do
-                record.attributes.each do |_, value|
-                  td(
-                    class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
-                  ) { plain format_cell_value(value) }
-                end
-              end
+              render Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame)
             end
+          else
+            render Components::Databasium::Global::Suggestion.new(
+              suggestions: [ @feedback || "No records found for #{@model&.name} table." ])
           end
-        end
-      end
-
-      def format_cell_value(value)
-        case value
-        when Time, DateTime, ActiveSupport::TimeWithZone
-          value.strftime("%Y-%m-%d %H:%M:%S")
-        when Date
-          value.strftime("%Y-%m-%d")
-        else
-          value.to_s
         end
       end
 

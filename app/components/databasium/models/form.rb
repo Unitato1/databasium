@@ -42,7 +42,7 @@ module Components
             data: {
               model_target: "attributesContainer"
             }
-          ) {}
+          ) { }
         end
       end
 
@@ -60,7 +60,7 @@ module Components
             data: {
               model_target: "relationsContainer"
             }
-          ) {}
+          ) { }
         end
       end
 
