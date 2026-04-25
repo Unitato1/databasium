@@ -70,7 +70,7 @@ module Components
           },
           class_name: "border-collapse border-1 border-border py-2 rounded-xl"
         ) do
-          div(data: { model_target: "validationsContainer" }, class: "validationsContainer") do
+          div(data: { model_target: "validationsContainer", controller: "validation" }, class: "validationsContainer") do
             div(class: "flex items-center gap-2 py-1 px-3") do
               span(class: "font-semibold") { "Add new Validation" }
               button(

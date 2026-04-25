@@ -42,7 +42,7 @@ module Components
             new_migration_target: "validations"
           }
         ) do
-          div(class: "flex gap-2 items-end hidden", data: { new_migration_target: "validation" }) do
+          div(class: "flex gap-2 items-center hidden", data: { new_migration_target: "validation" }) do
             select(
               name: "validation[][column_name]",
               class: "p-2 border-2 border-border rounded-md w-fit bg-background",
@@ -62,7 +62,7 @@ module Components
             end
             button(
               type: "button",
-              class: "text-red-500 border-2 border-red-500 rounded-xl h-fit",
+              class: "text-red-500 h-fit",
               data: {
                 action: "click->new-migration#removeValidation"
               }
@@ -111,7 +111,7 @@ module Components
             end
             button(
               type: "button",
-              class: "text-red-500 border-2 border-red-500 rounded-xl h-fit",
+              class: "text-red-500 h-fit",
               data: {
                 action: "click->new-migration#removeColumn"
               }
