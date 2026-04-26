@@ -1,5 +1,7 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
   before_action :create_migration_service
+  after_action -> { Databasium::Schema.new.sync! },
+               only: %i[run_migration rollback_migration run_pending_migrations]
   include Pagy::Method
 
   def index

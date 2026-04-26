@@ -23,6 +23,7 @@ Databasium::Engine.routes.draw do
   resources :schemas, only: [ :index, :new, :create ] do
     collection do
       get :sidebar
+      put :sync_schema
     end
   end
 end

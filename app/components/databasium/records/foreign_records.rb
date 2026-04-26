@@ -16,7 +16,7 @@ module Components
             div(
               class:
                 "absolute z-20 bg-panel p-4 rounded-xl border-1 border-border " \
-                "w-fit max-w-250 flex flex-col max-h-[600px] overflow-y-auto",
+                  "w-fit max-w-250 flex flex-col max-h-[600px] overflow-y-auto",
               id: "foreign_records",
               data: {
                 table_select_target: "table"

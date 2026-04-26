@@ -8,7 +8,15 @@ module Components
       include Phlex::Rails::Helpers::DOMID
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:, render_as_cards: false)
+      def initialize(
+        records:,
+        model:,
+        turbo_frame:,
+        pagy: nil,
+        feedback: nil,
+        columns_names_types:,
+        render_as_cards: false
+      )
         @records = records
         @model = model
         @turbo_frame = turbo_frame
@@ -52,16 +60,18 @@ module Components
       def render_table_head
         thead do
           tr(class: "bg-accent shadow-accent") do
-            th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
-              button(
-                type: "button",
-                data: {
-                  action: "click->table#toggleAllRecords",
-                  table_target: "toggleAllRecordsButton"
-                },
-                class: "px-4 py-1 rounded-xl text-base me-2 hover:text-hover"
-              ) { heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" }) }
-            end if @turbo_frame == "records_list"
+            if @turbo_frame == "records_list"
+              th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
+                button(
+                  type: "button",
+                  data: {
+                    action: "click->table#toggleAllRecords",
+                    table_target: "toggleAllRecordsButton"
+                  },
+                  class: "px-4 py-1 rounded-xl text-base me-2 hover:text-hover"
+                ) { heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" }) }
+              end
+            end
             @model&.columns&.each do |column|
               th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
                 plain column.name

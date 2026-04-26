@@ -116,8 +116,11 @@ module Components
           name: "table_name",
           data_targets: {
             new_migration_target: "table_name"
-          },
-        ) { form.text_field :table_name, class: "p-2 border-1 border-border w-fit bg-background rounded-md" }
+          }
+        ) do
+          form.text_field :table_name,
+                          class: "p-2 border-1 border-border w-fit bg-background rounded-md"
+        end
       end
 
       def render_migration_action(form)
@@ -138,19 +141,16 @@ module Components
                           action: "change->new-migration#set_action"
                         }
           end
-          div(
-            class: "flex flex-col",
-            data: {
-              new_migration_target: "add_model_container"
-            }
-          ) do
+          div(class: "flex flex-col", data: { new_migration_target: "add_model_container" }) do
             form.label :add_model, "Add also model", class: "text-sm font-semibold"
-            div(class: "h-11 flex items-center justify-center") { form.check_box :add_model,
-                          checked: true,
-                           class: "w-4 h-4",
-                           data: {
-                             new_migration_target: "add_model"
-                           } }
+            div(class: "h-11 flex items-center justify-center") do
+              form.check_box :add_model,
+                             checked: true,
+                             class: "w-4 h-4",
+                             data: {
+                               new_migration_target: "add_model"
+                             }
+            end
           end
 
           div(class: "flex flex-col hidden", data: { new_migration_target: "table_name_from" }) do
@@ -169,14 +169,13 @@ module Components
         form.search_field name,
                           placeholder: "Search for a table",
                           list: "table_name_datalist",
-                          class: "p-2 border-1 border-border rounded-md w-fit bg-background leading-5"
+                          class:
+                            "p-2 border-1 border-border rounded-md w-fit bg-background leading-5"
       end
 
       def render_table_datalist
         datalist(id: "table_name_datalist") do
-          @tables.each do |table|
-            option(value: table) { table }
-          end
+          @tables.each { |table| option(value: table) { table } }
         end
       end
 
@@ -196,9 +195,10 @@ module Components
           data_targets: data_targets,
           class_name: "border-1 border-border rounded-xl py-1"
         ) do
-          div(class: "flex gap-2 items-center px-2 mt-2 mb-2 #{hidden ? "hidden" : ""}", data: name_params) do
-            yield if block_given?
-          end
+          div(
+            class: "flex gap-2 items-center px-2 mt-2 mb-2 #{hidden ? "hidden" : ""}",
+            data: name_params
+          ) { yield if block_given? }
           if button_text.present? && button_action.present?
             button(
               type: "button",

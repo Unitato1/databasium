@@ -102,6 +102,10 @@ module Components
       end
 
       def render_validation_type_select(selected_validation: nil)
+        span do
+          plain @selected_validation
+          plain @validation_type
+        end
         select(
           name: "model[attributes][][validations][][type]",
           class: "border-2 rounded-xl p-1 border-border w-fill bg-background focus:outline-none",

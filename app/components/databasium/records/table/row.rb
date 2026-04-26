@@ -11,11 +11,7 @@ class Components::Databasium::Records::Table::Row < Components::Base
   end
 
   def view_template
-    if @render_as_cards
-      render_card
-    else
-      render_row
-    end
+    @render_as_cards ? render_card : render_row
   end
 
   private
@@ -29,29 +25,29 @@ class Components::Databasium::Records::Table::Row < Components::Base
       id: dom_id(record),
       class:
         "flex flex-col border-1 border-border rounded-md bg-panel " \
-        "hover:bg-background hover:cursor-pointer overflow-hidden min-w-0 w-full max-w-125",
+          "hover:bg-background hover:cursor-pointer overflow-hidden min-w-0 w-full max-w-125",
       data: {
         action: click_action,
         record_id: record.id
       }
-    ) do
-      record.class.columns.each { |column| render_card_field(column) }
-    end
+    ) { record.class.columns.each { |column| render_card_field(column) } }
   end
 
   def render_card_field(column)
     div(
       class:
         "grid grid-cols-2 divide-x divide-border " \
-        "border-b-1 border-border last:border-b-0 py-1",
+          "border-b-1 border-border last:border-b-0 py-1",
       data: {
         attribute_name: column.name
       }
     ) do
-      div(class: "text-base font-semibold px-2 overflow-x-auto whitespace-nowrap min-w-0 max-w-full") { column.name }
-      div(class: "text-base font-light px-2 overflow-x-auto whitespace-nowrap min-w-0 max-w-full") do
-        format_cell_value(record.public_send(column.name))
-      end
+      div(
+        class: "text-base font-semibold px-2 overflow-x-auto whitespace-nowrap min-w-0 max-w-full"
+      ) { column.name }
+      div(
+        class: "text-base font-light px-2 overflow-x-auto whitespace-nowrap min-w-0 max-w-full"
+      ) { format_cell_value(record.public_send(column.name)) }
     end
   end
 
