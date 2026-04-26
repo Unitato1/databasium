@@ -31,7 +31,13 @@ module Components
             render_validation_name_input
             div(class: "relative") do
               render_validation_type_select(selected_validation: @selected_validation)
-              div(class: "absolute -top-1.5 -right-[0.5rem]", data: { action: "mouseenter->validation#showBasicInfo mouseleave->validation#hideBasicInfo" }) do
+              div(
+                class: "absolute -top-1.5 -right-[0.5rem]",
+                data: {
+                  action:
+                    "mouseenter->validation#showBasicInfo mouseleave->validation#hideBasicInfo"
+                }
+              ) do
                 heroicon "information-circle", variant: :solid, options: { class: "w-5 h-5" }
                 render_basic_info
               end
@@ -57,11 +63,20 @@ module Components
       private
 
       def render_basic_info
-        div(data: { validation_target: "basicInfo" }, class: "hidden absolute z-20 w-64 p-4 mt-2 text-sm text-text bg-background border border-border rounded-xl shadow-xl bottom-full left-1/2 -translate-x-1/2") do
+        div(
+          data: {
+            validation_target: "basicInfo"
+          },
+          class:
+            "hidden absolute z-20 w-64 p-4 mt-2 text-sm text-text bg-background border border-border rounded-xl shadow-xl bottom-full left-1/2 -translate-x-1/2"
+        ) do
           div(class: "relative") do
             p(class: "font-semibold") { "Basic use case" }
             p(class: "text-text", data: { validation_target: "basicInfoText" }) { "" }
-            div(class: "absolute -bottom-5.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-background border-b border-r border-border rotate-45")
+            div(
+              class:
+                "absolute -bottom-5.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-background border-b border-r border-border rotate-45"
+            )
           end
         end
       end
@@ -69,14 +84,14 @@ module Components
       def render_validation_value_input
         div(class: "flex gap-2 px-2 mt-1 relative w-full") do
           input(
-          type: "search",
-          list: "acceptance-options",
-          name: "model[attributes][][validations][][value]",
-          class: "border-1 p-1 border-border w-full bg-background focus:outline-none",
+            type: "search",
+            list: "acceptance-options",
+            name: "model[attributes][][validations][][value]",
+            class: "border-1 p-1 border-border w-full bg-background focus:outline-none",
             placeholder: "Value (e.g. true)",
-          data: {
-            validation_target: "valueInput"
-          }
+            data: {
+              validation_target: "valueInput"
+            }
           )
           div(class: "absolute -top-4 right-0 flex gap-1") do
             render_add_additional_options_button(action: "allowNil", text: "Allow nil")
@@ -89,10 +104,11 @@ module Components
       def render_validation_type_select(selected_validation: nil)
         select(
           name: "model[attributes][][validations][][type]",
-          class:
-            "border-2 rounded-xl p-1 border-border w-fill bg-background focus:outline-none",
-            data: { action: "change->validation#updateType" }
-          ) do
+          class: "border-2 rounded-xl p-1 border-border w-fill bg-background focus:outline-none",
+          data: {
+            action: "change->validation#updateType"
+          }
+        ) do
           TYPES.each do |value, label|
             option(value: value.to_s, selected: selected_validation == value) { label }
           end
@@ -112,9 +128,7 @@ module Components
       end
 
       def render_absence_suggestions
-        datalist(id: "absence-options") do
-          render_base_boolean_values
-        end
+        datalist(id: "absence-options") { render_base_boolean_values }
       end
 
       def render_acceptance_suggestions
@@ -148,7 +162,9 @@ module Components
           option(value: "{ with: /[A-Z]/ }") { "With" }
           option(value: "{ without: /[A-Z]/ }") { "Without" }
           option(value: "{ with: /[A-Z]/, message: 'must be uppercase' }") { "With and message" }
-          option(value: "{ without: /[A-Z]/, message: 'must be lowercase' }") { "Without and message" }
+          option(value: "{ without: /[A-Z]/, message: 'must be lowercase' }") do
+            "Without and message"
+          end
         end
       end
 
@@ -156,7 +172,9 @@ module Components
         datalist(id: "inclusion-options") do
           option(value: "{ in: %w[a b c] }") { "Inclusion" }
           option(value: "{ in: ->(i) { i.method } }") { "Inclusion with proc" }
-          option(value: "{ in: %w[a b c], message: 'must be a, b, or c' }") { "Inclusion and message" }
+          option(value: "{ in: %w[a b c], message: 'must be a, b, or c' }") do
+            "Inclusion and message"
+          end
         end
       end
 
@@ -164,7 +182,9 @@ module Components
         datalist(id: "exclusion-options") do
           option(value: "{ in: %w[a b c] }") { "Exclusion" }
           option(value: "{ in: ->(i) { i.method } }") { "Exclusion with proc" }
-          option(value: "{ in: %w[a b c], message: 'must be a, b, or c' }") { "Exclusion and message" }
+          option(value: "{ in: %w[a b c], message: 'must be a, b, or c' }") do
+            "Exclusion and message"
+          end
         end
       end
 
@@ -174,8 +194,12 @@ module Components
           option(value: "{ maximum: 10 }") { "Maximum" }
           option(value: "{ in: 2..10 }") { "Minimum and maximum" }
           option(value: "{ is: 10 }") { "Exact length" }
-          option(value: "{ in: 2..10, too_short: 'is too short', too_long: 'is too long' }") { "Minimum and maximum with messages" }
-          option(value: "{ in: 2..10, wrong_length: 'is the wrong length' }") { "Minimum and maximum with generic message" }
+          option(value: "{ in: 2..10, too_short: 'is too short', too_long: 'is too long' }") do
+            "Minimum and maximum with messages"
+          end
+          option(value: "{ in: 2..10, wrong_length: 'is the wrong length' }") do
+            "Minimum and maximum with generic message"
+          end
         end
       end
 
@@ -196,16 +220,16 @@ module Components
       end
 
       def render_presence_suggestions
-        datalist(id: "presence-options") do
-          render_base_boolean_values
-        end
+        datalist(id: "presence-options") { render_base_boolean_values }
       end
 
       def render_uniqueness_suggestions
         datalist(id: "uniqueness-options") do
           render_base_boolean_values
           option(value: "{ scope: :column_name }") { "Scope" }
-          option(value: "{ scope: :column_name, message: 'must be unique' }") { "Scope and with message" }
+          option(value: "{ scope: :column_name, message: 'must be unique' }") do
+            "Scope and with message"
+          end
           option(value: "{ case_sensitive: false }") { "Case insensitive" }
           option(value: '{ conditions: -> { where(column: "value") } }') { "Conditions" }
         end
@@ -223,8 +247,14 @@ module Components
       end
 
       def render_add_additional_options_button(action: nil, text: nil)
-        button(type: "button", class: "text-text text-xs p-0.5 px-2 border-1 border-border rounded-xl bg-panel hover:bg-panel-hover cursor-pointer",
-          data: { action: "validation##{action}" }) { text }
+        button(
+          type: "button",
+          class:
+            "text-text text-xs p-0.5 px-2 border-1 border-border rounded-xl bg-panel hover:bg-panel-hover cursor-pointer",
+          data: {
+            action: "validation##{action}"
+          }
+        ) { text }
       end
 
       def render_string_value_suggestions
@@ -235,7 +265,13 @@ module Components
       end
 
       def render_button_suggestion(value: nil, type: nil)
-        button(type: "button", class: "text-text", data: { validation_target: "#{value}#{type&.upcase}" }) { value }
+        button(
+          type: "button",
+          class: "text-text",
+          data: {
+            validation_target: "#{value}#{type&.upcase}"
+          }
+        ) { value }
       end
     end
   end

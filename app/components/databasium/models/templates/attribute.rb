@@ -82,8 +82,12 @@ module Components
               class: "text-blue-500"
             ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
           end
-          div(class: "flex flex-col gap-2 divide-y divide-border",
-            data: { model_target: "validationsContainer" }) do
+          div(
+            class: "flex flex-col gap-2 divide-y divide-border",
+            data: {
+              model_target: "validationsContainer"
+            }
+          ) do
             validations&.each do |validation|
               render Models::Templates::Validation.new(validation: validation, name: @name)
             end

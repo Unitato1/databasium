@@ -17,13 +17,9 @@ module Databasium
     protected
 
     def render_x_button(action: nil)
-      button(
-        type: "button",
-        class: "text-red-500",
-        data: {
-          action: action
-        }
-      ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
+      button(type: "button", class: "text-red-500", data: { action: action }) do
+        heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" }
+      end
     end
 
     def render_collapsable(
