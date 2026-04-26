@@ -5,6 +5,7 @@ class Databasium::Migration
     Databasium::Engine.root.join("lib/databasium/templates/migration.rb.tt")
   CREATE_TABLE_MIGRATIONS_TEMPLATE_PATH =
     Databasium::Engine.root.join("lib/databasium/templates/create_table_migration.rb.tt")
+
   def initialize
     @migration_context = ActiveRecord::MigrationContext.new(MIGRATIONS_PATHS)
     @migrations = @migration_context.migrations
@@ -134,10 +135,14 @@ class Databasium::Migration
       all_affected_columns =
         (
           if params[:columns].present?
-            params[:columns]
-              .filter { |c| c[:column_name].present? && c[:column_type].present? }
-              .map { |c| c[:column_name].capitalize }
-              .join("And")
+            if params[:columns].size > 4
+              "Columns"
+            else
+              params[:columns]
+                .filter { |c| c[:column_name].present? && c[:column_type].present? }
+                .map { |c| c[:column_name].capitalize }
+                .join("And")
+            end
           else
             ""
           end

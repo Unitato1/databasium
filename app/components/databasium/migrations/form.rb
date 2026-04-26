@@ -84,14 +84,14 @@ module Components
           },
           hidden: true
         ) do
-          div(class: "flex flex-col gap-2") do
+          div(class: "flex flex-col gap-2 relative mt-2") do
             if @model
               form.select :column_name,
                           @model.columns.map(&:name),
                           include_blank: "Select a column name",
                           class: "p-2 border-1 border-border rounded-md w-fit bg-background"
             else
-              form.label "Column Name", class: "text-sm font-semibold"
+              form.label "Column Name", class: minimalistic_label_class
               form.text_field(
                 :column_name,
                 name: "columns[][column_name]",
@@ -102,8 +102,8 @@ module Components
               )
             end
           end
-          div(class: "flex flex-col gap-2 h-full") do
-            form.label :column_type, "Column Type", class: "text-sm font-semibold"
+          div(class: "flex flex-col gap-2 h-full relative") do
+            form.label "Column Name", class: minimalistic_label_class
             render Components::Databasium::TypeSelect.new(name: "columns[][column_type]")
           end
           render_remove_button(action: "click->new-migration#removeColumn")
@@ -212,7 +212,7 @@ module Components
       end
 
       def render_remove_button(action: nil)
-        button(type: "button", class: "text-red-500 h-fit", data: { action: action }) do
+        button(type: "button", class: "text-red-500 h-fit self-center", data: { action: action }) do
           heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" }
         end
       end
