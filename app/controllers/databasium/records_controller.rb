@@ -65,7 +65,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
                    turbo_frame: @turbo_frame_id || "records_list",
                    pagy: @pagy,
                    feedback: @feedback,
-                   columns_names_types: @columns_names_types
+                   columns_names_types: @columns_names_types,
+                   render_as_cards: @turbo_frame_id == "foreign_records_list"
                  )
         end
         format.turbo_stream do

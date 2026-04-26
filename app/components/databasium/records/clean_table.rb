@@ -8,13 +8,14 @@ module Components
       include Phlex::Rails::Helpers::DOMID
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:)
+      def initialize(records:, model:, turbo_frame:, pagy: nil, feedback: nil, columns_names_types:, render_as_cards: false)
         @records = records
         @model = model
         @turbo_frame = turbo_frame
         @pagy = pagy
         @feedback = feedback
         @columns_names_types = columns_names_types
+        @render_as_cards = render_as_cards
       end
 
       def view_template
@@ -31,10 +32,14 @@ module Components
             class: "flex min-h-0 min-w-0 flex-1 flex-col"
           ) do |form|
             hidden_field_tag(:table, @model.name)
-            div(class: "flex-1 min-h-0 max-h-fit overflow-auto") do
-              table(class: "whitespace-nowrap bg-panel min-w-max") do
-                render_table_head
-                render_table_body
+            div(class: "flex-1 min-h-0 min-w-0 max-h-fit overflow-auto") do
+              if @render_as_cards
+                render_card_body
+              else
+                table(class: "whitespace-nowrap bg-panel min-w-max w-full") do
+                  render_table_head
+                  render_table_body
+                end
               end
             end
             render_pagy
@@ -56,7 +61,7 @@ module Components
                 },
                 class: "px-4 py-1 rounded-xl text-base me-2 hover:text-hover"
               ) { heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" }) }
-            end
+            end if @turbo_frame == "records_list"
             @model&.columns&.each do |column|
               th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
                 plain column.name
@@ -66,13 +71,32 @@ module Components
         end
       end
 
-      def render_table_body
-        tbody(id: "records_body") do
+      def render_card_body
+        div(id: "records_body", class: "grid gap-4 w-full p-4 justify-center w-full") do
           if @records&.any?
             @records.each do |record|
               render Components::Databasium::Records::Table::Row.new(
                        record: record,
-                       turbo_frame: @turbo_frame
+                       turbo_frame: @turbo_frame,
+                       render_as_cards: @render_as_cards
+                     )
+            end
+          else
+            render Components::Databasium::Global::Suggestion.new(
+                     suggestions: [ @feedback || "No records found for #{@model&.name} table." ]
+                   )
+          end
+        end
+      end
+
+      def render_table_body
+        tbody(id: "records_body", class: "") do
+          if @records&.any?
+            @records.each do |record|
+              render Components::Databasium::Records::Table::Row.new(
+                       record: record,
+                       turbo_frame: @turbo_frame,
+                       render_as_cards: @render_as_cards
                      )
             end
           else

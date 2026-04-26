@@ -26,17 +26,24 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
   end
 
   def view_template
+    foreign = @turbo_frame == "foreign_records_list"
+    target_frame = foreign ? "foreign_records_list" : "records_list"
+
     turbo_stream.replace(
-      "records_list",
+      target_frame,
       Components::Databasium::Records::CleanTable.new(
         records: @records,
         model: @model,
-        turbo_frame: "records_list",
+        turbo_frame: target_frame,
         pagy: @pagy,
         feedback: @feedback,
-        columns_names_types: @columns_names_types
+        columns_names_types: @columns_names_types,
+        render_as_cards: foreign
       )
     )
+
+    return if foreign
+
     turbo_stream.update(
       "header_actions",
       Components::Databasium::Records::HeaderActions.new(

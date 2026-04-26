@@ -34,7 +34,7 @@ module Components
           url: databasium.records_records_path(table: @model.name, frame_id: @turbo_frame),
           method: :get,
           class:
-            "max-h-100 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
+            "max-h-50 overflow-y-auto border-b-1 rounded-xl border-border p-2 flex flex-col gap-2",
           data: {
             action: "change->search#update",
             filter_target: "form",
