@@ -31,8 +31,12 @@ const PRESELECTED_TYPE = "presence";
 export default class extends Controller {
   static targets = ["valueInput", "basicInfo", "basicInfoText"];
 
+  static values = {
+    selectedType: String
+  };
   connect() {
-    this.selectedType = PRESELECTED_TYPE;
+    this.selectedType = this.selectedTypeValue || PRESELECTED_TYPE;
+    this.valueInputTarget.setAttribute("list", `${this.selectedType}-options`);
   }
 
   updateType(event) {

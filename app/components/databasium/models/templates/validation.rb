@@ -26,11 +26,11 @@ module Components
       end
 
       def view_template
-        div(class: "p-2", data: { controller: "validation" }) do
+        div(class: "p-2", data: { controller: "validation", validation_selected_type_value: @selected_validation }) do
           div(class: "flex gap-2") do
             render_validation_name_input
             div(class: "relative") do
-              render_validation_type_select(selected_validation: @selected_validation)
+              render_validation_type_select
               div(
                 class: "absolute -top-1.5 -right-[0.5rem]",
                 data: {
@@ -89,6 +89,7 @@ module Components
             name: "model[attributes][][validations][][value]",
             class: "border-1 p-1 border-border w-full bg-background focus:outline-none",
             placeholder: "Value (e.g. true)",
+            value: @validation_value,
             data: {
               validation_target: "valueInput"
             }
@@ -101,11 +102,7 @@ module Components
         end
       end
 
-      def render_validation_type_select(selected_validation: nil)
-        span do
-          plain @selected_validation
-          plain @validation_type
-        end
+      def render_validation_type_select
         select(
           name: "model[attributes][][validations][][type]",
           class: "border-2 rounded-xl p-1 border-border w-fill bg-background focus:outline-none",
@@ -114,7 +111,7 @@ module Components
           }
         ) do
           TYPES.each do |value, label|
-            option(value: value.to_s, selected: selected_validation == value) { label }
+            option(value: value.to_s, selected: @selected_validation == value.to_s) { label }
           end
         end
       end

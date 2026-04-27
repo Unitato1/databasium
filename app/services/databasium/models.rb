@@ -49,9 +49,12 @@ class Databasium::Models
     index = 0
     File.foreach(Rails.root.join("app/models/#{model_name.downcase}.rb")) do |line|
       line = line.strip.lstrip
+
       parsed_line = {}
+
       if line.start_with?("#")
         parsed_line = parse_column(line)
+
       elsif line.start_with?("validates :")
         parsed_line = parse_validation(line)
         scan_name = parsed_line[:content][:name]
@@ -62,11 +65,13 @@ class Databasium::Models
             value: parsed_line[:content][:value]
           }
         end
+
       elsif line.match?(RELATIONS_REGEX)
         parsed_line = parse_relation(line)
       else
         parsed_line = { type: :unknown, content: {} }
       end
+
       if parsed_line.present?
         parsed_line[:content].merge!({ index: index, line: line })
         model[parsed_line[:type]] << parsed_line[:content]
@@ -91,7 +96,7 @@ class Databasium::Models
   def parse_validation(line)
     scan =
       line
-        .scan(/validates :(\w+), (\w+): (\w+)/)
+        .scan(/validates :(\w+), (\w+): (.*)/)
         .map { |match| { name: match[0], type: match[1], value: match[2] } }
     parsed_line = { type: :validations, content: scan.first } if scan.any?
     parsed_line = { type: :unknown, content: {} } if scan.empty?
