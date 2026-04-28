@@ -40,7 +40,7 @@ module Views
         else
           turbo_frame_tag "migration", class: "flex-1" do
             render Components::Databasium::Global::Suggestion.new(
-                     suggestions: ["Select a migration to see the file"]
+                     suggestions: [ "Select a migration to see the file" ]
                    )
           end
         end

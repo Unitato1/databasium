@@ -39,7 +39,9 @@ module Components
             class:
               "border-b-1 border-border p-4 rounded-xl hidden max-h-100 overflow-y-auto flex-1",
             id: "addRecord",
-            data: { table_target: "addRecordForm" }
+            data: {
+              table_target: "addRecordForm"
+            }
           ) { |form| form_content(form) }
         end
       end
@@ -69,7 +71,11 @@ module Components
             end
           end
         end
-        raw form.submit("Add record", class: "bg-blue-500 px-4 py-2 rounded-md w-fit", id: "add_record_button")
+        raw form.submit(
+              "Add record",
+              class: "bg-blue-500 px-4 py-2 rounded-md w-fit",
+              id: "add_record_button"
+            )
       end
 
       def type_to_helper(type)

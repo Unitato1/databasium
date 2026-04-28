@@ -4,6 +4,7 @@ module Views
   module Databasium
     class Schemas::Index < Views::Base
       include Phlex::Rails::Helpers::ContentFor
+      include Phlex::Rails::Helpers::LinkTo
 
       def initialize(schema:, models:, pagy:, model:, layers:)
         @schema = schema
@@ -18,13 +19,8 @@ module Views
         content_for(:sidebar) do
           render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy)
         end
-        if @model.present?
-          content_for(:header_actions) do
-            render Components::Databasium::Schemas::HeaderActions.new(
-                     model: @model,
-                     layers: @layers
-                   )
-          end
+        content_for(:header_actions) do
+          render Components::Databasium::Schemas::HeaderActions.new(model: @model, layers: @layers)
         end
         div(class: "w-full h-full p-4") { render_schema }
       end
@@ -38,7 +34,7 @@ module Views
             controller: "graph",
             graph_tables_value: @schema.to_json
           }
-        ) {}
+        ) { }
       end
     end
   end

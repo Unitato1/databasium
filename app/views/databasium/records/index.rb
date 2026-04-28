@@ -21,13 +21,13 @@ module Views
         content_for(:sidebar) { render_sidebar }
         div(class: "flex min-h-0 min-w-0 flex-1") do
           render Components::Databasium::Records::Table.new(
-            records: @records,
-            model: @model,
-            turbo_frame: @turbo_frame_id || "records",
-            pagy: @pagy,
-            feedback: @feedback,
-            columns_names_types: @columns_names_types
-          )
+                   records: @records,
+                   model: @model,
+                   turbo_frame: @turbo_frame_id || "records",
+                   pagy: @pagy,
+                   feedback: @feedback,
+                   columns_names_types: @columns_names_types
+                 )
           render Components::Databasium::Records::Table::RecordPanel.new
         end
       end

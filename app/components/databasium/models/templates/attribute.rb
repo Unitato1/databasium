@@ -70,21 +70,26 @@ module Components
           },
           class_name: "border-collapse border-1 border-border py-2 rounded-xl"
         ) do
-          div(data: { model_target: "validationsContainer" }, class: "validationsContainer") do
-            div(class: "flex items-center gap-2 py-1 px-3") do
-              span(class: "font-semibold") { "Add new Validation" }
-              button(
-                data: {
-                  action: "click->model#add click->attribute#updateValidationName",
-                  model_target_param: "validation",
-                  model_container_param: "validationsContainer"
-                },
-                type: "button",
-                class: "text-blue-500"
-              ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
-              validations&.each do |validation|
-                render Models::Templates::Validation.new(validation: validation, name: @name)
-              end
+          div(class: "flex items-center gap-2 py-1 px-3") do
+            span(class: "font-semibold") { "Add new Validation" }
+            button(
+              data: {
+                action: "click->model#add click->attribute#updateValidationName",
+                model_target_param: "validation",
+                model_container_param: "validationsContainer"
+              },
+              type: "button",
+              class: "text-blue-500"
+            ) { heroicon "plus-circle", variant: :outline, options: { class: "w-8 h-8" } }
+          end
+          div(
+            class: "flex flex-col gap-2 divide-y divide-border",
+            data: {
+              model_target: "validationsContainer"
+            }
+          ) do
+            validations&.each do |validation|
+              render Models::Templates::Validation.new(validation: validation, name: @name)
             end
           end
         end

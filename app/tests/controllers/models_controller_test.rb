@@ -22,7 +22,7 @@ class Databasium::ModelsControllerTest < ActionDispatch::IntegrationTest
          params: {
            model: {
              model_name: "User",
-             attributes: [{ name: "email", type: "string", validations: [] }],
+             attributes: [ { name: "email", type: "string", validations: [] } ],
              relations: []
            }
          },

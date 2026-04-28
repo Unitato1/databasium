@@ -28,7 +28,10 @@ class Databasium::RecordsController < Databasium::ApplicationController
           render turbo_stream: [
                    turbo_stream.append(
                      "records_body",
-                     Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list")
+                     Components::Databasium::Records::Table::Row.new(
+                       record: record,
+                       turbo_frame: @turbo_frame_id || "records_list"
+                     )
                    ),
                    turbo_stream.remove("suggestion")
                  ]
@@ -62,7 +65,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
                    turbo_frame: @turbo_frame_id || "records_list",
                    pagy: @pagy,
                    feedback: @feedback,
-                   columns_names_types: @columns_names_types
+                   columns_names_types: @columns_names_types,
+                   render_as_cards: @turbo_frame_id == "foreign_records_list"
                  )
         end
         format.turbo_stream do
@@ -91,7 +95,14 @@ class Databasium::RecordsController < Databasium::ApplicationController
       respond_to do |format|
         format.html { head :ok }
         format.turbo_stream do
-          render turbo_stream: turbo_stream.replace(dom_id(record), Components::Databasium::Records::Table::Row.new(record: record, turbo_frame: @turbo_frame_id || "records_list"))
+          render turbo_stream:
+                   turbo_stream.replace(
+                     dom_id(record),
+                     Components::Databasium::Records::Table::Row.new(
+                       record: record,
+                       turbo_frame: @turbo_frame_id || "records_list"
+                     )
+                   )
         end
       end
     end
@@ -106,13 +117,14 @@ class Databasium::RecordsController < Databasium::ApplicationController
     if records&.destroy_all
       respond_to do |format|
         format.turbo_stream do
-          render turbo_stream: doms_ids.flat_map { |dom_id|
-            [
-              turbo_stream.remove(dom_id),
-              turbo_stream.remove("record-tab-#{dom_id}"),
-              turbo_stream.remove("record-form-#{dom_id}")
-            ]
-          }
+          render turbo_stream:
+                   doms_ids.flat_map { |dom_id|
+                     [
+                       turbo_stream.remove(dom_id),
+                       turbo_stream.remove("record-tab-#{dom_id}"),
+                       turbo_stream.remove("record-form-#{dom_id}")
+                     ]
+                   }
         end
         format.html { head :ok }
       end

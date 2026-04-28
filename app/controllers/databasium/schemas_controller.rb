@@ -32,11 +32,16 @@ class Databasium::SchemasController < Databasium::ApplicationController
     render Components::Databasium::Schemas::Sidebar.new(models: models, pagy: pagy)
   end
 
+  def sync_schema
+    Databasium::Schema.new.sync!
+    redirect_back fallback_location: schemas_path
+  end
+
   private
 
   def get_models
-    @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
+    @models = Databasium::Models.new.get_all_models_from_db(search: params[:search])
     @pagy, @models = pagy(@models, limit: 10, root_key: "models")
-    [@models, @pagy]
+    [ @models, @pagy ]
   end
 end

@@ -16,6 +16,16 @@ module Databasium
 
     protected
 
+    def minimalistic_label_class
+      "text-xs absolute -top-2.5 left-0"
+    end
+
+    def render_x_button(action: nil)
+      button(type: "button", class: "text-red-500", data: { action: action }) do
+        heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" }
+      end
+    end
+
     def render_collapsable(
       form: nil,
       name:,

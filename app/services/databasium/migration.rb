@@ -1,10 +1,11 @@
 class Databasium::Migration
   attr_reader :migration_context, :migrations, :pending_migrations
-  MIGRATIONS_PATHS = ["db/migrate"] # TODO: make this configurable and maybe move to a constant readonly
+  MIGRATIONS_PATHS = [ "db/migrate" ] # TODO: make this configurable and maybe move to a constant readonly
   MIGRATIONS_TEMPLATE_PATH =
     Databasium::Engine.root.join("lib/databasium/templates/migration.rb.tt")
   CREATE_TABLE_MIGRATIONS_TEMPLATE_PATH =
     Databasium::Engine.root.join("lib/databasium/templates/create_table_migration.rb.tt")
+
   def initialize
     @migration_context = ActiveRecord::MigrationContext.new(MIGRATIONS_PATHS)
     @migrations = @migration_context.migrations
@@ -26,9 +27,9 @@ class Databasium::Migration
       unless migration && File.file?(migration.filename)
         raise ActiveRecord::RecordNotFound, "Migration not found"
       end
-      [migration, nil]
+      [ migration, nil ]
     rescue => e
-      [nil, e]
+      [ nil, e ]
     end
   end
 
@@ -37,9 +38,9 @@ class Databasium::Migration
       migration_context.pending_migration_versions.each do |version|
         migration_context.run(:up, version)
       end
-      [:success, nil]
+      [ :success, nil ]
     rescue => e
-      [:failed, e]
+      [ :failed, e ]
     end
   end
 
@@ -52,18 +53,18 @@ class Databasium::Migration
       else
         migration_context.run(:down, version.to_i)
       end
-      [:success, nil]
+      [ :success, nil ]
     rescue => e
-      [:failed, e]
+      [ :failed, e ]
     end
   end
 
   def run_migration(version)
     begin
       migration_context.run(:up, version.to_i)
-      [:success, nil]
+      [ :success, nil ]
     rescue => e
-      [:failed, e]
+      [ :failed, e ]
     end
   end
 
@@ -86,7 +87,7 @@ class Databasium::Migration
       )
       true
     rescue => e
-      [false, e]
+      [ false, e ]
     end
   end
 
@@ -115,7 +116,7 @@ class Databasium::Migration
       ERB.new(File.read(source), trim_mode: "-", eoutvar: "@output_buffer").result(
         gen.instance_eval("binding")
       )
-    [content, nil]
+    [ content, nil ]
   end
 
   private
@@ -134,10 +135,14 @@ class Databasium::Migration
       all_affected_columns =
         (
           if params[:columns].present?
-            params[:columns]
-              .filter { |c| c[:column_name].present? && c[:column_type].present? }
-              .map { |c| c[:column_name].capitalize }
-              .join("And")
+            if params[:columns].size > 4
+              "Columns"
+            else
+              params[:columns]
+                .filter { |c| c[:column_name].present? && c[:column_type].present? }
+                .map { |c| c[:column_name].capitalize }
+                .join("And")
+            end
           else
             ""
           end
@@ -153,7 +158,7 @@ class Databasium::Migration
       table_name_with_action += "From#{params[:table_name_from]&.capitalize&.pluralize}"
     end
 
-    args = [table_name_with_action]
+    args = [ table_name_with_action ]
 
     not_null_validation = build_not_null_validation(params)
     uniqueness_validation = build_uniqueness_validation(params)

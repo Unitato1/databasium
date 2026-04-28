@@ -1,7 +1,7 @@
 class Databasium::Models
   attr_reader :model_name, :attributes, :relations
   # TODO make this configurable
-  PATHS = ["models"].freeze
+  PATHS = [ "models" ].freeze
   RELATIONS = %w[belongs_to has_many has_one has_and_belongs_to_many].freeze
   RELATIONS_REGEX = /\A(#{Regexp.union(RELATIONS).source})/
 
@@ -11,14 +11,22 @@ class Databasium::Models
   def get_all_models_from_dir(search: nil)
     model_files = []
     PATHS.each { |path| model_files += Dir.glob(Rails.root.join("app", path, "**/*.rb")) }
-    # puts model_files.map { |file| File.basename(file) }.join("\n")
     model_names =
       model_files
         .map { |file| File.basename(file).sub(/\.rb$/, "").classify }
-        .reject { |name| %w[ApplicationRecord Concerns].include?(name) }
+        .reject do |name|
+          %w[ApplicationRecord Concerns].include?(name) || !name.safe_constantize&.table_exists?
+        end
         .map(&:downcase)
     model_names = model_names.select { |name| name =~ /#{search}/i } if search
     model_names
+  end
+
+  def get_all_models_from_db(search: nil)
+    conn = ActiveRecord::Base.connection
+    tables = conn.tables - %w[ar_internal_metadata schema_migrations]
+    tables = tables.select { |t| t =~ /#{search}/i } if search
+    tables.map { |t| t.singularize.classify }
   end
 
   def get_model_data(model)
@@ -41,40 +49,39 @@ class Databasium::Models
     index = 0
     File.foreach(Rails.root.join("app/models/#{model_name.downcase}.rb")) do |line|
       line = line.strip.lstrip
+
       parsed_line = {}
+
       if line.start_with?("#")
         parsed_line = parse_column(line)
+
       elsif line.start_with?("validates :")
-        scan =
-          line
-            .scan(/validates :(\w+), (\w+): (\w+)/)
-            .map { |match| { name: match[0], type: match[1], value: match[2] } }
-        parsed_line = { type: :validations, content: scan.first } if scan.any?
-        parsed_line = { type: :unknown, content: {} } if scan.empty?
-        scan_name = scan.first[:name]
+        parsed_line = parse_validation(line)
+        scan_name = parsed_line[:content][:name]
         model_column = model[:columns_hash].fetch(scan_name, nil)
         if model_column.present?
-          model_column[:validations] << { type: scan.first[:type], value: scan.first[:value] }
+          model_column[:validations] << {
+            type: parsed_line[:content][:type],
+            value: parsed_line[:content][:value]
+          }
         end
+
       elsif line.match?(RELATIONS_REGEX)
-        scan =
-          line
-            .scan(/(\w+) :(\w+)(.*)/)
-            .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
-        parsed_line = { type: :unknown, content: {} } if scan.empty?
-        parsed_line = { type: :relations, content: scan.first } if scan.any?
+        parsed_line = parse_relation(line)
       else
         parsed_line = { type: :unknown, content: {} }
       end
+
       if parsed_line.present?
         parsed_line[:content].merge!({ index: index, line: line })
         model[parsed_line[:type]] << parsed_line[:content]
         index += 1
       end
     end
-    puts model.inspect
     model
   end
+
+  private
 
   def parse_column(line)
     scan =
@@ -83,6 +90,26 @@ class Databasium::Models
         .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
     parsed_line = { type: :columns, content: scan.first } if scan.any?
     parsed_line = { type: :unknown, content: {} } if scan.empty?
+    parsed_line
+  end
+
+  def parse_validation(line)
+    scan =
+      line
+        .scan(/validates :(\w+), (\w+): (.*)/)
+        .map { |match| { name: match[0], type: match[1], value: match[2] } }
+    parsed_line = { type: :validations, content: scan.first } if scan.any?
+    parsed_line = { type: :unknown, content: {} } if scan.empty?
+    parsed_line
+  end
+
+  def parse_relation(line)
+    scan =
+      line
+        .scan(/(\w+) :(\w+)(.*)/)
+        .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
+    parsed_line = { type: :unknown, content: {} } if scan.empty?
+    parsed_line = { type: :relations, content: scan.first } if scan.any?
     parsed_line
   end
 end

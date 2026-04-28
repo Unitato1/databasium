@@ -22,7 +22,7 @@ module Views
           render Components::Databasium::Models::HeaderActions.new(model: @model)
         end
         div(class: "flex gap-4 p-4 overflow-y-hidden flex-1") do
-          div(class: "w-1/4 overflow-y-auto") do
+          div(class: "w-1/2 overflow-y-auto") do
             render Components::Databasium::Models::Form.new(
                      attributes: @attributes,
                      model: @model,

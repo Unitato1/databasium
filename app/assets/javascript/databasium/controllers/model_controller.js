@@ -23,28 +23,22 @@ export default class extends Controller {
     }
 
     const capitalizedTarget = target[0].toUpperCase() + target.slice(1);
-    const capitalizedContainer = container[0].toUpperCase() + container.slice(1);
 
-    const closestGroup =
-      event.currentTarget.closest(`.${container}`) || event.currentTarget.closest(".group");
-    if (
-      this[`has${capitalizedTarget}Target`] &&
-      (closestGroup || this[`has${capitalizedContainer}Target`])
-    ) {
-      const content = this[`${target}Target`].innerHTML;
-      if (closestGroup) {
-        closestGroup.insertAdjacentHTML("beforeend", content);
-      } else {
-        this[`${container}Target`].insertAdjacentHTML("beforeend", content);
-      }
-    } else {
+    if (!this[`has${capitalizedTarget}Target`]) {
       console.log(
-        "You are missing a " +
-          capitalizedTarget +
-          " target and/or " +
-          capitalizedContainer +
-          " container target please define it in the js controller and then in html template"
+        `Missing ${capitalizedTarget} target — define it in the js controller and html template`
       );
+      return;
     }
+
+    const scope = event.currentTarget.closest("[data-controller~='attribute']") || this.element;
+    const destination = scope.querySelector(`[data-model-target='${container}']`);
+
+    if (!destination) {
+      console.log(`No ${container} found in the current scope`);
+      return;
+    }
+
+    destination.insertAdjacentHTML("beforeend", this[`${target}Target`].innerHTML);
   }
 }

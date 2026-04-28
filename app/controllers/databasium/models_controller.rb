@@ -2,7 +2,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   include Pagy::Method
 
   def new
-    @models = Databasium::Models.new.get_all_models_from_dir(search: params[:search])
+    @models = Databasium::Models.new.get_all_models_from_db(search: params[:search])
     @pagy, @models = pagy(@models, limit: 10, root_key: "models")
 
     render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
@@ -78,7 +78,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def model_params
     params.require(:model).permit(
       :model_name,
-      attributes: [:name, :type, validations: %i[name type value]],
+      attributes: [ :name, :type, validations: %i[name type value] ],
       relations: %i[type table_name]
     )
   end

@@ -28,15 +28,15 @@ module Components
 
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
-                    {
-                      icon: "funnel",
-                      text: "filter",
-                      method: :frontend,
-                      data_params: {
-                        toggle: "filter",
-                        action: "click->toggle#toggle"
-                      }
-                    },
+                     {
+                       icon: "funnel",
+                       text: "filter",
+                       method: :frontend,
+                       data_params: {
+                         toggle: "filter",
+                         action: "click->toggle#toggle"
+                       }
+                     },
                      {
                        icon: "plus-circle",
                        text: "add",

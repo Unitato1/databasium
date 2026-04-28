@@ -14,7 +14,9 @@ module Components
         turbo_frame_tag("foreign_records") do
           div(class: "relative") do
             div(
-              class: "absolute z-10 bg-panel p-4 rounded-xl border-1 border-border w-fit",
+              class:
+                "absolute z-20 bg-panel p-4 rounded-xl border-1 border-border " \
+                  "w-fit max-w-250 flex flex-col max-h-[600px] overflow-y-auto",
               id: "foreign_records",
               data: {
                 table_select_target: "table"
@@ -53,13 +55,13 @@ module Components
 
       def render_table
         turbo_frame_tag "foreign_records_list",
-                        class: "overflow-auto block",
+                        class: "flex-1 min-h-0 overflow-auto block",
                         src:
                           helpers.records_records_path(
                             table: @model&.name,
                             frame_id: "foreign_records_list",
                             lazy: true
-                          ) {}
+                          ) { }
       end
     end
   end

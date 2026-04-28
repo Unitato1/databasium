@@ -22,8 +22,8 @@ class Databasium::MigrationsControllerTest < ActionDispatch::IntegrationTest
            add_migration: "Generate Preview",
            migration_action: "create",
            add_model: "1",
-           columns: [{ column_name: "name", column_type: "string" }],
-           validation: [{ column_name: "name", type: "not_null" }]
+           columns: [ { column_name: "name", column_type: "string" } ],
+           validation: [ { column_name: "name", type: "not_null" } ]
          },
          as: :turbo_stream
     assert_response :success
