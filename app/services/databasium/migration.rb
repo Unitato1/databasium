@@ -30,10 +30,13 @@ class Databasium::Migration
   end
 
   def run_pending_migrations
-    migration_context.pending_migration_versions.each do |version|
+    versions = migration_context.pending_migration_versions
+
+    versions.each do |version|
       migration_context.run(:up, version)
     end
-    [ :success, nil ]
+
+    versions
   end
 
   def rollback_migration(version, rollback_steps, till_this_migration)

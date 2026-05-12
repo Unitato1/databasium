@@ -19,7 +19,7 @@ module Databasium
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-                   turbo_stream.replace("flash", Components::Databasium::Global::Flash.new),
+                   turbo_stream.replace("flash", Components::Databasium::Global::Flash.new(success: flash[:success], error: flash[:error])),
                    turbo_stream.replace(
                      "error",
                      Components::Databasium::Global::Error.new(
