@@ -22,50 +22,34 @@ class Databasium::Migration
   end
 
   def find_migration!(version)
-    begin
-      migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
-      unless migration && File.file?(migration.filename)
-        raise ActiveRecord::RecordNotFound, "Migration not found"
-      end
-      [ migration, nil ]
-    rescue => e
-      [ nil, e ]
+    migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
+    unless migration && File.file?(migration.filename)
+      raise ActiveRecord::RecordNotFound, "Migration not found"
     end
+    [ migration, nil ]
   end
 
   def run_pending_migrations
-    begin
-      migration_context.pending_migration_versions.each do |version|
-        migration_context.run(:up, version)
-      end
-      [ :success, nil ]
-    rescue => e
-      [ :failed, e ]
+    migration_context.pending_migration_versions.each do |version|
+      migration_context.run(:up, version)
     end
+    [ :success, nil ]
   end
 
   def rollback_migration(version, rollback_steps, till_this_migration)
-    begin
-      if rollback_steps.present?
-        migration_context.rollback(rollback_steps.to_i)
-      elsif till_this_migration == "true"
-        migration_context.down(version.to_i)
-      else
-        migration_context.run(:down, version.to_i)
-      end
-      [ :success, nil ]
-    rescue => e
-      [ :failed, e ]
+    if rollback_steps.present?
+      migration_context.rollback(rollback_steps.to_i)
+    elsif till_this_migration == "true"
+      migration_context.down(version.to_i)
+    else
+      migration_context.run(:down, version.to_i)
     end
+    [ :success, nil ]
   end
 
   def run_migration(version)
-    begin
-      migration_context.run(:up, version.to_i)
-      [ :success, nil ]
-    rescue => e
-      [ :failed, e ]
-    end
+    migration_context.run(:up, version.to_i)
+    [ :success, nil ]
   end
 
   def save_migration(params)
@@ -78,17 +62,13 @@ class Databasium::Migration
     else
       generator = "migration"
     end
-    begin
-      Rails::Generators.invoke(
-        generator,
-        args,
-        behavior: :invoke,
-        destination_root: Rails.root.to_s
-      )
-      true
-    rescue => e
-      [ false, e ]
-    end
+    Rails::Generators.invoke(
+      generator,
+      args,
+      behavior: :invoke,
+      destination_root: Rails.root.to_s
+    )
+    true
   end
 
   def generate_migration(params)

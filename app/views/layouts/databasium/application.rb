@@ -27,6 +27,8 @@ module Views
               controller: "layout"
             }
           ) do
+            render Components::Databasium::Global::Error.new
+            render Components::Databasium::Global::Flash.new
             render Components::Databasium::Global::Sidebar.new(sidebar: content_for(:sidebar))
             turbo_frame_tag(
               "main",
