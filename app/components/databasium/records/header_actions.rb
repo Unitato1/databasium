@@ -55,38 +55,38 @@ module Components
                          action: "click->toggle#toggleSticky"
                        }
                      },
-                     {
-                       icon: "chevron-double-up",
-                       text: "10",
-                       method: :get,
-                       turbo_frame: "records",
-                       path: records_path(),
-                       active: limit == 10
-                     },
-                     {
-                       icon: "chevron-double-up",
-                       text: "20",
-                       method: :get,
-                       turbo_frame: "records",
-                       path: records_path(limit: 20),
-                       active: limit == 20
-                     },
-                     {
-                       icon: "chevron-double-up",
-                       text: "50",
-                       method: :get,
-                       turbo_frame: "records",
-                       path: records_path(limit: 50),
-                       active: limit == 50
-                     },
-                     {
-                       icon: "chevron-double-up",
-                       text: "100",
-                       method: :get,
-                       turbo_frame: "records",
-                       path: records_path(limit: 100),
-                       active: limit == 100
-                     }
+                    {
+                      icon: "chevron-double-up",
+                      text: "10",
+                      method: :get,
+                      turbo_frame: "records_list",
+                      path: records_path(),
+                      active: limit == 10
+                    },
+                    {
+                      icon: "chevron-double-up",
+                      text: "20",
+                      method: :get,
+                      turbo_frame: "records_list",
+                      path: records_path(limit: 20),
+                      active: limit == 20
+                    },
+                    {
+                      icon: "chevron-double-up",
+                      text: "50",
+                      method: :get,
+                      turbo_frame: "records_list",
+                      path: records_path(limit: 50),
+                      active: limit == 50
+                    },
+                    {
+                      icon: "chevron-double-up",
+                      text: "100",
+                      method: :get,
+                      turbo_frame: "records_list",
+                      path: records_path(limit: 100),
+                      active: limit == 100
+                    }
                    ]
                  )
         end
@@ -97,7 +97,7 @@ module Components
       def records_path(limit: 10)
         databasium.records_records_path(
           table: @table,
-          frame_id: "records",
+          frame_id: "records_list",
           filter: @filter,
           limit: limit
         )
