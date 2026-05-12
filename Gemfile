@@ -5,6 +5,7 @@ gemspec
 
 gem "puma"
 
+gem "pg", group: [ :development, :test ]
 gem "sqlite3", "~> 2.8"
 
 gem "propshaft"
