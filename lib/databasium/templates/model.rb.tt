@@ -1,15 +1,15 @@
 <% attributes&.each do |attr| -%>
 # <%= attr[:name] %><%= " " * (longest_name_length - attr[:name].length)%>: <%= attr[:type] %>
 <% end %>
-class <%= model_name.capitalize %> < ApplicationRecord
+class <%= model_name.classify %> < ApplicationRecord
 <% relations&.each do |rel| -%>
 <% case rel[:type] -%>
 <% when "has_many" -%>
-  <%= rel[:type] %> :<%= rel[:table_name].downcase.to_s.pluralize %>
+  <%= rel[:type] %> :<%= relation_name(rel) %>
 <% when "has_and_belongs_to_many" -%>
-  <%= rel[:type] %> :<%= rel[:table_name].downcase.to_s.pluralize %>
+  <%= rel[:type] %> :<%= relation_name(rel) %>
 <% when "belongs_to", "has_one" -%>
-  <%= rel[:type] %> :<%= rel[:table_name].downcase.to_s.singularize %>
+  <%= rel[:type] %> :<%= relation_name(rel) %>
 <% end -%>
 <% end -%>
 <% attributes&.each do |attr| -%>
@@ -17,4 +17,6 @@ class <%= model_name.capitalize %> < ApplicationRecord
   validates :<%= val[:name] -%>, <%= val[:type] -%>: <%= val[:value].to_s %>
 <% end -%>
 <% end -%>
-end
+<% unknown.each do |line| -%>
+<%= line -%>
+<% end -%>

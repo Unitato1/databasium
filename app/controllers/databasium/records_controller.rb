@@ -36,6 +36,8 @@ class Databasium::RecordsController < Databasium::ApplicationController
                  ]
         end
       end
+    else
+      raise ActiveRecord::RecordInvalid, record.errors.full_messages.join(", ")
     end
   end
 
@@ -148,7 +150,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def model_columns_params
     return if params[:table].nil?
-    table_name = params[:table].downcase.pluralize.to_sym
-    params.require(:record).permit(*@schema_service.get_columns_names(table_name))
+    params.require(:record).permit(*@schema_service.get_columns_names(params[:table]))
   end
 end

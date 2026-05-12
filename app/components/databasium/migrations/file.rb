@@ -12,14 +12,12 @@ module Components
       end
 
       def view_template
-        turbo_frame_tag "migration" do
-          div(class: "mt-4 w-full scrollbar-thin overflow-y-auto", id: "migration") do
-            h1(class: "text-2xl font-bold mb-4 text-ellipsis overflow-hidden break-all") do
-              @migration.name
-            end
-            render_content
-            render_extra_info
+        turbo_frame_tag "migration", class: "flex flex-col flex-1 p-4 w-full min-h-0 overflow-hidden" do
+          h1(class: "text-2xl font-bold mb-2 text-ellipsis break-all") do
+            @migration.name
           end
+          render_content
+          render_extra_info
         end
       end
 
@@ -27,7 +25,7 @@ module Components
 
       def render_content
         pre(
-          class: "border-1 border-border bg-panel text-main-text p-4 overflow-x-auto rounded-2xl"
+          class: "min-h-0 flex-1 border-1 border-border bg-panel text-main-text p-4 overflow-auto rounded-2xl scrollbar-thin"
         ) { @content }
       end
 

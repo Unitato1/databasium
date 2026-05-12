@@ -1,6 +1,5 @@
 class Databasium::Models
   attr_reader :model_name, :attributes, :relations
-  # TODO make this configurable
   PATHS = [ "models" ].freeze
   RELATIONS = %w[belongs_to has_many has_one has_and_belongs_to_many].freeze
   RELATIONS_REGEX = /\A(#{Regexp.union(RELATIONS).source})/
@@ -17,7 +16,6 @@ class Databasium::Models
         .reject do |name|
           %w[ApplicationRecord Concerns].include?(name) || !name.safe_constantize&.table_exists?
         end
-        .map(&:downcase)
     model_names = model_names.select { |name| name =~ /#{search}/i } if search
     model_names
   end
@@ -37,17 +35,20 @@ class Databasium::Models
   end
 
   def read_model_file(model_name)
-    File.read(Rails.root.join("app/models/#{model_name.downcase}.rb"))
+    File.read(model_file_path(model_name))
   end
 
   def get_model_data_from_file(model_name)
-    raw_model = model_name.safe_constantize
+    raw_model = constantize_model(model_name)
     model = { validations: [], columns: [], unknown: [], relations: [], columns_hash: {} }
     raw_model.columns.each do |column|
       model[:columns_hash][column.name] = { type: column.type, validations: [] }
     end
+
     index = 0
-    File.foreach(Rails.root.join("app/models/#{model_name.downcase}.rb")) do |line|
+    inside_class = false
+    File.foreach(model_file_path(model_name)) do |line|
+      raw_line = line
       line = line.strip.lstrip
 
       parsed_line = {}
@@ -69,25 +70,88 @@ class Databasium::Models
       elsif line.match?(RELATIONS_REGEX)
         parsed_line = parse_relation(line)
       else
-        parsed_line = { type: :unknown, content: {} }
+        if !raw_line.include?("class")
+          parsed_line = { type: :unknown, content: {} }
+        else
+          inside_class = true
+        end
       end
 
-      if parsed_line.present?
-        parsed_line[:content].merge!({ index: index, line: line })
+      if parsed_line.present? && !(raw_line.blank? && !inside_class)
+        parsed_line[:content].merge!({ index: index, line: parsed_line[:type] == :unknown ? raw_line : line })
         model[parsed_line[:type]] << parsed_line[:content]
-        index += 1
       end
+      index += 1
     end
     model
   end
 
+  class Model
+    attr_reader :model_name, :attributes, :relations, :unknown
+
+    def initialize(model_name:, attributes:, relations:, unknown: [])
+      @model_name = model_name
+      @attributes = attributes
+      @relations = relations
+      @unknown = unknown
+    end
+
+    def get_binding
+      binding
+    end
+
+    def longest_name_length
+      attributes.map { |a| (a[:name] || a["name"]).to_s.length }.max || 0
+    end
+
+    def relation_name(relation)
+      table_name = relation[:table_name].to_s
+
+      case relation[:type]
+      when "has_many", "has_and_belongs_to_many"
+        table_name.tableize
+      when "belongs_to", "has_one"
+        table_name.singularize.underscore
+      end
+    end
+
+    private
+
+    class Validation
+      attr_reader :name, :value
+      def initialize(name:, value:)
+        @name = name
+        @value = value
+      end
+    end
+
+    class Attribute
+      attr_reader :name, :type, :validations, :relations
+
+      def initialize(name:, type:, validations:)
+        @name = name
+        @type = type
+        @validations = validations
+      end
+    end
+  end
+
+
   private
+
+  def model_file_path(model_name)
+    Rails.root.join("app/models/#{model_name.to_s.underscore.singularize}.rb")
+  end
+
+  def constantize_model(model_name)
+    model_name.to_s.safe_constantize || model_name.to_s.classify.safe_constantize
+  end
 
   def parse_column(line)
     scan =
       line
-        .scan(/(\w+): (\w+)(.*)/)
-        .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
+      .scan(/# (\w+)\s*:\s*(\w+)(.*)/)
+      .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
     parsed_line = { type: :columns, content: scan.first } if scan.any?
     parsed_line = { type: :unknown, content: {} } if scan.empty?
     parsed_line

@@ -7,8 +7,9 @@ export default class extends Controller {
   connect() {}
 
   close() {
-    // setTimeout(() => {
     this.element.classList.add("opacity-0");
-    // }, 1000);
+    setTimeout(() => {
+      this.element.classList.add("hidden");
+    }, 1000);
   }
 }

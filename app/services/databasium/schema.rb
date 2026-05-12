@@ -41,7 +41,7 @@ class Databasium::Schema
 
   def get_model_and_layers_BFS(model, layers)
     queue = Queue.new()
-    queue.push([ model.downcase.pluralize, 0 ])
+    queue.push([ table_name_for(model), 0 ])
     result = {}
     until queue.empty?
       model, layer = queue.pop
@@ -56,16 +56,17 @@ class Databasium::Schema
   end
 
   def get_schema_for_model(model)
-    schema[model.downcase.pluralize]
+    schema[table_name_for(model)]
   end
 
   def get_model_associations(model)
-    model_associations = schema[model.downcase.pluralize].fetch(:associations, [])
-    result = { "#{model.downcase.pluralize}": get_schema_for_model(model) }
+    table_name = table_name_for(model)
+    model_associations = schema[table_name].fetch("associations", [])
+    result = { table_name => get_schema_for_model(model) }
     model_associations.each do |association|
-      association_key = association[:class_name].downcase.pluralize
+      association_key = table_name_for(association["class_name"])
 
-      result[association_key] = get_schema_for_model(association[:class_name])
+      result[association_key] = get_schema_for_model(association["class_name"])
     end
     result
   end
@@ -87,7 +88,7 @@ class Databasium::Schema
   end
 
   def get_columns_names(table)
-    @conn.columns(table).map { |c| c.name }
+    @conn.columns(table_name_for(table)).map { |c| c.name }
   end
 
   def get_tables(search)
@@ -110,13 +111,15 @@ class Databasium::Schema
 
   def get_model_from_table(table)
     return nil, "Select a table to view its records." if table.nil?
-    table_name = table.downcase.pluralize.to_sym
+    table_name = table_name_for(table)
     unless ActiveRecord::Base.connection.table_exists?(table_name)
       return nil, "Table #{table} does not exist"
     end
     begin
       # If there is no model for this table it will raise a NameError
-      @model = table.classify.constantize
+      @model =
+        ActiveRecord::Base.descendants.find { |model| model.table_name == table_name } ||
+          table_name.classify.constantize
       @error = nil
     rescue NameError
       @model = nil
@@ -172,6 +175,10 @@ class Databasium::Schema
       }
     end
     @schema
+  end
+
+  def table_name_for(name)
+    name.to_s.tableize
   end
 
   def is_column_foreign_key?(table, column_name)
