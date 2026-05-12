@@ -75,12 +75,34 @@ export default class extends Controller {
 
   connect() {
     const data = JSON.parse(this.tablesValue);
-    console.log(Object.keys(data));
 
     const container = this.element;
     InternalEvent.disableContextMenu(container);
     const graph = new Graph(container);
+
     graph.setPanning(true);
+
+    const panningHandler = graph.getPlugin("PanningHandler");
+    if (panningHandler) {
+      panningHandler.useLeftButtonForPanning = true;
+    }
+
+    container.style.cursor = "grab";
+
+    container.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+
+        const currentScale = graph.view.scale;
+        const zoomFactor = event.deltaY < 0 ? 1.06 : 0.94;
+        const nextScale = Math.min(Math.max(currentScale * zoomFactor, 0.25), 2.5);
+
+        graph.zoomTo(nextScale, true);
+      },
+      { passive: false }
+    );
+
     const parent = graph.getDefaultParent();
     graph.getStylesheet().getDefaultEdgeStyle().edgeStyle = "orthogonalEdgeStyle";
 
@@ -107,6 +129,7 @@ export default class extends Controller {
         vertexes.push(vertex);
       }
     });
+
     graph.batchUpdate(() => {
       for (let table of Object.keys(data)) {
         for (let association of data[table].associations) {
