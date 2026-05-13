@@ -8,7 +8,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
       pagy(@schema_service.get_tables(params[:search]), limit: 10, root_key: "tables")
     @model, @error = @schema_service.get_model_from_table(params[:table])
     @columns_names_types = @schema_service.get_columns(@model)
-
     render Views::Databasium::Records::Index.new(
              model: @model,
              columns_names_types: @columns_names_types,
@@ -30,13 +29,15 @@ class Databasium::RecordsController < Databasium::ApplicationController
                      "records_body",
                      Components::Databasium::Records::Table::Row.new(
                        record: record,
-                       turbo_frame: @turbo_frame_id || "records_list"
+                       turbo_frame: "records_list"
                      )
                    ),
                    turbo_stream.remove("suggestion")
                  ]
         end
       end
+    else
+      raise ActiveRecord::RecordInvalid, record.errors.full_messages.join(", ")
     end
   end
 
@@ -149,7 +150,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def model_columns_params
     return if params[:table].nil?
-    table_name = params[:table].downcase.pluralize.to_sym
-    params.require(:record).permit(*@schema_service.get_columns_names(table_name))
+    params.require(:record).permit(*@schema_service.get_columns_names(params[:table]))
   end
 end

@@ -165,7 +165,7 @@ export default class extends Controller {
     addRecordButton.value = `Update record ${row.id}`;
     const inputs = {};
     form.method = "patch";
-    form.action = `/databasium/records/${row.id.split("_")[1]}`;
+    form.action = `/databasium/records/${row.dataset.recordId}`;
 
     form.querySelectorAll("input, select, textarea").forEach((i) => {
       const match = i.name.match(/\[(\w+)\]/);

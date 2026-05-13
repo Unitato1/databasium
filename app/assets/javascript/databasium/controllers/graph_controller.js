@@ -1,15 +1,5 @@
 import { Controller } from "@hotwired/stimulus";
-import {
-  Graph,
-  InternalEvent,
-  HierarchicalLayout,
-  CompactTreeLayout,
-  ShapeRegistry,
-  Shape,
-  FastOrganicLayout,
-  CoordinateAssignment,
-  SwimlaneOrdering
-} from "@maxgraph/core";
+import { Graph, InternalEvent, HierarchicalLayout, ShapeRegistry, Shape } from "@maxgraph/core";
 
 class ErdTableShape extends Shape {
   paintVertexShape(c, x, y, w, h) {
@@ -75,57 +65,112 @@ export default class extends Controller {
 
   connect() {
     const data = JSON.parse(this.tablesValue);
-    console.log(Object.keys(data));
 
     const container = this.element;
     InternalEvent.disableContextMenu(container);
     const graph = new Graph(container);
     graph.setPanning(true);
-    const parent = graph.getDefaultParent();
+
+    const panningHandler = graph.getPlugin("PanningHandler");
+    if (panningHandler) {
+      panningHandler.useLeftButtonForPanning = true;
+    }
+    container.style.cursor = "grab";
+
+    container.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+
+        const currentScale = graph.view.scale;
+        const zoomFactor = event.deltaY < 0 ? 1.06 : 0.94;
+        const nextScale = Math.min(Math.max(currentScale * zoomFactor, 0.25), 2.5);
+
+        graph.zoomTo(nextScale, true);
+      },
+      { passive: false }
+    );
+
     graph.getStylesheet().getDefaultEdgeStyle().edgeStyle = "orthogonalEdgeStyle";
 
-    const vertexes = [];
-    graph.batchUpdate(() => {
-      for (let table of Object.keys(data)) {
-        const vertex = graph.insertVertex(
-          parent,
-          null,
-          {
-            name: table,
-            fields: data[table].columns
-              .filter((column) => column != undefined)
-              .map((column) => {
-                return { name: column.name, sql_type: column.sql_type };
-              })
-          },
-          0,
-          0,
-          300,
-          data[table].columns.filter((column) => column != undefined).length * 32 + 32,
-          { shape: "erdTable", label: "", fontSize: 0, perimeter: "rectanglePerimeter" }
-        );
-        vertexes.push(vertex);
-      }
-    });
+    const vertexes = this.addVertexes(graph, data);
+    const edges = this.addEdges(graph, data, vertexes);
+
+    const layout = new HierarchicalLayout(graph);
+    layout.execute(graph.getDefaultParent());
+  }
+
+  addEdges(graph, data, vertexes) {
     graph.batchUpdate(() => {
       for (let table of Object.keys(data)) {
         for (let association of data[table].associations) {
           graph.insertEdge({
             source: vertexes.find((vertex) => vertex.value.name === table),
             target: vertexes.find((vertex) => vertex.value.name === association.name),
-            value: association.macro,
-            style: {
-              edgeStyle: "manhattanEdgeStyle"
-            }
+            value: association.macro
           });
         }
       }
     });
+  }
 
-    const layout = new HierarchicalLayout(graph); // layered layout
-    // const layout = new CompactTreeLayout(graph, false)   // tree layout (toggle orientation with 2nd arg)
-    // Run on all cells under the default parent, or pass `vertexes` to limit scope
-    layout.execute(parent);
-    // })
+  addZooming(graph) {
+    this.element.addEventListener(
+      "wheel",
+      (event) => {
+        event.preventDefault();
+
+        const currentScale = graph.view.scale;
+        const zoomFactor = event.deltaY < 0 ? 1.06 : 0.94;
+        const nextScale = Math.min(Math.max(currentScale * zoomFactor, 0.25), 2.5);
+
+        graph.zoomTo(nextScale, true);
+      },
+      { passive: false }
+    );
+  }
+
+  addVertexes(graph, data) {
+    const vertexes = [];
+    const parent = graph.getDefaultParent();
+
+    graph.batchUpdate(() => {
+      for (let table of Object.keys(data)) {
+        let longest = this.detectedMaxLength(data[table], "name");
+        let longestValue = this.detectedMaxLength(data[table], "sql_type");
+        let width = (longest + longestValue + 4) * 8;
+        const vertex = graph.insertVertex(
+          parent,
+          null,
+          {
+            name: table,
+            fields: this.getFields(data[table].columns)
+          },
+          0,
+          0,
+          width,
+          data[table].columns.filter((column) => column != undefined).length * 32 + 32,
+          { shape: "erdTable", label: "", fontSize: 0, perimeter: "rectanglePerimeter" }
+        );
+        vertexes.push(vertex);
+      }
+    });
+    return vertexes;
+  }
+
+  getFields(columns) {
+    return columns
+      .filter((column) => column != undefined)
+      .map((column) => {
+        return { name: column.name, sql_type: column.sql_type };
+      });
+  }
+
+  detectedMaxLength(table, type) {
+    return (
+      table.columns.reduce((max, column) => {
+        return Math.max(max, column[type].length);
+      }, 0) || 0
+    );
   }
 }

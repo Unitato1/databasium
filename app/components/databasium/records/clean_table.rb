@@ -100,7 +100,7 @@ module Components
       end
 
       def render_table_body
-        tbody(id: "records_body", class: "") do
+        tbody(id: "records_body") do
           if @records&.any?
             @records.each do |record|
               render Components::Databasium::Records::Table::Row.new(
@@ -119,7 +119,9 @@ module Components
 
       def render_pagy
         if @pagy && @records&.any?
-          div(class: "m-4 flex justify-start") { raw @pagy.series_nav.html_safe }
+          div(class: "m-4 flex justify-start") {
+            raw @pagy.series_nav.html_safe
+          }
         end
       end
     end

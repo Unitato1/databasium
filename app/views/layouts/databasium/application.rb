@@ -6,6 +6,7 @@ module Views
       include Phlex::Rails::Helpers::StylesheetLinkTag
       include Phlex::Rails::Helpers::JavascriptImportmapTags
       include Phlex::Rails::Helpers::TurboFrameTag
+      include Phlex::Rails::Helpers::Flash
 
       def view_template(&block)
         doctype
@@ -27,6 +28,8 @@ module Views
               controller: "layout"
             }
           ) do
+            render Components::Databasium::Global::Error.new
+            render Components::Databasium::Global::Flash.new(success: flash[:success], error: flash[:error])
             render Components::Databasium::Global::Sidebar.new(sidebar: content_for(:sidebar))
             turbo_frame_tag(
               "main",

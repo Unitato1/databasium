@@ -24,12 +24,16 @@ module Components
           render_form
           render_attributes_container
           render_relations_container
+          render_unknown
           form.submit "Create preview for model",
                       class: "bg-accent shadow-accent rounded-xl p-1 p-2 mt-2 w-full text-center"
         end
       end
 
       private
+
+      def render_unknown
+      end
 
       def render_attributes_container
         render_collapsable(

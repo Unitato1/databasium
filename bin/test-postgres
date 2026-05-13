@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+export DB=postgres
+export RAILS_ENV=test
+
+bundle exec rake app:db:prepare
+bundle exec rails test "$@"

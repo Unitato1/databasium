@@ -163,6 +163,9 @@ GEM
     parser (3.3.10.0)
       ast (~> 2.4.1)
       racc
+    pg (1.6.3)
+    pg (1.6.3-arm64-darwin)
+    pg (1.6.3-x86_64-linux)
     phlex (2.4.1)
       refract (~> 1.0)
       zeitwerk (~> 2.7)
@@ -323,6 +326,7 @@ DEPENDENCIES
   hotwire-livereload (~> 2.0)
   importmap-rails
   pagy (~> 43.2)
+  pg
   phlex-rails (~> 2.4)
   propshaft
   puma

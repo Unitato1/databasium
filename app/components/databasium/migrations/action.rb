@@ -18,6 +18,7 @@ module Components
       private
 
       def render_flash_stream
+        turbo_stream.replace("error", Components::Databasium::Global::Error.new)
         turbo_stream.replace(
           "flash",
           Components::Databasium::Global::Flash.new(success: @success, error: @error)

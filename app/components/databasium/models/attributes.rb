@@ -7,6 +7,9 @@ module Components
       end
 
       def view_template
+        @attributes.fetch(:unknown, []).each do |line|
+          input(type: "hidden", name: "model[unknown][]", value: line.fetch(:line, line["line"]))
+        end
         render_collapsable(
           name: "Pre-filled attributes",
           form: nil,

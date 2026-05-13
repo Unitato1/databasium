@@ -8,11 +8,13 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     @pagy, @migrations =
       pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
     @pending_migrations = @migration_service.pending_migrations
+    @migration = @migration_service.migrations.find { |migration| migration.version.to_s == params[:version].to_s }
 
     render Views::Databasium::Migrations::Index.new(
              migrations: @migrations,
              pending_migrations: @pending_migrations,
              migration_id: params[:version],
+             migration: @migration,
              pagy: @pagy
            )
   end
@@ -53,9 +55,9 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     require "rails/generators/active_record/migration/migration_generator"
 
     if params[:add_migration] == "Save"
-      success, error = @migration_service.save_migration(params)
+      success, _ = @migration_service.save_migration(params)
     else
-      @content, error = @migration_service.generate_migration(params)
+      @content, _ = @migration_service.generate_migration(params)
     end
     if success || @content
       respond_to do |format|
@@ -77,13 +79,39 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   end
 
   def run_pending_migrations
-    success, error = @migration_service.run_pending_migrations
-    if success
-      flash[:success] = "Pending migrations run successfully"
-    else
-      flash[:error] = "Error running pending migrations: #{error.message}"
+    versions = @migration_service.run_pending_migrations
+    message =
+      if versions.any?
+        "Pending migrations(#{versions.count}) run successfully"
+      else
+        "No pending migrations to run"
+      end
+
+    respond_to do |format|
+      format.html { redirect_to migrations_path, notice: message }
+      format.turbo_stream do
+        streams = [
+          turbo_stream.replace("error", Components::Databasium::Global::Error.new),
+          turbo_stream.replace(
+            "flash",
+            Components::Databasium::Global::Flash.new(success: message, error: nil)
+          )
+        ]
+
+        streams +=
+          versions.map do |version|
+            turbo_stream.replace(
+              "migration_#{version}_status",
+              Components::Databasium::Migrations::MigrationStatus.new(
+                status: "applied",
+                version: version
+              )
+            )
+          end
+
+        render turbo_stream: streams
+      end
     end
-    redirect_to migrations_path
   end
 
   def rollback_migration
@@ -96,15 +124,11 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       )
     if result == :success
       success = "Migration rolled back successfully"
-    else
-      error = "Error rolling back migration: #{error.message}"
     end
     if rollback_migration_params[:till_this_migration] == "true" ||
          rollback_migration_params[:rollback_steps].present?
-      flash[:success] = success
-      flash[:error] = error
-      redirect_to migrations_path
-      # response_to_action(success, error, version, result == :success ? "pending" : nil)
+      set_action_flash(success, error)
+      redirect_to migrations_path(version: version)
     else
       response_to_action(success, error, version, result == :success ? "pending" : nil)
     end
@@ -162,7 +186,15 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       format.turbo_stream do
         render new_action_response(success, error, migration_version, status), layout: false
       end
-      format.html { redirect_to migrations_path(version: migration_version) }
+      format.html do
+        set_action_flash(success, error)
+        redirect_to migrations_path(version: migration_version)
+      end
     end
+  end
+
+  def set_action_flash(success, error)
+    flash[:success] = success if success.present?
+    flash[:error] = error if error.present?
   end
 end

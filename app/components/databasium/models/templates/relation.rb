@@ -10,7 +10,7 @@ module Components
 
       def view_template
         selected_relation = @relation&.fetch(:name, nil)
-        type = @relation&.fetch(:type, nil)&.singularize
+        selected_model = @relation&.fetch(:type, nil)&.classify
         div(class: "flex gap-2") do
           select(
             name: "model[relations][][type]",
@@ -29,7 +29,11 @@ module Components
             name: "model[relations][][table_name]",
             placeholder: "Currently there is no model to select",
             class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
-          ) { @models&.each { |model| option(value: model, selected: type == model) { model } } }
+          ) do
+            @models&.each do |model|
+              option(value: model.classify, selected: selected_model == model.classify) { model }
+            end
+          end
           button(
             type: "button",
             class: "text-red-500",

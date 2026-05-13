@@ -9,10 +9,11 @@ module Views
       include Phlex::Rails::Helpers::ButtonTo
       include Phlex::Rails::Helpers::ContentFor
 
-      def initialize(migrations:, pending_migrations:, migration_id:, pagy:)
+      def initialize(migrations:, pending_migrations:, migration_id:, migration: nil, pagy:)
         @migrations = migrations
         @pending_migrations = pending_migrations
         @migration_id = migration_id
+        @migration = migration
         @pagy = pagy
       end
 
@@ -24,6 +25,11 @@ module Views
                    pending_migrations: @pending_migrations,
                    pagy: @pagy
                  )
+        end
+        if @migration
+          content_for(:header_actions) do
+            render Components::Databasium::Migrations::HeaderActions.new(migration: @migration)
+          end
         end
         render_migration_frame
       end
