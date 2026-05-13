@@ -15,8 +15,11 @@ module Components
       end
 
       def view_template
-        div(id: "header_actions", class: "flex tems-center") do
+        div(id: "header_actions", class: "flex max-w-full items-center overflow-x-auto") do
           limit = @limit.to_i
+          div(class: "flex items-center gap-2 mr-2") do
+            p(class: "text-sm font-bold") { "#{@table}" }
+          end
           button(
             type: "submit",
             form: "delete_records_form",

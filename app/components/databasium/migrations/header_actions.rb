@@ -13,7 +13,7 @@ module Components
       end
 
       def view_template
-        div(id: "header_actions") do
+        div(id: "header_actions", class: "max-w-full overflow-x-auto") do
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
                      {

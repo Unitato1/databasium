@@ -37,45 +37,51 @@ module Components
             scope: :record,
             url: databasium.records_path,
             class:
-              "border-b-1 border-border p-4 rounded-xl hidden max-h-100 overflow-y-auto flex-1",
+              "border-b-1 border-border p-4 rounded-xl hidden max-h-100 overflow-visible flex-1",
             id: "addRecord",
             data: {
               table_target: "addRecordForm"
             }
-          ) { |form| form_content(form) }
+          ) do |form|
+            hidden_field_tag(:table, @model.name)
+            div(class: "grid grid-cols-2 gap-4 w-fit") do
+              render_fields(form)
+              render_submit_button(form)
+            end
+          end
         end
       end
 
       private
 
-      def form_content(form)
-        hidden_field_tag(:table, @model.name)
-        div(class: "grid grid-cols-2 gap-4 w-fit") { fields_content(form) }
-      end
-
-      def fields_content(form)
+      def render_fields(form)
         @columns_names_types.each do |column|
           next if column[:name].in?(SKIPPED_COLUMNS)
 
           raw form.label(column[:name], class: "underline p-1 h-full text-sm")
-          if column[:foreign_key]
-            foreign_key_content(form, column)
-          else
-            div(class: "flex flex-col relative") do
-              p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") { column[:type] }
-              raw form.public_send(
-                    type_to_helper(column[:type]),
-                    column[:name],
-                    class: "border-1 rounded-xl p-1 border-border bg-panel text-sm"
-                  )
-            end
-          end
+
+          render_foreign_key_content(form, column) if column[:foreign_key]
+          render_field(form, column) unless column[:foreign_key]
         end
+      end
+
+      def render_submit_button(form)
         raw form.submit(
-              "Add record",
-              class: "bg-blue-500 px-4 py-2 rounded-md w-fit",
-              id: "add_record_button"
-            )
+          "Add record",
+          class: "bg-blue-500 px-4 py-2 rounded-md w-fit",
+          id: "add_record_button"
+        )
+      end
+
+      def render_field(form, column)
+        div(class: "flex flex-col relative") do
+          p(class: "text-xs font-light z-10 text-end absolute -top-3 right-0") { column[:type] }
+          raw form.public_send(
+                type_to_helper(column[:type]),
+                column[:name],
+                class: "border-1 rounded-xl p-1 border-border bg-panel text-sm"
+              )
+        end
       end
 
       def type_to_helper(type)
@@ -103,9 +109,9 @@ module Components
         end
       end
 
-      def foreign_key_content(form, column)
-        frame_id = "foreign_records"
-        div(data: { controller: "table-select" }, class: "flex") do
+      def render_foreign_key_content(form, column)
+        frame_id = foreign_records_frame_id(column)
+        div(data: { controller: "table-select" }, class: "relative flex overflow-visible") do
           raw form.public_send(
                 type_to_helper(column[:type]),
                 column[:name],
@@ -131,6 +137,10 @@ module Components
 
           turbo_frame_tag(frame_id)
         end
+      end
+
+      def foreign_records_frame_id(column)
+        "foreign_records_#{@model.name}_#{column[:to_table]}"
       end
     end
   end

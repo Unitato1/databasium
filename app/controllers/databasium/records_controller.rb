@@ -52,10 +52,12 @@ class Databasium::RecordsController < Databasium::ApplicationController
     @turbo_frame_id = params[:frame_id].presence || "records_list"
     @limit = params[:limit].presence || 10
     @refresh = params[:refresh].presence || false
-    if @turbo_frame_id == "foreign_records"
+
+    if foreign_records_frame?(@turbo_frame_id)
       render Components::Databasium::Records::ForeignRecords.new(
                model: @model,
-               columns_names_types: @columns_names_types
+               columns_names_types: @columns_names_types,
+               frame_id: @turbo_frame_id
              )
     else
       respond_to do |format|
@@ -67,7 +69,6 @@ class Databasium::RecordsController < Databasium::ApplicationController
                    pagy: @pagy,
                    feedback: @feedback,
                    columns_names_types: @columns_names_types,
-                   render_as_cards: @turbo_frame_id == "foreign_records_list"
                  )
         end
         format.turbo_stream do
@@ -136,6 +137,14 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def create_schema_service
     @schema_service = Databasium::Schema.new
+  end
+
+  def foreign_records_frame?(frame_id)
+    frame_id.start_with?("foreign_records_") && !foreign_records_table_frame?(frame_id)
+  end
+
+  def foreign_records_table_frame?(frame_id)
+    frame_id.start_with?("foreign_records_table_")
   end
 
   def filter_params

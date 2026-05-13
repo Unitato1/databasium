@@ -26,8 +26,8 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
   end
 
   def view_template
-    foreign = @turbo_frame == "foreign_records_list"
-    target_frame = foreign ? "foreign_records_list" : "records_list"
+    foreign = @turbo_frame.start_with?("foreign_records_table_")
+    target_frame = foreign ? @turbo_frame : "records_list"
 
     turbo_stream.replace(
       target_frame,
@@ -38,7 +38,6 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
         pagy: @pagy,
         feedback: @feedback,
         columns_names_types: @columns_names_types,
-        render_as_cards: foreign
       )
     )
 
