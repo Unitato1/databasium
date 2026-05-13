@@ -26,7 +26,7 @@ module Views
             render Components::Databasium::Models::Form.new(
                      attributes: @attributes,
                      model: @model,
-                     models: @models,
+                     models: @models
                    )
           end
           div(class: "flex-1 overflow-y-auto") do

@@ -119,9 +119,7 @@ module Components
 
       def render_pagy
         if @pagy && @records&.any?
-          div(class: "m-4 flex justify-start") {
-            raw @pagy.series_nav.html_safe
-          }
+          div(class: "m-4 flex justify-start") { raw @pagy.series_nav.html_safe }
         end
       end
     end

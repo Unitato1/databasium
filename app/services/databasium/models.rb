@@ -55,7 +55,6 @@ class Databasium::Models
 
       if line.start_with?("#")
         parsed_line = parse_column(line)
-
       elsif line.start_with?("validates :")
         parsed_line = parse_validation(line)
         scan_name = parsed_line[:content][:name]
@@ -66,7 +65,6 @@ class Databasium::Models
             value: parsed_line[:content][:value]
           }
         end
-
       elsif line.match?(RELATIONS_REGEX)
         parsed_line = parse_relation(line)
       else
@@ -78,7 +76,9 @@ class Databasium::Models
       end
 
       if parsed_line.present? && !(raw_line.blank? && !inside_class)
-        parsed_line[:content].merge!({ index: index, line: parsed_line[:type] == :unknown ? raw_line : line })
+        parsed_line[:content].merge!(
+          { index: index, line: parsed_line[:type] == :unknown ? raw_line : line }
+        )
         model[parsed_line[:type]] << parsed_line[:content]
       end
       index += 1
@@ -136,7 +136,6 @@ class Databasium::Models
     end
   end
 
-
   private
 
   def model_file_path(model_name)
@@ -150,8 +149,8 @@ class Databasium::Models
   def parse_column(line)
     scan =
       line
-      .scan(/# (\w+)\s*:\s*(\w+)(.*)/)
-      .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
+        .scan(/# (\w+)\s*:\s*(\w+)(.*)/)
+        .map { |match| { name: match[0], type: match[1], unknown: match[2] } }
     parsed_line = { type: :columns, content: scan.first } if scan.any?
     parsed_line = { type: :unknown, content: {} } if scan.empty?
     parsed_line

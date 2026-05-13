@@ -32,9 +32,7 @@ class Databasium::Migration
   def run_pending_migrations
     versions = migration_context.pending_migration_versions
 
-    versions.each do |version|
-      migration_context.run(:up, version)
-    end
+    versions.each { |version| migration_context.run(:up, version) }
 
     versions
   end
@@ -65,12 +63,7 @@ class Databasium::Migration
     else
       generator = "migration"
     end
-    Rails::Generators.invoke(
-      generator,
-      args,
-      behavior: :invoke,
-      destination_root: Rails.root.to_s
-    )
+    Rails::Generators.invoke(generator, args, behavior: :invoke, destination_root: Rails.root.to_s)
     true
   end
 

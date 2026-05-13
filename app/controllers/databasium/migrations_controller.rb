@@ -8,7 +8,10 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     @pagy, @migrations =
       pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
     @pending_migrations = @migration_service.pending_migrations
-    @migration = @migration_service.migrations.find { |migration| migration.version.to_s == params[:version].to_s }
+    @migration =
+      @migration_service.migrations.find do |migration|
+        migration.version.to_s == params[:version].to_s
+      end
 
     render Views::Databasium::Migrations::Index.new(
              migrations: @migrations,
@@ -122,9 +125,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         rollback_migration_params[:rollback_steps],
         rollback_migration_params[:till_this_migration]
       )
-    if result == :success
-      success = "Migration rolled back successfully"
-    end
+    success = "Migration rolled back successfully" if result == :success
     if rollback_migration_params[:till_this_migration] == "true" ||
          rollback_migration_params[:rollback_steps].present?
       set_action_flash(success, error)
