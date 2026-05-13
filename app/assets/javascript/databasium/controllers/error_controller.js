@@ -1,6 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
 
-// Connects to data-controller="flash"
+// Connects to data-controller="error"
 export default class extends Controller {
   static targets = [];
 

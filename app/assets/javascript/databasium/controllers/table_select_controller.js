@@ -4,14 +4,10 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   static targets = ["foreignKeyInput", "table"];
 
-  connect() {
-    console.log("table_select controller connected");
-  }
+  connect() {}
 
   toggleVisibility() {
-    // this.element.classList.add("hidden")
     this.tableTarget.remove();
-    console.log("table removed");
   }
 
   selectRecord(e) {
