@@ -8,42 +8,33 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     @pagy, @migrations =
       pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
     @pending_migrations = @migration_service.pending_migrations
-    @migration =
-      @migration_service.migrations.find do |migration|
-        migration.version.to_s == params[:version].to_s
-      end
 
     render Views::Databasium::Migrations::Index.new(
              migrations: @migrations,
              pending_migrations: @pending_migrations,
-             migration_id: params[:version],
-             migration: @migration,
              pagy: @pagy
            )
   end
 
   def show
-    @migration, error = @migration_service.find_migration!(params[:id])
-    flash[:error] = error&.message
-    if @migration
-      @content = File.read(@migration.filename)
-      respond_to do |format|
-        format.html do
-          render Components::Databasium::Migrations::File.new(
-                   migration: @migration,
-                   content: @content
-                 )
-        end
-        format.turbo_stream do
-          render Components::Databasium::Migrations::ShowTurboStream.new(
-                   migration: @migration,
-                   content: @content
-                 ),
-                 layout: false
-        end
+    @migration, _ = @migration_service.find_migration!(params[:id])
+    return render json: { error: "Migration not found" }, status: :not_found unless @migration
+
+    @content = File.read(@migration.filename)
+    respond_to do |format|
+      format.html do
+        render Components::Databasium::Migrations::File.new(
+                  migration: @migration,
+                  content: @content
+                )
       end
-    else
-      render json: { error: "Migration not found" }, status: :not_found
+      format.turbo_stream do
+        render Components::Databasium::Migrations::ShowTurboStream.new(
+                  migration: @migration,
+                  content: @content
+                ),
+                layout: false
+      end
     end
   end
 

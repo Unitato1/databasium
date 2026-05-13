@@ -117,16 +117,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
       limit: params[:limit].presence || 10
     }
   end
-  #   @refresh = refresh
-  # @filter = filter
-  #   @table = table
-  #   @records = records
-  #   @model = model
-  #   @turbo_frame = turbo_frame
-  #   @pagy = pagy
-  #   @feedback = feedback
-  #   @columns_names_types = columns_names_types
-  #   @limit = limit
+
   def set_model_and_record_service
     @model, @feedback = @schema_service.get_model_from_table(params[:table])
     @record_service = Databasium::Record.new(model: @model)

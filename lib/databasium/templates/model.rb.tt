@@ -20,4 +20,4 @@ class <%= model_name.classify %> < ApplicationRecord
 <% unknown&.each do |line| -%>
 <%= line -%>
 <% end -%>
-<%= "end" if unknown.empty? -%>
+<%= "end" if unknown.nil? || unknown&.empty? -%>

@@ -1,19 +1,19 @@
 class Databasium::ModelsController < Databasium::ApplicationController
   include Pagy::Method
+  before_action :create_model_service
 
   def new
-    @models = Databasium::Models.new.get_all_models_from_db(search: params[:search])
+    @models = @model_service.get_all_models_from_db(search: params[:search])
     @pagy, @models = pagy(@models, limit: 10, root_key: "models")
 
     render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
   end
 
   def get_model
-    models_service = Databasium::Models.new
-    @content = models_service.read_model_file(params[:model])
-    @attributes = models_service.get_model_data_from_file(params[:model])
-    @model = params[:model] if params[:model]
-    @models = models_service.get_all_models_from_dir(search: params[:search])
+    @content = @model_service.read_model_file(params[:model])
+    @attributes = @model_service.get_model_data_from_file(params[:model])
+    @model = params[:model]
+    @models = @models_service.get_all_models_from_dir(search: params[:search])
     respond_to do |format|
       format.html do
         render Views::Databasium::Models::New.new(
@@ -55,12 +55,16 @@ class Databasium::ModelsController < Databasium::ApplicationController
 
   private
 
+  def create_model_service
+    @model_service = Databasium::Model.new
+  end
+
   def generate_model_content
     template_path = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
     renderer = ERB.new(File.read(template_path), trim_mode: "-")
 
     context =
-      Databasium::Models::Model.new(
+      @model_service.create_model_data(
         model_name: model_params[:model_name],
         attributes: model_params[:attributes],
         relations: model_params[:relations],

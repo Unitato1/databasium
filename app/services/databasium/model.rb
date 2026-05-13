@@ -1,4 +1,4 @@
-class Databasium::Models
+class Databasium::Model
   attr_reader :model_name, :attributes, :relations
   PATHS = [ "models" ].freeze
   RELATIONS = %w[belongs_to has_many has_one has_and_belongs_to_many].freeze
@@ -86,15 +86,20 @@ class Databasium::Models
     model
   end
 
-  class Model
+  def create_model_data(model_name:, attributes:, relations:, unknown:)
+    ModelData.new(model_name: model_name, attributes: attributes, relations: relations, unknown: unknown)
+  end
+
+  private
+
+  class ModelData
     attr_reader :model_name, :attributes, :relations, :unknown
 
     def initialize(model_name:, attributes:, relations:, unknown: [])
       @model_name = model_name
-      @attributes = Array(attributes)
-      @relations = Array(relations)
-      # Strong params often pass nil when the key was not submitted; ERB calls .each on these.
-      @unknown = Array(unknown)
+      @attributes = attributes
+      @relations = relations
+      @unknown = unknown
     end
 
     def get_binding
@@ -115,8 +120,6 @@ class Databasium::Models
         table_name.singularize.underscore
       end
     end
-
-    private
 
     class Validation
       attr_reader :name, :value
