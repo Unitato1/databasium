@@ -37,7 +37,7 @@ module Components
         ) do
           button(
             type: "button",
-            class: "absolute right-4 top-1",
+            class: "absolute right-4 top-2",
             data: {
               action: "click->flash#close"
             }
@@ -57,7 +57,7 @@ module Components
         ) do
           button(
             type: "button",
-            class: "absolute right-4 top-1",
+            class: "absolute right-4 top-2",
             data: {
               action: "click->flash#close"
             }

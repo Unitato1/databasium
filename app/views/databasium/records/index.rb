@@ -20,13 +20,10 @@ module Views
         content_for(:title) { "Records" }
         content_for(:sidebar) { render_sidebar }
         div(class: "flex min-h-0 min-w-0 flex-1") do
-          render Components::Databasium::Records::Table.new(
-                   records: @records,
+          render Components::Databasium::Records::TableTurboFrame.new(
                    model: @model,
                    turbo_frame: @turbo_frame_id || "records",
-                   pagy: @pagy,
-                   feedback: @feedback,
-                   columns_names_types: @columns_names_types
+                   feedback: @feedback
                  )
           render Components::Databasium::Records::Table::RecordPanel.new
         end

@@ -62,7 +62,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
     else
       respond_to do |format|
         format.html do
-          render Components::Databasium::Records::CleanTable.new(
+          render Components::Databasium::Records::Table.new(
                    records: @records,
                    model: @model,
                    turbo_frame: @turbo_frame_id || "records_list",

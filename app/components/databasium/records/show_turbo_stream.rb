@@ -31,7 +31,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
 
     turbo_stream.replace(
       target_frame,
-      Components::Databasium::Records::CleanTable.new(
+      Components::Databasium::Records::Table.new(
         records: @records,
         model: @model,
         turbo_frame: target_frame,
