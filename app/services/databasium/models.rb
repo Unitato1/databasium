@@ -91,9 +91,10 @@ class Databasium::Models
 
     def initialize(model_name:, attributes:, relations:, unknown: [])
       @model_name = model_name
-      @attributes = attributes
-      @relations = relations
-      @unknown = unknown
+      @attributes = Array(attributes)
+      @relations = Array(relations)
+      # Strong params often pass nil when the key was not submitted; ERB calls .each on these.
+      @unknown = Array(unknown)
     end
 
     def get_binding

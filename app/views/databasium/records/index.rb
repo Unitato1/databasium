@@ -8,8 +8,7 @@ module Views
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::LinkTo
 
-      def initialize(model:, columns_names_types:, table: nil, tables: nil, pagy_tables: nil)
-        @columns_names_types = columns_names_types
+      def initialize(model:, table: nil, tables: nil, pagy_tables: nil)
         @model = model
         @table = table
         @tables = tables

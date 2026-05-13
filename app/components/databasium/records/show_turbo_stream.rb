@@ -36,8 +36,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
         model: @model,
         turbo_frame: target_frame,
         pagy: @pagy,
-        feedback: @feedback,
-        columns_names_types: @columns_names_types,
+        feedback: @feedback
       )
     )
 
@@ -46,7 +45,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
     turbo_stream.update(
       "header_actions",
       Components::Databasium::Records::HeaderActions.new(
-        filter: @filter,
+        filter: nil,
         table: @table,
         limit: @limit
       )

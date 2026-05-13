@@ -14,7 +14,6 @@ module Components
         turbo_frame:,
         pagy: nil,
         feedback: nil,
-        columns_names_types:,
         render_as_cards: false
       )
         @records = records
@@ -22,7 +21,6 @@ module Components
         @turbo_frame = turbo_frame
         @pagy = pagy
         @feedback = feedback
-        @columns_names_types = columns_names_types
         @render_as_cards = render_as_cards
       end
 
