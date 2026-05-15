@@ -7,20 +7,16 @@ module Views
       include Phlex::Rails::Helpers::ButtonTo
       include Phlex::Rails::Helpers::ContentFor
 
-      def initialize(migrations:, pending_migrations:, pagy:)
-        @migrations = migrations
-        @pending_migrations = pending_migrations
-        @pagy = pagy
+      def initialize
       end
 
       def view_template
         content_for(:title) { "Migrations" }
         content_for(:sidebar) do
           render Components::Databasium::Migrations::Sidebar.new(
-                   migrations: @migrations,
-                   pending_migrations: @pending_migrations,
-                   pagy: @pagy
-                 )
+            migrations: nil,
+            pending_migrations: nil,
+            pagy: nil)
         end
         render_migration_frame
       end

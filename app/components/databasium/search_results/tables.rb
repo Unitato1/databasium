@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Components
   module Databasium
     class SearchResults::Tables < Components::Base

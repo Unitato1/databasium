@@ -6,16 +6,15 @@ module Views
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(tables:, content:)
+      def initialize(tables:)
         @tables = tables
-        @content = content
       end
 
       def view_template
         div(class: "flex p-4 gap-4") do
           render Components::Databasium::Migrations::Form.new(tables: @tables, content: @content)
           div(class: "flex-1 pe-4") do
-            render Components::Databasium::Migrations::Preview.new(content: @content)
+            render Components::Databasium::Migrations::Preview.new(content: nil)
           end
         end
       end

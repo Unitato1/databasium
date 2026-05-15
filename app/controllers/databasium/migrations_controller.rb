@@ -5,15 +5,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   include Pagy::Method
 
   def index
-    @pagy, @migrations =
-      pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
-    @pending_migrations = @migration_service.pending_migrations
-
-    render Views::Databasium::Migrations::Index.new(
-             migrations: @migrations,
-             pending_migrations: @pending_migrations,
-             pagy: @pagy
-           )
+    render Views::Databasium::Migrations::Index.new
   end
 
   def show
@@ -40,7 +32,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def new
     @tables = Databasium::Schema.new.tables
-    render Views::Databasium::Migrations::New.new(tables: @tables, content: @content)
+    render Views::Databasium::Migrations::New.new(tables: @tables)
   end
 
   def create
@@ -69,6 +61,18 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
+  end
+
+  def sidebar
+    @pagy, @migrations =
+      pagy(@migration_service.get_migrations(params[:search]), limit: 7, root_key: "migrations")
+    @pending_migrations = @migration_service.pending_migrations
+
+    render Components::Databasium::SearchResults::Migrations.new(
+      migrations: @migrations,
+      pending_migrations: @pending_migrations,
+      pagy: @pagy
+    )
   end
 
   def run_pending_migrations
