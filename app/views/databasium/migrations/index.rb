@@ -18,6 +18,9 @@ module Views
             pending_migrations: nil,
             pagy: nil)
         end
+        content_for(:header_actions) do
+          render Components::Databasium::Migrations::HeaderActions.new(migration: nil)
+        end
         render_migration_frame
       end
 

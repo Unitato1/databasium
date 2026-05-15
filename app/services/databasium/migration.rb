@@ -17,9 +17,6 @@ class Databasium::Migration
     @migrations
   end
 
-  def generate_migration
-    @migration.generate_migration
-  end
 
   def find_migration!(version)
     migration = migration_context.migrations.find { |m| m.version.to_s == version.to_s }
@@ -92,7 +89,7 @@ class Databasium::Migration
       ERB.new(File.read(source), trim_mode: "-", eoutvar: "@output_buffer").result(
         gen.instance_eval("binding")
       )
-    [ content, nil ]
+    content
   end
 
   private

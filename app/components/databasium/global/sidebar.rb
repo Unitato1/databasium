@@ -7,8 +7,7 @@ module Components
         { icon: "list-bullet", path: :records_path, text: "Records" },
         { icon: "arrow-path", path: :migrations_path, text: "Migrations" },
         { icon: "cube", path: :new_model_path, text: "Models" },
-        { icon: "table-cells", path: :schemas_path, text: "Schema" },
-        { icon: "pencil-square", path: :new_migration_path, text: "Edits" }
+        { icon: "table-cells", path: :schemas_path, text: "Schema" }
       ].freeze
 
       def initialize(sidebar: nil)

@@ -5,12 +5,23 @@ module Views
     class Migrations::New < Views::Base
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::TurboFrameTag
+      include Phlex::Rails::Helpers::ContentFor
 
       def initialize(tables:)
         @tables = tables
       end
 
       def view_template
+        content_for(:title) { "New Migration" }
+        content_for(:sidebar) do
+          render Components::Databasium::Migrations::Sidebar.new(
+            migrations: nil,
+            pending_migrations: nil,
+            pagy: nil)
+        end
+        content_for(:header_actions) do
+          render Components::Databasium::Migrations::HeaderActions.new(migration: nil)
+        end
         div(class: "flex p-4 gap-4") do
           render Components::Databasium::Migrations::Form.new(tables: @tables, content: @content)
           div(class: "flex-1 pe-4") do

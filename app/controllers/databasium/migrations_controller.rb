@@ -41,32 +41,27 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     require "rails/generators/active_record/migration/migration_generator"
 
     if params[:add_migration] == "Save"
-      success, _ = @migration_service.save_migration(params)
+      success = @migration_service.save_migration(params)
     else
-      @content, _ = @migration_service.generate_migration(params)
+      content = @migration_service.generate_migration(params)
     end
-    if success || @content
-      respond_to do |format|
-        format.html do
-          redirect_to migrations_path(migration: @migration_service.migrations.last&.version)
-        end
-        format.turbo_stream do
-          render turbo_stream:
-                   turbo_stream.replace(
-                     "migration_preview",
-                     Components::Databasium::Migrations::Preview.new(content: @content)
-                   )
-        end
-      end
+
+    if success
+      flash[:success] = "Migration for table #{params[:table_name]} saved successfully."
+      redirect_to migrations_path, status: :see_other
+    elsif content
+      render turbo_stream:
+                turbo_stream.replace(
+                  "migration_preview",
+                  Components::Databasium::Migrations::Preview.new(content: content)
+                )
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def sidebar
-    @pagy, @migrations =
-      pagy(@migration_service.get_migrations(params[:search]), limit: 7, root_key: "migrations")
-    @pending_migrations = @migration_service.pending_migrations
+    set_pagy_migrations_and_pending_migrations
 
     render Components::Databasium::SearchResults::Migrations.new(
       migrations: @migrations,
@@ -141,6 +136,12 @@ class Databasium::MigrationsController < Databasium::ApplicationController
   end
 
   private
+
+  def set_pagy_migrations_and_pending_migrations
+    @pagy, @migrations =
+    pagy(@migration_service.get_migrations(params[:search]), limit: 7, root_key: "migrations")
+    @pending_migrations = @migration_service.pending_migrations
+  end
 
   def create_migration_service
     @migration_service = Databasium::Migration.new

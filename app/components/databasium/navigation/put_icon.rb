@@ -10,7 +10,7 @@ module Components
       def view_template
         link_to(element[:path], class: icon_classes, data: { turbo_method: :put }) do
           render_icon(element[:icon])
-          p(class: "text-main-text text-base") { element[:text] }
+          render_text(element[:text])
         end
       end
     end
