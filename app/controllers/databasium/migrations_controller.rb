@@ -67,7 +67,6 @@ class Databasium::MigrationsController < Databasium::ApplicationController
         end
       end
     else
-      flash[:error] = "Error creating migration: #{error.message}"
       render :new, status: :unprocessable_entity
     end
   end

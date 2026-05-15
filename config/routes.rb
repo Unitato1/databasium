@@ -4,12 +4,14 @@ Databasium::Engine.routes.draw do
 
   resources :records, only: [ :index, :create, :update ] do
     collection do
+      get :sidebar
       delete :bulk_destroy
+      get :records
     end
-    get :records, on: :collection
   end
   resources :migrations, only: [ :index, :new, :create, :show ] do
     collection do
+      get :sidebar
       post :run_pending_migrations
       post :run_migration
       post :rollback_migration
@@ -17,6 +19,7 @@ Databasium::Engine.routes.draw do
   end
   resources :models, only: [ :new, :create ] do
     collection do
+      get :sidebar
       get :get_model
     end
   end

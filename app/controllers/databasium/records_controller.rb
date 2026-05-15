@@ -5,20 +5,12 @@ class Databasium::RecordsController < Databasium::ApplicationController
   include ActionView::RecordIdentifier
 
   def index
-    @pagy_tables, @tables =
-      pagy(@schema_service.get_tables(params[:search]), limit: 10, root_key: "tables")
-
-    render Views::Databasium::Records::Index.new(
-             model: @model,
-             table: params[:table],
-             tables: @tables,
-             pagy_tables: @pagy_tables
-           )
+    render Views::Databasium::Records::Index.new
   end
 
   def create
     new_record = @record_service.create_new(attributes: model_columns_params)
-    raise ActiveRecord::RecordInvalid, record.errors.full_messages.join(", ") unless new_record
+    raise ActiveRecord::RecordInvalid, new_record.errors.full_messages.join(", ") unless new_record
 
     render turbo_stream: [
       turbo_stream.append(
@@ -34,15 +26,15 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def records
     @context = records_context
-    @pagy, @records =
+    pagy, records =
       pagy(@record_service.filter_records(filter_params), limit: params[:limit].presence || 10, root_key: "records")
 
     if foreign_records_frame?(@context[:turbo_frame])
       render_foreign_records_table
     else
       respond_to do |format|
-        format.html { render_records_table }
-        format.turbo_stream { render_records_table_turbo_stream }
+        format.html { render_records_table(records: records, pagy: pagy) }
+        format.turbo_stream { render_records_table_turbo_stream(records: records, pagy: pagy) }
       end
     end
   end
@@ -76,6 +68,12 @@ class Databasium::RecordsController < Databasium::ApplicationController
       }
   end
 
+  def sidebar
+    @pagy_tables, @tables =
+      pagy(@schema_service.get_tables(params[:search]), limit: 7, root_key: "tables")
+    render Components::Databasium::SearchResults::Tables.new(tables: @tables, pagy: @pagy_tables)
+  end
+
   private
 
   def render_foreign_records_table
@@ -86,21 +84,21 @@ class Databasium::RecordsController < Databasium::ApplicationController
     )
   end
 
-  def render_records_table_turbo_stream
+  def render_records_table_turbo_stream(records:, pagy:)
     render Components::Databasium::Records::ShowTurboStream.new(
       **@context,
-      records: @records,
-      pagy: @pagy,
+      records: records,
+      pagy: pagy,
    ),
    layout: false
   end
 
-  def render_records_table
+  def render_records_table(records:, pagy:)
     render Components::Databasium::Records::Table.new(
-      records: @records,
+      records: records,
       model: @context[:model],
       turbo_frame: @context[:turbo_frame],
-      pagy: @context[:pagy],
+      pagy: pagy,
       feedback: @context[:feedback],
     )
   end

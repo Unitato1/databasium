@@ -37,7 +37,7 @@ module Components
             scope: :record,
             url: databasium.records_path,
             class:
-              "border-b-1 border-border p-4 rounded-xl hidden max-h-100 overflow-visible flex-1",
+              "border-b-1 border-border p-4 rounded-xl hidden max-h-100 overflow-y-auto flex-1",
             id: "addRecord",
             data: {
               table_target: "addRecordForm"

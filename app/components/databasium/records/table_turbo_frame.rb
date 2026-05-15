@@ -5,14 +5,13 @@ module Components
     class Records::TableTurboFrame < Components::Base
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(model:, turbo_frame:, feedback: nil)
+      def initialize(model: nil, feedback: nil)
         @model = model
-        @turbo_frame = turbo_frame
         @feedback = feedback
       end
 
       def view_template
-        turbo_frame_tag(@turbo_frame, class: "flex min-h-0 min-w-0 flex-1 flex-col") do
+        div(class: "flex min-h-0 min-w-0 flex-1 flex-col") do
           div(id: "records_utilities") { }
           render_table
         end
@@ -22,8 +21,16 @@ module Components
 
       def render_table
         turbo_frame_tag("records_list") do
+          suggestion = if @feedback
+            @feedback
+          elsif @model
+            "No records found for #{@model&.name} table."
+          else
+            "Please select a table to view records."
+
+          end
           render Components::Databasium::Global::Suggestion.new(
-                   suggestions: [ @feedback || "No records found for #{@model&.name} table." ]
+                   suggestions: [ suggestion ]
                  )
         end
       end

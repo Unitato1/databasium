@@ -14,18 +14,13 @@ module Components
       end
 
       def view_template
-        render_models_list
-      end
-
-      private
-
-      def render_models_list
         div(class: "flex flex-col gap-2", data: { controller: "search" }) do
           render_search_for_models
           turbo_frame_tag("results") { render_models }
         end
-        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
+
+      private
 
       def render_models
         @models&.each do |model|
@@ -43,11 +38,12 @@ module Components
             end
           end
         end
+        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
 
       def render_search_for_models
         render Components::Databasium::Forms::Search.new(
-                 url: databasium.new_model_path,
+                 url: databasium.sidebar_models_path,
                  turbo_frame: "results",
                  placeholder: "Search for a model"
                )

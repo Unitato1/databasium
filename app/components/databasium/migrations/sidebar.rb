@@ -44,7 +44,6 @@ module Components
           render_search_for_migrations
           turbo_frame_tag("results") { render_migrations }
         end
-        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
 
       def render_migrations
@@ -63,6 +62,7 @@ module Components
             render Migrations::MigrationStatus.new(status: status, version: m.version)
           end
         end
+        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
 
       def render_search_for_migrations

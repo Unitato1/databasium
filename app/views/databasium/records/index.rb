@@ -8,58 +8,15 @@ module Views
       include Phlex::Rails::Helpers::FormWith
       include Phlex::Rails::Helpers::LinkTo
 
-      def initialize(model:, table: nil, tables: nil, pagy_tables: nil)
-        @model = model
-        @table = table
-        @tables = tables
-        @pagy_tables = pagy_tables
+      def initialize
       end
 
       def view_template
         content_for(:title) { "Records" }
-        content_for(:sidebar) { render_sidebar }
+        content_for(:sidebar) { render Components::Databasium::Records::Sidebar.new }
         div(class: "flex min-h-0 min-w-0 flex-1") do
-          render Components::Databasium::Records::TableTurboFrame.new(
-                   model: @model,
-                   turbo_frame: @turbo_frame_id || "records",
-                   feedback: @feedback
-                 )
+          render Components::Databasium::Records::TableTurboFrame.new
           render Components::Databasium::Records::Table::RecordPanel.new
-        end
-      end
-
-      private
-
-      def render_sidebar
-        div(class: "flex flex-col w-full") do
-          render Components::Databasium::Forms::Search.new(
-                   url: databasium.records_path,
-                   turbo_frame: "results",
-                   placeholder: "Search for a table"
-                 )
-          turbo_frame_tag("results") do
-            @tables&.each do |table|
-              div(class: "border-b-2 border-b-border py-2 px-3") do
-                link_to "#{table}",
-                        databasium.records_records_path(table: table, refresh: true),
-                        data: {
-                          turbo_frame: "_top",
-                          turbo_stream: true
-                        }
-              end
-            end
-            if @tables
-              div(class: "mt-4 flex justify-start") { raw @pagy_tables.series_nav.html_safe }
-            end
-          end
-        end
-      end
-
-      def render_main
-        turbo_frame_tag "records",
-                        class: "",
-                        src: helpers.records_records_path(table: @table, frame_id: "records") do
-          "Loading"
         end
       end
     end

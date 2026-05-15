@@ -7,31 +7,26 @@ class Databasium::Model
   def initialize
   end
 
-  def get_all_models_from_dir(search: nil)
-    model_files = []
-    PATHS.each { |path| model_files += Dir.glob(Rails.root.join("app", path, "**/*.rb")) }
-    model_names =
-      model_files
-        .map { |file| File.basename(file).sub(/\.rb$/, "").classify }
-        .reject do |name|
-          %w[ApplicationRecord Concerns].include?(name) || !name.safe_constantize&.table_exists?
-        end
-    model_names = model_names.select { |name| name =~ /#{search}/i } if search
-    model_names
-  end
+  #  might be worth switching to reading from the dir directly in future
+  # def get_all_models_from_dir(search: nil)
+  #   model_files = []
+  #   PATHS.each { |path| model_files += Dir.glob(Rails.root.join("app", path, "**/*.rb")) }
+  #   model_names =
+  #     model_files
+  #       .map { |file| File.basename(file).sub(/\.rb$/, "").classify }
+  #       .reject do |name|
+  #         %w[ApplicationRecord Concerns].include?(name) || !name.safe_constantize&.table_exists?
+  #       end
+  #   model_names = model_names.select { |name| name =~ /#{search}/i } if search
+  #   model_names
+  # end
 
   def get_all_models_from_db(search: nil)
     conn = ActiveRecord::Base.connection
     tables = conn.tables - %w[ar_internal_metadata schema_migrations]
+    tables = tables.map { |t| t.classify }
     tables = tables.select { |t| t =~ /#{search}/i } if search
-    tables.map { |t| t.singularize.classify }
-  end
-
-  def get_model_data(model)
-    {
-      columns: model.column_names,
-      validations: model.validators.map { |v| { attributes: v.attributes, kind: v.kind } }
-    }
+    tables
   end
 
   def read_model_file(model_name)

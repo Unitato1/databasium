@@ -4,7 +4,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
 
   def new
     @models = @model_service.get_all_models_from_db(search: params[:search])
-    @pagy, @models = pagy(@models, limit: 10, root_key: "models")
+    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
 
     render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
   end
@@ -13,15 +13,15 @@ class Databasium::ModelsController < Databasium::ApplicationController
     @content = @model_service.read_model_file(params[:model])
     @attributes = @model_service.get_model_data_from_file(params[:model])
     @model = params[:model]
-    @models = @models_service.get_all_models_from_dir(search: params[:search])
+    @models = @model_service.get_all_models_from_db(search: params[:search])
+    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
+
     respond_to do |format|
       format.html do
         render Views::Databasium::Models::New.new(
                  content: @content,
                  model: @model,
                  attributes: @attributes,
-                 models: @models,
-                 pagy: @pagy
                )
       end
       format.turbo_stream do
@@ -32,6 +32,14 @@ class Databasium::ModelsController < Databasium::ApplicationController
                  )
       end
     end
+  end
+
+  def sidebar
+    @models = @model_service.get_all_models_from_db(search: params[:search])
+    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
+
+    puts "models: #{@models.inspect}"
+    render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy)
   end
 
   def create

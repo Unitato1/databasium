@@ -32,7 +32,6 @@ module Components
           ) { p(class: "max-w-fit overflow-x-auto me-2 scrollbar-thin p-1") { "Whole schema" } }
           turbo_frame_tag("results") { render_models }
         end
-        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
 
       def render_models
@@ -52,6 +51,7 @@ module Components
           end
         end
         p(class: "text-main-text text-center p-4") { "No models found" } if @models.empty?
+        div(class: "mt-4 flex justify-start") { raw @pagy.series_nav.html_safe } if @pagy
       end
 
       def render_search_for_models
