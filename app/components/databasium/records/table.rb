@@ -59,7 +59,7 @@ module Components
         thead do
           tr(class: "bg-accent shadow-accent") do
             if @turbo_frame == "records_list"
-              th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
+              th(class: table_head_classes) do
                 button(
                   type: "button",
                   data: {
@@ -71,7 +71,7 @@ module Components
               end
             end
             @model&.columns&.each do |column|
-              th(class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto") do
+              th(class: table_head_classes) do
                 plain column.name
               end
             end
@@ -119,6 +119,10 @@ module Components
         if @pagy && @records&.any?
           div(class: "m-4 flex justify-start") { raw @pagy.series_nav.html_safe }
         end
+      end
+
+      def table_head_classes
+        "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto"
       end
     end
   end
