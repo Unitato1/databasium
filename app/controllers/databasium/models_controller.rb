@@ -1,6 +1,7 @@
 class Databasium::ModelsController < Databasium::ApplicationController
   include Pagy::Method
   before_action :create_model_service
+  MODEL_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
 
   def new
     @models = @model_service.get_all_models_from_db(search: params[:search])
@@ -38,14 +39,13 @@ class Databasium::ModelsController < Databasium::ApplicationController
     @models = @model_service.get_all_models_from_db(search: params[:search])
     @pagy, @models = pagy(@models, limit: 7, root_key: "models")
 
-    puts "models: #{@models.inspect}"
     render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy)
   end
 
   def create
-    @content = generate_model_content
+    content = generate_model_content
     if params[:commit] == "Create model file"
-      write_file(@content)
+      write_file(content)
       redirect_to schemas_path, notice: "Model file created successfully"
     else
       respond_to do |format|
@@ -54,7 +54,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
           render turbo_stream:
                    turbo_stream.replace(
                      "model_preview",
-                     Components::Databasium::Models::ModelPreview.new(content: @content)
+                     Components::Databasium::Models::ModelPreview.new(content: content)
                    )
         end
       end
@@ -68,8 +68,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   end
 
   def generate_model_content
-    template_path = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
-    renderer = ERB.new(File.read(template_path), trim_mode: "-")
+    renderer = ERB.new(File.read(MODEL_TEMPLATE_PATH), trim_mode: "-")
 
     context =
       @model_service.create_model_data(
