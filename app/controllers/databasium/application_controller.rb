@@ -3,10 +3,17 @@ module Databasium
     helper ::Databasium::HeroiconHelper
 
     layout -> { Views::Layouts::Databasium::Application.new }
+    before_action :check_development_environment
 
     rescue_from Exception, with: :render_error_flash if Rails.env.development?
 
     private
+
+    def check_development_environment
+      if Rails.env.production?
+        render Views::Databasium::Errors::NonDevelopment.new
+      end
+    end
 
     def render_error_flash(error)
       Rails.logger.error("[Databasium] #{error.class}: #{error.message}")

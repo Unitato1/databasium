@@ -1,6 +1,6 @@
 class Databasium::Migration
   attr_reader :migration_context, :migrations, :pending_migrations
-  MIGRATIONS_PATHS = [ "db/migrate" ] # TODO: make this configurable and maybe move to a constant readonly
+  MIGRATIONS_PATHS = [ "db/migrate" ]
   MIGRATIONS_TEMPLATE_PATH =
     Databasium::Engine.root.join("lib/databasium/templates/migration.rb.tt")
   CREATE_TABLE_MIGRATIONS_TEMPLATE_PATH =
@@ -68,6 +68,7 @@ class Databasium::Migration
       generator = "migration"
     end
     Rails::Generators.invoke(generator, args, behavior: :invoke, destination_root: Rails.root.to_s)
+    true
   end
 
   def generate_migration(params)

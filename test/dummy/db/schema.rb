@@ -18,7 +18,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.string "location", null: false
     t.datetime "updated_at", null: false
     t.string "website"
-    t.index ["blog_author_id"], name: "index_blog_author_profiles_on_blog_author_id"
+    t.index [ "blog_author_id" ], name: "index_blog_author_profiles_on_blog_author_id"
   end
 
   create_table "blog_authors", force: :cascade do |t|
@@ -27,7 +27,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.string "email", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
-    t.index ["email"], name: "index_blog_authors_on_email", unique: true
+    t.index [ "email" ], name: "index_blog_authors_on_email", unique: true
   end
 
   create_table "blog_categories", force: :cascade do |t|
@@ -36,7 +36,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_blog_categories_on_slug", unique: true
+    t.index [ "slug" ], name: "index_blog_categories_on_slug", unique: true
   end
 
   create_table "blog_comments", force: :cascade do |t|
@@ -46,8 +46,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.text "body", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["blog_author_id"], name: "index_blog_comments_on_blog_author_id"
-    t.index ["blog_post_id"], name: "index_blog_comments_on_blog_post_id"
+    t.index [ "blog_author_id" ], name: "index_blog_comments_on_blog_author_id"
+    t.index [ "blog_post_id" ], name: "index_blog_comments_on_blog_post_id"
   end
 
   create_table "blog_posts", force: :cascade do |t|
@@ -62,10 +62,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.integer "views_count", default: 0, null: false
-    t.index ["blog_author_id"], name: "index_blog_posts_on_blog_author_id"
-    t.index ["blog_category_id"], name: "index_blog_posts_on_blog_category_id"
-    t.index ["slug"], name: "index_blog_posts_on_slug", unique: true
-    t.index ["test"], name: "index_blog_posts_on_test", unique: true
+    t.index [ "blog_author_id" ], name: "index_blog_posts_on_blog_author_id"
+    t.index [ "blog_category_id" ], name: "index_blog_posts_on_blog_category_id"
+    t.index [ "slug" ], name: "index_blog_posts_on_slug", unique: true
+    t.index [ "test" ], name: "index_blog_posts_on_test", unique: true
   end
 
   create_table "blog_taggings", force: :cascade do |t|
@@ -73,9 +73,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.integer "blog_tag_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["blog_post_id", "blog_tag_id"], name: "index_blog_taggings_on_blog_post_id_and_blog_tag_id", unique: true
-    t.index ["blog_post_id"], name: "index_blog_taggings_on_blog_post_id"
-    t.index ["blog_tag_id"], name: "index_blog_taggings_on_blog_tag_id"
+    t.index [ "blog_post_id", "blog_tag_id" ], name: "index_blog_taggings_on_blog_post_id_and_blog_tag_id", unique: true
+    t.index [ "blog_post_id" ], name: "index_blog_taggings_on_blog_post_id"
+    t.index [ "blog_tag_id" ], name: "index_blog_taggings_on_blog_tag_id"
   end
 
   create_table "blog_tags", force: :cascade do |t|
@@ -83,7 +83,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_13_210903) do
     t.string "name", null: false
     t.string "slug", null: false
     t.datetime "updated_at", null: false
-    t.index ["slug"], name: "index_blog_tags_on_slug", unique: true
+    t.index [ "slug" ], name: "index_blog_tags_on_slug", unique: true
   end
 
   create_table "blogviews", force: :cascade do |t|

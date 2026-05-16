@@ -55,7 +55,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
                   Components::Databasium::Migrations::Preview.new(content: content)
                 )
     else
-      render :new, status: :unprocessable_entity
+      head :unprocessable_entity
     end
   end
 
