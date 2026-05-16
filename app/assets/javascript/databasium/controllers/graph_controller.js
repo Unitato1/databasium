@@ -1,63 +1,6 @@
 import { Controller } from "@hotwired/stimulus";
-import { Graph, InternalEvent, HierarchicalLayout, ShapeRegistry, Shape } from "@maxgraph/core";
-
-class ErdTableShape extends Shape {
-  paintVertexShape(c, x, y, w, h) {
-    const { name, fields } = this.state.cell.value;
-    const headerHeight = 32;
-
-    c.setFillColor("var(--color-panel)");
-    c.setStrokeColor("var(--color-border)");
-    c.setStrokeWidth(2);
-    c.rect(x, y, w, fields.length * 32 + headerHeight);
-    c.fillAndStroke();
-
-    // Header background
-    c.setFillColor("var(--color-panel)");
-    c.rect(x, y, w, headerHeight);
-    c.fillAndStroke();
-
-    // Header text
-    c.setFontStyle(1);
-    c.setFontSize(16);
-    c.setFontColor("var(--color-main-text)");
-    c.text(x + 4, y + 4, 0, 0, name, "left", "top", false, false);
-
-    // Reset font style
-    c.setFontStyle(0);
-    c.setFontSize(16);
-
-    // Draw rows
-    let rowY = y + headerHeight;
-    const rowHeight = 32;
-    fields?.forEach((field) => {
-      c.setStrokeWidth(1);
-      c.setStrokeColor("var(--color-border)");
-      c.stroke();
-      c.begin();
-      c.moveTo(x, rowY);
-      c.lineTo(x + w, rowY);
-      c.stroke();
-      // Text
-      c.setFontColor("var(--color-main-text)");
-      c.text(
-        x + 6,
-        rowY + 4,
-        0,
-        0,
-        `${field.name} ${" - " + field.sql_type}`,
-        "left",
-        "top",
-        false,
-        false
-      );
-
-      rowY += rowHeight;
-    });
-  }
-}
-
-ShapeRegistry.add("erdTable", ErdTableShape);
+import { Graph, InternalEvent, HierarchicalLayout } from "@maxgraph/core";
+import "databasium/shapes/erd_table_shape";
 
 // Connects to data-controller="graph"
 export default class extends Controller {
@@ -100,18 +43,92 @@ export default class extends Controller {
     layout.execute(graph.getDefaultParent());
   }
 
+  addLabelToEdge(graph, edge, text, position = "start") {
+    const x = position === "start" ? -0.85 : 0.85;
+
+    graph.insertVertex(
+      edge,
+      null,
+      text,
+      x,
+      0,
+      1,
+      1,
+      {
+        fillColor: "none",
+        strokeColor: "none",
+        fontColor: "var(--color-main-text)",
+        fontSize: 12,
+        align: "center",
+        verticalAlign: "middle",
+        labelBackgroundColor: "var(--color-panel)",
+        labelPadding: 4
+      },
+      true // relative — without this, labels won't appear on the edge
+    );
+  }
+
   addEdges(graph, data, vertexes) {
+    const edgeStyle = {
+      edgeStyle: "orthogonalEdgeStyle",
+      rounded: true,
+      startArrow: "none",
+      endArrow: "none",
+      strokeColor: "var(--color-border)",
+      strokeWidth: 2
+    };
+
     graph.batchUpdate(() => {
+      const alreadySet = new Set();
       for (let table of Object.keys(data)) {
-        for (let association of data[table].associations) {
-          graph.insertEdge({
-            source: vertexes.find((vertex) => vertex.value.name === table),
-            target: vertexes.find((vertex) => vertex.value.name === association.name),
-            value: association.macro
+        for (let association of data[table]?.associations || []) {
+          const relatedTable = data[association.name];
+          if (!relatedTable || !vertexes[association.name]) continue;
+          if (alreadySet.has(`${association.name}-${table}`)) continue;
+
+          alreadySet.add(`${table}-${association.name}`);
+
+          const sourceMacro = association.macro;
+          const targetMacro = relatedTable.associations?.find(
+            (assoc) => assoc.name === table
+          )?.macro;
+
+          const edge = graph.insertEdge({
+            source: vertexes[table],
+            target: vertexes[association.name],
+            style: edgeStyle
           });
+          // macros are declered on oposite sites, thats why we use labels for oposite macros
+          this.addLabelToEdge(
+            graph,
+            edge,
+            `${this.getLabelForEdge(sourceMacro)} (${targetMacro ?? "Missing relation"})`,
+            "end"
+          );
+          this.addLabelToEdge(
+            graph,
+            edge,
+            `${this.getLabelForEdge(targetMacro)} (${sourceMacro ?? "Missing relation"})`,
+            "start"
+          );
         }
       }
     });
+  }
+
+  getLabelForEdge(macro) {
+    switch (macro) {
+      case "has_many":
+        return "0..*";
+      case "has_one":
+        return "1";
+      case "belongs_to":
+        return "1";
+      case "has_and_belongs_to_many":
+        return "0..*";
+      default:
+        return "0..*";
+    }
   }
 
   addZooming(graph) {
@@ -131,7 +148,7 @@ export default class extends Controller {
   }
 
   addVertexes(graph, data) {
-    const vertexes = [];
+    const vertexes = {};
     const parent = graph.getDefaultParent();
 
     graph.batchUpdate(() => {
@@ -152,7 +169,7 @@ export default class extends Controller {
           data[table].columns.filter((column) => column != undefined).length * 32 + 32,
           { shape: "erdTable", label: "", fontSize: 0, perimeter: "rectanglePerimeter" }
         );
-        vertexes.push(vertex);
+        vertexes[table] = vertex;
       }
     });
     return vertexes;
