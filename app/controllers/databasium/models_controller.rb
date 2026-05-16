@@ -4,7 +4,9 @@ class Databasium::ModelsController < Databasium::ApplicationController
   MODEL_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
 
   def new
-    render Views::Databasium::Models::New.new(content: nil)
+    models = @model_service.get_all_models_from_db(search: params[:search])
+
+    render Views::Databasium::Models::New.new(content: nil, models: models)
   end
 
   def show

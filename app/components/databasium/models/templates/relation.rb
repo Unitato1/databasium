@@ -25,14 +25,14 @@ module Components
               option(value: value, selected: selected_relation == value) { label }
             end
           end
-          select(
+          input(
+            type: "search",
             name: "model[relations][][table_name]",
-            placeholder: "Currently there is no model to select",
-            class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none"
+            placeholder: "Search or select model",
+            class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none",
+            value: selected_model,
+            list: "models_datalist"
           ) do
-            @models&.each do |model|
-              option(value: model.classify, selected: selected_model == model.classify) { model }
-            end
           end
           button(
             type: "button",
@@ -41,6 +41,17 @@ module Components
               action: "click->relation#removeRelation"
             }
           ) { heroicon "x-mark", variant: :solid, options: { class: "w-8 h-8" } }
+        end
+        render_models_datalist
+      end
+
+      private
+
+      def render_models_datalist
+        datalist(id: "models_datalist") do
+          @models&.each do |model|
+            option(value: model.classify) { model }
+          end
         end
       end
     end
