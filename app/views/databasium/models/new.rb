@@ -6,12 +6,11 @@ module Views
       include Phlex::Rails::Helpers::ContentFor
       include Phlex::Rails::Helpers::TurboFrameTag
 
-      def initialize(content:, model: nil, attributes: nil, models: nil, pagy: nil)
+      def initialize(content:, model: nil, attributes: nil, models: nil)
         @model = model
         @content = content
         @attributes = attributes
         @models = models
-        @pagy = pagy
       end
 
       def view_template

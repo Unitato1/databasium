@@ -33,10 +33,10 @@ class Databasium::ModelsController < Databasium::ApplicationController
   end
 
   def sidebar
-    @models = @model_service.get_all_models_from_db(search: params[:search])
-    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
+    models = @model_service.get_all_models_from_db(search: params[:search])
+    pagy, models = pagy(models, limit: 7, root_key: "models")
 
-    render Components::Databasium::SearchResults::Models.new(models: @models, pagy: @pagy)
+    render Components::Databasium::SearchResults::Models.new(models: models, pagy: pagy)
   end
 
   def create

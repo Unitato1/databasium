@@ -30,7 +30,7 @@ class Databasium::SchemasController < Databasium::ApplicationController
   def sidebar
     models, pagy = get_models
 
-    render Components::Databasium::Schemas::Sidebar.new(models: models, pagy: pagy)
+    render Components::Databasium::SearchResults::SchemaModels.new(models: models, pagy: pagy)
   end
 
   def sync_schema

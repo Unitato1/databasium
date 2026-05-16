@@ -20,7 +20,6 @@ Databasium::Engine.routes.draw do
   resources :models, only: [ :new, :create, :show ] do
     collection do
       get :sidebar
-      # get :get_model
     end
   end
   resources :schemas, only: [ :index, :new, :create ] do
