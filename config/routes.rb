@@ -17,10 +17,10 @@ Databasium::Engine.routes.draw do
       post :rollback_migration
     end
   end
-  resources :models, only: [ :new, :create ] do
+  resources :models, only: [ :new, :create, :show ] do
     collection do
       get :sidebar
-      get :get_model
+      # get :get_model
     end
   end
   resources :schemas, only: [ :index, :new, :create ] do

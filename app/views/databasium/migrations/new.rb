@@ -13,20 +13,11 @@ module Views
 
       def view_template
         content_for(:title) { "New Migration" }
-        content_for(:sidebar) do
-          render Components::Databasium::Migrations::Sidebar.new(
-            migrations: nil,
-            pending_migrations: nil,
-            pagy: nil)
-        end
-        content_for(:header_actions) do
-          render Components::Databasium::Migrations::HeaderActions.new(migration: nil)
-        end
+        content_for(:sidebar) { render Components::Databasium::Migrations::Sidebar.new }
+        content_for(:header_actions) { render Components::Databasium::Migrations::HeaderActions.new(migration: nil) }
         div(class: "flex p-4 gap-4") do
           render Components::Databasium::Migrations::Form.new(tables: @tables, content: @content)
-          div(class: "flex-1 pe-4") do
-            render Components::Databasium::Migrations::Preview.new(content: nil)
-          end
+          div(class: "flex-1 pe-4") { render Components::Databasium::Migrations::Preview.new(content: nil) }
         end
       end
     end

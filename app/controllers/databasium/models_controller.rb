@@ -4,32 +4,29 @@ class Databasium::ModelsController < Databasium::ApplicationController
   MODEL_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
 
   def new
-    @models = @model_service.get_all_models_from_db(search: params[:search])
-    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
-
-    render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
+    render Views::Databasium::Models::New.new(content: nil)
   end
 
-  def get_model
-    @content = @model_service.read_model_file(params[:model])
-    @attributes = @model_service.get_model_data_from_file(params[:model])
-    @model = params[:model]
-    @models = @model_service.get_all_models_from_db(search: params[:search])
-    @pagy, @models = pagy(@models, limit: 7, root_key: "models")
+  def show
+    model = params[:id]
+    content = @model_service.read_model_file(model)
+    attributes = @model_service.get_model_data_from_file(model)
+    models = @model_service.get_all_models_from_db(search: params[:search])
 
     respond_to do |format|
       format.html do
         render Views::Databasium::Models::New.new(
-                 content: @content,
-                 model: @model,
-                 attributes: @attributes,
+                 content: content,
+                 model: model,
+                 attributes: attributes,
+                 models: models,
                )
       end
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(
                    "model_preview",
-                   Components::Databasium::Models::ModelPreview.new(content: @content)
+                   Components::Databasium::Models::ModelPreview.new(content: content)
                  )
       end
     end
@@ -39,7 +36,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
     @models = @model_service.get_all_models_from_db(search: params[:search])
     @pagy, @models = pagy(@models, limit: 7, root_key: "models")
 
-    render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy)
+    render Components::Databasium::SearchResults::Models.new(models: @models, pagy: @pagy)
   end
 
   def create

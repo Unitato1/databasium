@@ -12,15 +12,8 @@ module Views
 
       def view_template
         content_for(:title) { "Migrations" }
-        content_for(:sidebar) do
-          render Components::Databasium::Migrations::Sidebar.new(
-            migrations: nil,
-            pending_migrations: nil,
-            pagy: nil)
-        end
-        content_for(:header_actions) do
-          render Components::Databasium::Migrations::HeaderActions.new(migration: nil)
-        end
+        content_for(:sidebar) { render Components::Databasium::Migrations::Sidebar.new }
+        content_for(:header_actions) { render Components::Databasium::Migrations::HeaderActions.new(migration: nil) }
         render_migration_frame
       end
 

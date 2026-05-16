@@ -17,7 +17,7 @@ module Views
       def view_template
         content_for(:title) { "Schema" }
         content_for(:sidebar) do
-          render Components::Databasium::Schemas::Sidebar.new(models: @models, pagy: @pagy)
+          render Components::Databasium::Models::Sidebar.new
         end
         content_for(:header_actions) do
           render Components::Databasium::Schemas::HeaderActions.new(model: @model, layers: @layers)

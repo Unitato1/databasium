@@ -4,6 +4,7 @@ module Views
   module Databasium
     class Models::New < Views::Base
       include Phlex::Rails::Helpers::ContentFor
+      include Phlex::Rails::Helpers::TurboFrameTag
 
       def initialize(content:, model: nil, attributes: nil, models: nil, pagy: nil)
         @model = model
@@ -15,9 +16,7 @@ module Views
 
       def view_template
         content_for(:title) { "New Model" }
-        content_for(:sidebar) do
-          render Components::Databasium::Models::Sidebar.new(models: @models, pagy: @pagy)
-        end
+        content_for(:sidebar) { render Components::Databasium::Models::Sidebar.new }
         content_for(:header_actions) do
           render Components::Databasium::Models::HeaderActions.new(model: @model)
         end
