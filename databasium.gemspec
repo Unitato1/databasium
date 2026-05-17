@@ -18,9 +18,7 @@ Gem::Specification.new do |spec|
     For security reasons it will try to abort application when it is tried to be used in production, just to be sure :). "
   spec.license     = "MIT"
   spec.required_ruby_version = ">= 3.2"
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata["allowed_push_host"] = "https://rubygems.org"
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/Unitato1/databasium"
@@ -31,10 +29,10 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 8.0.2"
-  spec.add_dependency "heroicon"
-  spec.add_dependency "pagy"
-  spec.add_dependency "phlex-rails"
-  spec.add_dependency "turbo-rails"
-  spec.add_dependency "stimulus-rails"
-  spec.add_dependency "importmap-rails"
+  spec.add_dependency "heroicon", "~> 1.0"
+  spec.add_dependency "pagy", "~> 43.2"
+  spec.add_dependency "phlex-rails", "~> 2.4"
+  spec.add_dependency "turbo-rails", "~> 2.0"
+  spec.add_dependency "stimulus-rails", "~> 1.3"
+  spec.add_dependency "importmap-rails", "~> 2.0"
 end

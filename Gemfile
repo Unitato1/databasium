@@ -21,13 +21,9 @@ gem "tailwindcss-rails"
 
 gem "turbo-rails", "~> 2.0"
 gem "stimulus-rails", "~> 1.3"
-
-gem "importmap-rails"
-
-gem "heroicon"
-
+gem "importmap-rails", "~> 2.0"
+gem "heroicon", "~> 1.0"
 gem "pagy", "~> 43.2"
-
 gem "phlex-rails", "~> 2.4"
 
 group :development do
