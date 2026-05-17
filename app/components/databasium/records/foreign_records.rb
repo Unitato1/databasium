@@ -15,11 +15,9 @@ module Components
       def view_template
         turbo_frame_tag(@frame_id) do
           div(
-            class:
-              "fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4",
+            class: "fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 p-4",
             data: {
-              table_select_target: "table",
-              action: "click->table-select#dismiss"
+              table_select_target: "table"
             }
           ) do
             div(
@@ -43,8 +41,10 @@ module Components
 
       def render_selected_record
         div(class: "flex flex gap-2 items-center") do
-          h2(class: "") { "Selected Record:" }
-          p(class: "font-bold", data: { table_select_target: "selectedRecord" }) { "You haven't yet selected a record" }
+          h2 { "Selected Record:" }
+          p(class: "font-bold", data: { table_select_target: "selectedRecord" }) do
+            "You haven't yet selected a record"
+          end
         end
       end
 

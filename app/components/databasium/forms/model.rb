@@ -67,10 +67,10 @@ module Components
 
       def render_submit_button(form)
         raw form.submit(
-          "Add record",
-          class: "bg-blue-500 px-4 py-2 rounded-md w-fit",
-          id: "add_record_button"
-        )
+              "Add record",
+              class: "bg-blue-500 px-4 py-2 rounded-md w-fit",
+              id: "add_record_button"
+            )
       end
 
       def render_field(form, column)

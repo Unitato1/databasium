@@ -82,7 +82,12 @@ class Databasium::Model
   end
 
   def create_model_data(model_name:, attributes:, relations:, unknown:)
-    ModelData.new(model_name: model_name, attributes: attributes, relations: relations, unknown: unknown)
+    ModelData.new(
+      model_name: model_name,
+      attributes: attributes,
+      relations: relations,
+      unknown: unknown
+    )
   end
 
   private

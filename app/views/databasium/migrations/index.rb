@@ -13,7 +13,9 @@ module Views
       def view_template
         content_for(:title) { "Migrations" }
         content_for(:sidebar) { render Components::Databasium::Migrations::Sidebar.new }
-        content_for(:header_actions) { render Components::Databasium::Migrations::HeaderActions.new(migration: nil) }
+        content_for(:header_actions) do
+          render Components::Databasium::Migrations::HeaderActions.new(migration: nil)
+        end
         render_migration_frame
       end
 
@@ -22,8 +24,8 @@ module Views
       def render_migration_frame
         turbo_frame_tag "migration", class: "flex-1" do
           render Components::Databasium::Global::Suggestion.new(
-                    suggestions: [ "Select a migration to see the file" ]
-                  )
+                   suggestions: [ "Select a migration to see the file" ]
+                 )
         end
       end
     end

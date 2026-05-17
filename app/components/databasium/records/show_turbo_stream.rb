@@ -44,11 +44,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
 
     turbo_stream.update(
       "header_actions",
-      Components::Databasium::Records::HeaderActions.new(
-        filter: nil,
-        table: @table,
-        limit: @limit
-      )
+      Components::Databasium::Records::HeaderActions.new(filter: nil, table: @table, limit: @limit)
     )
     if @refresh
       turbo_stream.replace(

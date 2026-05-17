@@ -21,17 +21,15 @@ module Components
 
       def render_table
         turbo_frame_tag("records_list") do
-          suggestion = if @feedback
-            @feedback
-          elsif @model
-            "No records found for #{@model&.name} table."
-          else
-            "Please select a table to view records."
-
-          end
-          render Components::Databasium::Global::Suggestion.new(
-                   suggestions: [ suggestion ]
-                 )
+          suggestion =
+            if @feedback
+              @feedback
+            elsif @model
+              "No records found for #{@model&.name} table."
+            else
+              "Please select a table to view records."
+            end
+          render Components::Databasium::Global::Suggestion.new(suggestions: [ suggestion ])
         end
       end
     end

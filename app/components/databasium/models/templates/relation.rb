@@ -32,8 +32,7 @@ module Components
             class: "border-2 rounded-xl p-1 border-border w-full bg-background focus:outline-none",
             value: selected_model,
             list: "models_datalist"
-          ) do
-          end
+          ) { }
           button(
             type: "button",
             class: "text-red-500",
@@ -49,9 +48,7 @@ module Components
 
       def render_models_datalist
         datalist(id: "models_datalist") do
-          @models&.each do |model|
-            option(value: model.classify) { model }
-          end
+          @models&.each { |model| option(value: model.classify) { model } }
         end
       end
     end

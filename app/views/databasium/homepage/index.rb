@@ -18,7 +18,9 @@ module Views
               li { "Generate models and migrations for your database." }
               li { "Generate schema for your database." }
             end
-            p(class: "text-red-500 bg-white w-fit px-4 py-2 rounded-md my-2") { "DATABASIUM IS NOT MEANT TO BE USED IN PRODUCTION, ALWAYS BE SURE TO NEVER EXPOSE IT TO THE PUBLIC." }
+            p(class: "text-red-500 bg-white w-fit px-4 py-2 rounded-md my-2") do
+              "DATABASIUM IS NOT MEANT TO BE USED IN PRODUCTION, ALWAYS BE SURE TO NEVER EXPOSE IT TO THE PUBLIC."
+            end
           end
         end
       end

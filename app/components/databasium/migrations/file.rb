@@ -12,8 +12,10 @@ module Components
       end
 
       def view_template
-        turbo_frame_tag("migration",
-                        class: "flex flex-col flex-1 p-4 w-full min-h-0 overflow-hidden") do
+        turbo_frame_tag(
+          "migration",
+          class: "flex flex-col flex-1 p-4 w-full min-h-0 overflow-hidden"
+        ) do
           h1(class: "text-2xl font-bold mb-2 text-ellipsis break-all") { @migration.name }
           render_content
           render_extra_info

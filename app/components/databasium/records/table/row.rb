@@ -80,12 +80,9 @@ class Components::Databasium::Records::Table::Row < Components::Base
   end
 
   def render_plain_td(column)
-    td(
-      class: cell_classes,
-      data: {
-        attribute_name: column.name
-      }
-    ) { plain format_cell_value(record.public_send(column.name)) }
+    td(class: cell_classes, data: { attribute_name: column.name }) do
+      plain format_cell_value(record.public_send(column.name))
+    end
   end
 
   def format_cell_value(value)

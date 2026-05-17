@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class Databasium::MigrationsControllerTest < ActionDispatch::IntegrationTest
-  def setup
-  end
   test "GET migrations index" do
     get "/databasium/migrations"
 
@@ -15,7 +15,7 @@ class Databasium::MigrationsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "POST migrations create" do
+  test "POST migrations create renders preview" do
     post "/databasium/migrations",
          params: {
            table_name: "users",
@@ -26,6 +26,7 @@ class Databasium::MigrationsControllerTest < ActionDispatch::IntegrationTest
            validation: [ { column_name: "name", type: "not_null" } ]
          },
          as: :turbo_stream
+
     assert_response :success
     assert_equal Mime[:turbo_stream].to_s, response.media_type
     assert_includes response.body, 'target="migration_preview"'

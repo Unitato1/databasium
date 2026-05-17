@@ -21,7 +21,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
                  content: content,
                  model: model,
                  attributes: attributes,
-                 models: models,
+                 models: models
                )
       end
       format.turbo_stream do
@@ -44,8 +44,16 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def create
     content = generate_model_content
     if params[:commit] == "Create model file"
-      write_file(content)
-      redirect_to schemas_path, notice: "Model file created successfully"
+      if write_file(content)
+        render turbo_stream:
+                 turbo_stream.replace(
+                   "flash",
+                   Components::Databasium::Global::Flash.new(
+                     success:
+                       "Model file created successfully, be sure to create a migration for this model if you haven't already"
+                   )
+                 )
+      end
     else
       respond_to do |format|
         format.html

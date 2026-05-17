@@ -10,9 +10,7 @@ module Databasium
     private
 
     def check_development_environment
-      if Rails.env.production?
-        render Views::Databasium::Errors::NonDevelopment.new
-      end
+      render Views::Databasium::Errors::NonDevelopment.new if Rails.env.production?
     end
 
     def render_error_flash(error)

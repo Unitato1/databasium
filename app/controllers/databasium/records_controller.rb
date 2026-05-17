@@ -13,21 +13,25 @@ class Databasium::RecordsController < Databasium::ApplicationController
     raise ActiveRecord::RecordInvalid, new_record.errors.full_messages.join(", ") unless new_record
 
     render turbo_stream: [
-      turbo_stream.append(
-        "records_body",
-        Components::Databasium::Records::Table::Row.new(
-          record: new_record,
-          turbo_frame: "records_list"
-        )
-      ),
-      turbo_stream.remove("suggestion")
-    ]
+             turbo_stream.append(
+               "records_body",
+               Components::Databasium::Records::Table::Row.new(
+                 record: new_record,
+                 turbo_frame: "records_list"
+               )
+             ),
+             turbo_stream.remove("suggestion")
+           ]
   end
 
   def records
     @context = records_context
     pagy, records =
-      pagy(@record_service.filter_records(filter_params), limit: params[:limit].presence || 10, root_key: "records")
+      pagy(
+        @record_service.filter_records(filter_params),
+        limit: params[:limit].presence || 10,
+        root_key: "records"
+      )
 
     if foreign_records_frame?(@context[:turbo_frame])
       render_foreign_records_table
@@ -43,29 +47,31 @@ class Databasium::RecordsController < Databasium::ApplicationController
     record = @record_service.update_by_id(params[:id], attributes: model_columns_params)
     raise ActiveRecord::RecordInvalid, record.errors.full_messages.join(", ") unless record
     render turbo_stream:
-      turbo_stream.replace(
-        dom_id(record),
-        Components::Databasium::Records::Table::Row.new(
-          record: record,
-          turbo_frame: "records_list"
-        )
-      )
+             turbo_stream.replace(
+               dom_id(record),
+               Components::Databasium::Records::Table::Row.new(
+                 record: record,
+                 turbo_frame: "records_list"
+               )
+             )
   end
 
   def bulk_destroy
     deleted_records = @record_service.bulk_destroy(params[:ids])
-    raise ActiveRecord::RecordInvalid, deleted_records.errors.full_messages.join(", ") unless deleted_records
+    unless deleted_records
+      raise ActiveRecord::RecordInvalid, deleted_records.errors.full_messages.join(", ")
+    end
 
     doms_ids = deleted_records.map { |record| dom_id(record) }
 
     render turbo_stream:
-      doms_ids.flat_map { |dom_id|
-        [
-          turbo_stream.remove(dom_id),
-          turbo_stream.remove("record-tab-#{dom_id}"),
-          turbo_stream.remove("record-form-#{dom_id}")
-        ]
-      }
+             doms_ids.flat_map { |dom_id|
+               [
+                 turbo_stream.remove(dom_id),
+                 turbo_stream.remove("record-tab-#{dom_id}"),
+                 turbo_stream.remove("record-form-#{dom_id}")
+               ]
+             }
   end
 
   def sidebar
@@ -78,29 +84,29 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def render_foreign_records_table
     render Components::Databasium::Records::ForeignRecords.new(
-      model: @model,
-      columns_names_types: @context[:columns_names_types],
-      frame_id: @context[:turbo_frame]
-    )
+             model: @model,
+             columns_names_types: @context[:columns_names_types],
+             frame_id: @context[:turbo_frame]
+           )
   end
 
   def render_records_table_turbo_stream(records:, pagy:)
     render Components::Databasium::Records::ShowTurboStream.new(
-      **@context,
-      records: records,
-      pagy: pagy,
-   ),
-   layout: false
+             **@context,
+             records: records,
+             pagy: pagy
+           ),
+           layout: false
   end
 
   def render_records_table(records:, pagy:)
     render Components::Databasium::Records::Table.new(
-      records: records,
-      model: @context[:model],
-      turbo_frame: @context[:turbo_frame],
-      pagy: pagy,
-      feedback: @context[:feedback],
-    )
+             records: records,
+             model: @context[:model],
+             turbo_frame: @context[:turbo_frame],
+             pagy: pagy,
+             feedback: @context[:feedback]
+           )
   end
 
   def records_context

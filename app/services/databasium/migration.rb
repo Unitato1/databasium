@@ -40,9 +40,9 @@ class Databasium::Migration
       if rollback_steps.present?
         migration_context.rollback(rollback_steps.to_i)
       elsif till_this_migration == "true"
-          migration_context.down(version.to_i)
+        migration_context.down(version.to_i)
       else
-          migration_context.run(:down, version.to_i)
+        migration_context.run(:down, version.to_i)
       end
     rescue => e
       raise "There was an error rolling back the #{version} migration: #{e.message}"
@@ -72,7 +72,8 @@ class Databasium::Migration
   end
 
   def generate_migration(params)
-    unless params[:table_name_from].present? || params[:table_name_to].present? || params[:table_name].present?
+    unless params[:table_name_from].present? || params[:table_name_to].present? ||
+             params[:table_name].present?
       raise "Please provide a table name to generate a migration"
     end
 
@@ -106,19 +107,21 @@ class Databasium::Migration
   def build_generator_args(params)
     table_name_with_action = set_generator_base(params)
 
-    table_name_with_action += if params[:migration_action] != "create"
-      set_all_affected_columns(params)
-    else
-      params[:table_name]&.capitalize&.pluralize
-    end
+    table_name_with_action +=
+      if params[:migration_action] != "create"
+        set_all_affected_columns(params)
+      else
+        params[:table_name]&.capitalize&.pluralize
+      end
 
-    table_name_with_action += if params[:migration_action] == "add"
-      "To#{params[:table_name_to]&.capitalize&.pluralize}"
-    elsif params[:migration_action] == "remove"
-      "From#{params[:table_name_from]&.capitalize&.pluralize}"
-    else
-      ""
-    end
+    table_name_with_action +=
+      if params[:migration_action] == "add"
+        "To#{params[:table_name_to]&.capitalize&.pluralize}"
+      elsif params[:migration_action] == "remove"
+        "From#{params[:table_name_from]&.capitalize&.pluralize}"
+      else
+        ""
+      end
 
     generator_args = [ table_name_with_action ]
 

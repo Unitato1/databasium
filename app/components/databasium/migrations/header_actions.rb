@@ -17,21 +17,27 @@ module Components
         div(id: "header_actions", class: "max-w-full overflow-x-auto flex") do
           render Components::Databasium::Navigation::IconPanel.new(
                    icons_with_text: [
-                    *(if @migration then render_migration_actions else [] end),
+                     *(
+                       if @migration
+                         render_migration_actions
+                       else
+                         []
+                       end
+                     ),
                      {
-                      icon: "document-plus",
-                      text: "New Migration",
-                      method: :get,
-                      path: databasium.new_migration_path,
-                      turbo_frame: "main"
-                    },
-                    {
-                      icon: "forward",
-                      text: "Run Pending Migrations",
-                      method: :post,
-                      path: databasium.run_pending_migrations_migrations_path,
-                      turbo_frame: "main"
-                    }
+                       icon: "document-plus",
+                       text: "New Migration",
+                       method: :get,
+                       path: databasium.new_migration_path,
+                       turbo_frame: "main"
+                     },
+                     {
+                       icon: "forward",
+                       text: "Run Pending Migrations",
+                       method: :post,
+                       path: databasium.run_pending_migrations_migrations_path,
+                       turbo_frame: "main"
+                     }
                    ]
                  )
           form_with(
@@ -68,7 +74,11 @@ module Components
             icon: "backward",
             method: :post,
             text: "Rollback till this migration",
-            path: databasium.rollback_migration_migrations_path(version: @migration.version, till_this_migration: true)
+            path:
+              databasium.rollback_migration_migrations_path(
+                version: @migration.version,
+                till_this_migration: true
+              )
           }
         ]
       end

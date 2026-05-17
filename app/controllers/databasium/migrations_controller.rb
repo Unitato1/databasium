@@ -15,16 +15,16 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     respond_to do |format|
       format.html do
         render Components::Databasium::Migrations::File.new(
-                  migration: @migration,
-                  content: @content
-                )
+                 migration: @migration,
+                 content: @content
+               )
       end
       format.turbo_stream do
         render Components::Databasium::Migrations::ShowTurboStream.new(
-                  migration: @migration,
-                  content: @content
-                ),
-                layout: false
+                 migration: @migration,
+                 content: @content
+               ),
+               layout: false
       end
     end
   end
@@ -50,10 +50,10 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       redirect_to migrations_path, status: :see_other
     elsif content
       render turbo_stream:
-                turbo_stream.replace(
-                  "migration_preview",
-                  Components::Databasium::Migrations::Preview.new(content: content)
-                )
+               turbo_stream.replace(
+                 "migration_preview",
+                 Components::Databasium::Migrations::Preview.new(content: content)
+               )
     else
       head :unprocessable_entity
     end
@@ -65,10 +65,10 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     pending_migrations = @migration_service.pending_migrations
 
     render Components::Databasium::SearchResults::Migrations.new(
-      migrations: migrations,
-      pending_migrations: pending_migrations,
-      pagy: pagy
-    )
+             migrations: migrations,
+             pending_migrations: pending_migrations,
+             pagy: pagy
+           )
   end
 
   def run_pending_migrations

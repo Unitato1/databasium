@@ -132,7 +132,6 @@ class Databasium::Schema
     @schema
   end
 
-
   def table_name_for(name)
     name.to_s.tableize
   end

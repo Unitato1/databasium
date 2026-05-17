@@ -70,11 +70,7 @@ module Components
                 ) { heroicon("check-circle", variant: :solid, options: { class: "w-6 h-6" }) }
               end
             end
-            @model&.columns&.each do |column|
-              th(class: table_head_classes) do
-                plain column.name
-              end
-            end
+            @model&.columns&.each { |column| th(class: table_head_classes) { plain column.name } }
           end
         end
       end

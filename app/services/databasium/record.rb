@@ -23,7 +23,7 @@ class Databasium::Record
   end
 
   def bulk_destroy(ids)
-    return nil unless @model || ids.blank?
+    return nil if @model.blank? || ids.blank?
     @model.where(id: ids).destroy_all
   end
 
