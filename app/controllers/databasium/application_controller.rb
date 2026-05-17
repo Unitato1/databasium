@@ -3,10 +3,15 @@ module Databasium
     helper ::Databasium::HeroiconHelper
 
     layout -> { Views::Layouts::Databasium::Application.new }
+    before_action :check_development_environment
 
     rescue_from Exception, with: :render_error_flash if Rails.env.development?
 
     private
+
+    def check_development_environment
+      render Views::Databasium::Errors::NonDevelopment.new if Rails.env.production?
+    end
 
     def render_error_flash(error)
       Rails.logger.error("[Databasium] #{error.class}: #{error.message}")
@@ -19,7 +24,13 @@ module Databasium
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-                   turbo_stream.replace("flash", Components::Databasium::Global::Flash.new(success: flash[:success], error: flash[:error])),
+                   turbo_stream.replace(
+                     "flash",
+                     Components::Databasium::Global::Flash.new(
+                       success: flash[:success],
+                       error: flash[:error]
+                     )
+                   ),
                    turbo_stream.replace(
                      "error",
                      Components::Databasium::Global::Error.new(

@@ -15,7 +15,6 @@ export default class extends Controller {
   }
 
   updateValidationName(e) {
-    // this could probably be done with single target in model controller
     const name = this.nameInputTarget.value;
     this.nameValidationInputTargets.forEach((target) => {
       target.value = name;

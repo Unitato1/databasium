@@ -14,7 +14,7 @@ module Components
       end
 
       def view_template
-        div(id: "header_actions", class: "flex flex gap-2") do
+        div(id: "header_actions", class: "flex max-w-full gap-2 overflow-x-auto") do
           unless model
             render Components::Databasium::Navigation::IconPanel.new(
                      icons_with_text: [

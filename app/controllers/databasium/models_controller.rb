@@ -1,44 +1,59 @@
 class Databasium::ModelsController < Databasium::ApplicationController
   include Pagy::Method
+  before_action :create_model_service
+  MODEL_TEMPLATE_PATH = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
 
   def new
-    @models = Databasium::Models.new.get_all_models_from_db(search: params[:search])
-    @pagy, @models = pagy(@models, limit: 10, root_key: "models")
+    models = @model_service.get_all_models_from_db(search: params[:search])
 
-    render Views::Databasium::Models::New.new(content: nil, models: @models, pagy: @pagy)
+    render Views::Databasium::Models::New.new(content: nil, models: models)
   end
 
-  def get_model
-    models_service = Databasium::Models.new
-    @content = models_service.read_model_file(params[:model])
-    @attributes = models_service.get_model_data_from_file(params[:model])
-    @model = params[:model] if params[:model]
-    @models = models_service.get_all_models_from_dir(search: params[:search])
+  def show
+    model = params[:id]
+    content = @model_service.read_model_file(model)
+    attributes = @model_service.get_model_data_from_file(model)
+    models = @model_service.get_all_models_from_db(search: params[:search])
+
     respond_to do |format|
       format.html do
         render Views::Databasium::Models::New.new(
-                 content: @content,
-                 model: @model,
-                 attributes: @attributes,
-                 models: @models,
-                 pagy: @pagy
+                 content: content,
+                 model: model,
+                 attributes: attributes,
+                 models: models
                )
       end
       format.turbo_stream do
         render turbo_stream:
                  turbo_stream.replace(
                    "model_preview",
-                   Components::Databasium::Models::ModelPreview.new(content: @content)
+                   Components::Databasium::Models::ModelPreview.new(content: content)
                  )
       end
     end
   end
 
+  def sidebar
+    models = @model_service.get_all_models_from_db(search: params[:search])
+    pagy, models = pagy(models, limit: 7, root_key: "models")
+
+    render Components::Databasium::SearchResults::Models.new(models: models, pagy: pagy)
+  end
+
   def create
-    @content = generate_model_content
+    content = generate_model_content
     if params[:commit] == "Create model file"
-      write_file(@content)
-      redirect_to schemas_path, notice: "Model file created successfully"
+      if write_file(content)
+        render turbo_stream:
+                 turbo_stream.replace(
+                   "flash",
+                   Components::Databasium::Global::Flash.new(
+                     success:
+                       "Model file created successfully, be sure to create a migration for this model if you haven't already"
+                   )
+                 )
+      end
     else
       respond_to do |format|
         format.html
@@ -46,7 +61,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
           render turbo_stream:
                    turbo_stream.replace(
                      "model_preview",
-                     Components::Databasium::Models::ModelPreview.new(content: @content)
+                     Components::Databasium::Models::ModelPreview.new(content: content)
                    )
         end
       end
@@ -55,12 +70,15 @@ class Databasium::ModelsController < Databasium::ApplicationController
 
   private
 
+  def create_model_service
+    @model_service = Databasium::Model.new
+  end
+
   def generate_model_content
-    template_path = Databasium::Engine.root.join("lib/databasium/templates/model.rb.tt")
-    renderer = ERB.new(File.read(template_path), trim_mode: "-")
+    renderer = ERB.new(File.read(MODEL_TEMPLATE_PATH), trim_mode: "-")
 
     context =
-      Databasium::Models::Model.new(
+      @model_service.create_model_data(
         model_name: model_params[:model_name],
         attributes: model_params[:attributes],
         relations: model_params[:relations],

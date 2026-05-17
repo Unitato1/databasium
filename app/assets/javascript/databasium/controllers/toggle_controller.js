@@ -4,7 +4,6 @@ import { Controller } from "@hotwired/stimulus";
 export default class extends Controller {
   connect() {
     this.openEl = null;
-    // this.lastOpenElSticky = null;
   }
 
   toggle(e) {

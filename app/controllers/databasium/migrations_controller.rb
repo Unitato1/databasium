@@ -1,52 +1,37 @@
 class Databasium::MigrationsController < Databasium::ApplicationController
-  before_action :create_migration_service
+  before_action :set_migration_service, except: [ :index ]
   after_action -> { Databasium::Schema.new.sync! },
                only: %i[run_migration rollback_migration run_pending_migrations]
   include Pagy::Method
 
   def index
-    @pagy, @migrations =
-      pagy(@migration_service.get_migrations(params[:search]), limit: 10, root_key: "migrations")
-    @pending_migrations = @migration_service.pending_migrations
-    @migration = @migration_service.migrations.find { |migration| migration.version.to_s == params[:version].to_s }
-
-    render Views::Databasium::Migrations::Index.new(
-             migrations: @migrations,
-             pending_migrations: @pending_migrations,
-             migration_id: params[:version],
-             migration: @migration,
-             pagy: @pagy
-           )
+    render Views::Databasium::Migrations::Index.new
   end
 
   def show
-    @migration, error = @migration_service.find_migration!(params[:id])
-    flash[:error] = error&.message
-    if @migration
-      @content = File.read(@migration.filename)
-      respond_to do |format|
-        format.html do
-          render Components::Databasium::Migrations::File.new(
-                   migration: @migration,
-                   content: @content
-                 )
-        end
-        format.turbo_stream do
-          render Components::Databasium::Migrations::ShowTurboStream.new(
-                   migration: @migration,
-                   content: @content
-                 ),
-                 layout: false
-        end
+    @migration = @migration_service.find_migration!(params[:id])
+    @content = File.read(@migration.filename)
+
+    respond_to do |format|
+      format.html do
+        render Components::Databasium::Migrations::File.new(
+                 migration: @migration,
+                 content: @content
+               )
       end
-    else
-      render json: { error: "Migration not found" }, status: :not_found
+      format.turbo_stream do
+        render Components::Databasium::Migrations::ShowTurboStream.new(
+                 migration: @migration,
+                 content: @content
+               ),
+               layout: false
+      end
     end
   end
 
   def new
     @tables = Databasium::Schema.new.tables
-    render Views::Databasium::Migrations::New.new(tables: @tables, content: @content)
+    render Views::Databasium::Migrations::New.new(tables: @tables)
   end
 
   def create
@@ -55,27 +40,35 @@ class Databasium::MigrationsController < Databasium::ApplicationController
     require "rails/generators/active_record/migration/migration_generator"
 
     if params[:add_migration] == "Save"
-      success, _ = @migration_service.save_migration(params)
+      success = @migration_service.save_migration(migration_params)
     else
-      @content, _ = @migration_service.generate_migration(params)
+      content = @migration_service.generate_migration(migration_params)
     end
-    if success || @content
-      respond_to do |format|
-        format.html do
-          redirect_to migrations_path(migration: @migration_service.migrations.last&.version)
-        end
-        format.turbo_stream do
-          render turbo_stream:
-                   turbo_stream.replace(
-                     "migration_preview",
-                     Components::Databasium::Migrations::Preview.new(content: @content)
-                   )
-        end
-      end
+
+    if success
+      flash[:success] = "Migration for table #{migration_params[:table_name]} saved successfully."
+      redirect_to migrations_path, status: :see_other
+    elsif content
+      render turbo_stream:
+               turbo_stream.replace(
+                 "migration_preview",
+                 Components::Databasium::Migrations::Preview.new(content: content)
+               )
     else
-      flash[:error] = "Error creating migration: #{error.message}"
-      render :new, status: :unprocessable_entity
+      head :unprocessable_entity
     end
+  end
+
+  def sidebar
+    pagy, migrations =
+      pagy(@migration_service.get_migrations(params[:search]), limit: 5, root_key: "migrations")
+    pending_migrations = @migration_service.pending_migrations
+
+    render Components::Databasium::SearchResults::Migrations.new(
+             migrations: migrations,
+             pending_migrations: pending_migrations,
+             pagy: pagy
+           )
   end
 
   def run_pending_migrations
@@ -116,38 +109,31 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def rollback_migration
     version = rollback_migration_params[:version]
-    result, error =
+    success =
       @migration_service.rollback_migration(
         version,
         rollback_migration_params[:rollback_steps],
         rollback_migration_params[:till_this_migration]
       )
-    if result == :success
-      success = "Migration rolled back successfully"
-    end
+    message = "Migration rolled back successfully"
     if rollback_migration_params[:till_this_migration] == "true" ||
          rollback_migration_params[:rollback_steps].present?
-      set_action_flash(success, error)
+      set_action_flash(message, nil)
       redirect_to migrations_path(version: version)
     else
-      response_to_action(success, error, version, result == :success ? "pending" : nil)
+      response_to_action(message, nil, version, success ? "pending" : nil)
     end
   end
 
   def run_migration
     version = run_migration_params[:version]
-    result, error = @migration_service.run_migration(version)
-    if result == :success
-      success = "Migration run successfully"
-    else
-      error = "Error running migration: #{error.message}"
-    end
-    response_to_action(success, error, version, result == :success ? "applied" : nil)
+    @migration_service.run_migration(version)
+    response_to_action("Migration run successfully", nil, version, "applied")
   end
 
   private
 
-  def create_migration_service
+  def set_migration_service
     @migration_service = Databasium::Migration.new
   end
 

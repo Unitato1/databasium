@@ -9,7 +9,7 @@ module Components
       def view_template
         div(class: icon_classes, data: @data_params) do
           render_icon(element[:icon])
-          p(class: "text-main-text text-base") { element[:text] }
+          render_text(element[:text])
         end
       end
     end

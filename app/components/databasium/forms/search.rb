@@ -15,7 +15,6 @@ module Components
         div(data: { controller: "search" }) do
           form_with url: @url,
                     method: :get,
-                    class: "flex gap-2",
                     data: {
                       turbo_frame: @turbo_frame,
                       action: "input->search#update"

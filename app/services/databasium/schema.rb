@@ -3,12 +3,13 @@ class Databasium::Schema
   def initialize
     @conn = ActiveRecord::Base.connection
     @tables = @conn.data_sources - %w[ar_internal_metadata schema_migrations]
+    @schema = nil
   end
 
-  def sync!
+  def sync!(schema: nil)
     path = Rails.root.join("storage")
     FileUtils.mkdir_p(path) unless Dir.exist?(path)
-    File.write(path.join("schema_graph.json"), build_schema.to_json)
+    File.write(path.join("schema_graph.json"), schema || build_schema.to_json)
   end
 
   def get_associations(table)
@@ -30,27 +31,28 @@ class Databasium::Schema
   end
 
   def schema
-    if File.exist?(Rails.root.join("storage/schema_graph.json")) && @schema.nil?
-      @schema ||= JSON.parse(File.read(Rails.root.join("storage/schema_graph.json")))
+    return @schema unless @schema.nil?
+    if File.exist?(Rails.root.join("storage/schema_graph.json"))
+      @schema = JSON.parse(File.read(Rails.root.join("storage/schema_graph.json")))
     else
-      @schema ||= build_schema
-      sync!
+      @schema = build_schema.deep_stringify_keys
+      sync!(schema: @schema)
+      @schema
     end
-    @schema
   end
 
   def get_model_and_layers_BFS(model, layers)
     queue = Queue.new()
     queue.push([ table_name_for(model), 0 ])
     result = {}
+
     until queue.empty?
-      model, layer = queue.pop
+      table, layer = queue.pop
+      next if (layers.present? && layer > layers) || result[table].present?
+      result[table] = get_schema_for_model(table)
 
-      next if (layers.present? && layer > layers) || result[model].present?
-      result[model] = get_schema_for_model(model)
-
-      model_associations = result[model].fetch("associations", []).map { |a| a["name"] }
-      model_associations.each { |association| queue << [ association, layer + 1 ] }
+      model_associations = result[table].fetch("associations", nil)
+      model_associations&.each { |a| queue << [ a["name"], layer + 1 ] }
     end
     result
   end
@@ -59,26 +61,12 @@ class Databasium::Schema
     schema[table_name_for(model)]
   end
 
-  def get_model_associations(model)
-    table_name = table_name_for(model)
-    model_associations = schema[table_name].fetch("associations", [])
-    result = { table_name => get_schema_for_model(model) }
-    model_associations.each do |association|
-      association_key = table_name_for(association["class_name"])
-
-      result[association_key] = get_schema_for_model(association["class_name"])
-    end
-    result
-  end
-
   def get_foreign_keys(table)
-    @all_references ||=
-      @conn
-        .foreign_keys(table)
-        .map do |fk|
-          { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key }
-        end
-    @all_references
+    @conn
+      .foreign_keys(table)
+      .map do |fk|
+        { from: fk.from_table, to: fk.to_table, column: fk.column, primary_key: fk.primary_key }
+      end
   end
 
   def get_columns_from_table(table)
@@ -130,40 +118,7 @@ class Databasium::Schema
     [ @model, @error ]
   end
 
-  def filter_records(records, filter)
-    return records if filter.nil? || @model.nil?
-    connectors = Array(filter[:operator_types]).map(&:to_s)
-    allowed_operators = %w[eq not_eq gt lt gteq lteq matches does_not_match]
-    combined_predicate = nil
-    predicate_index = 0
-
-    filter
-      .except(:operator_types)
-      .each do |name, value|
-        next if value[:operator].blank? || value[:value].blank?
-
-        operator = value[:operator].to_s
-        next unless allowed_operators.include?(operator)
-
-        column = @model.arel_table[name]
-        predicate_value = value[:value].to_s
-        predicate_value = "%#{predicate_value}%" if %w[matches does_not_match].include?(operator)
-        current_predicate = column.public_send(operator, predicate_value)
-
-        if combined_predicate.nil?
-          combined_predicate = current_predicate
-        else
-          connector = connectors[predicate_index - 1] == "or" ? :or : :and
-          combined_predicate = combined_predicate.public_send(connector, current_predicate)
-        end
-
-        predicate_index += 1
-      end
-
-    return records if combined_predicate.nil?
-
-    records.where(combined_predicate)
-  end
+  private
 
   def build_schema
     @schema = {}
@@ -182,13 +137,10 @@ class Databasium::Schema
   end
 
   def is_column_foreign_key?(table, column_name)
-    @all_references ||= get_foreign_keys(table)
-    @all_references.any? { |fk| fk[:column] == column_name }
+    get_foreign_keys(table).any? { |fk| fk[:column] == column_name }
   end
 
   def get_foreign_key_to_table(table, column_name)
-    @all_references ||= get_foreign_keys(table)
-    fk = @all_references.find { |fk| fk[:column] == column_name }
-    fk[:to] if fk
+    get_foreign_keys(table).find { |fk| fk[:column] == column_name }&.fetch(:to)
   end
 end

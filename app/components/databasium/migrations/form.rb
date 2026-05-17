@@ -17,7 +17,8 @@ module Components
           method: :post,
           id: "migration_form",
           data: {
-            controller: "new-migration"
+            controller: "new-migration",
+            turbo_frame: "_top"
           },
           class:
             "flex flex-col gap-4 min-w-fit w-1/3 bg-panel border-1 border-border rounded-xl p-4"

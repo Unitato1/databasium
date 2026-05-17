@@ -8,15 +8,18 @@
 /test/dummy/log/*.log
 /test/dummy/storage/
 /test/dummy/tmp/
+*.gem
 
 /app/assets/builds/*
+!/app/assets/builds/databasium.css
+
 # /test/dummy/app/models/*
 # /test/dummy/db/migrate/*
 /test/dummy/db/schema.rb
 /test/dummy/test/fixtures/*
-# /test/dummy/db/*
-/test/*
-/app/assets/builds/*
+/test/dummy/db/*
+# /test/*
+!/app/assets/builds/.keep
 /node_modules/
 /package.json
 /package-lock.json

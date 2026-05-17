@@ -17,7 +17,7 @@ module Components
           }
         ) do
           render_icon(element[:icon])
-          p(class: "text-main-text text-base") { element[:text] }
+          render_text(element[:text])
         end
       end
     end

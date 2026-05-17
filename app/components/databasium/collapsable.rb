@@ -52,9 +52,7 @@ module Components
               )
             end
             div(class: "hidden", data: { collapse_target: "content" }) do
-              div(class: "w-full") do
-                div(class: "", data: @target_container) { yield if block_given? }
-              end
+              div(class: "w-full") { div(data: @target_container) { yield if block_given? } }
             end
           end
         end

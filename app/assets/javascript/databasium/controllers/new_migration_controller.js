@@ -1,5 +1,23 @@
 import { Controller } from "@hotwired/stimulus";
 
+const MIGRATION_ACTION_UI = {
+  create: {
+    show: ["table_name", "add_model_container", "validations"],
+    hide: ["table_name_from", "table_name_to"],
+    addModelDisabled: false
+  },
+  remove: {
+    show: ["table_name_from"],
+    hide: ["table_name_to", "table_name", "add_model_container", "validations"],
+    addModelDisabled: true
+  },
+  add: {
+    show: ["table_name_to"],
+    hide: ["table_name_from", "table_name", "add_model_container", "validations"],
+    addModelDisabled: true
+  }
+};
+
 // Connects to data-controller="new-migration"
 export default class extends Controller {
   static targets = [
@@ -35,17 +53,17 @@ export default class extends Controller {
       options.push(new Option(name, name));
     });
 
-    if (this.hasValidationTarget) {
-      this.validation_column_nameTargets.forEach((target) => {
-        const selected = target.options[target.selectedIndex].value;
-        target.innerHTML = "";
-        options.forEach((opt) => {
-          const clone = opt.cloneNode(true);
-          clone.selected = selected === opt.value;
-          target.add(clone);
-        });
+    if (!this.hasValidationTarget) return;
+
+    this.validation_column_nameTargets.forEach((target) => {
+      const selected = target.options[target.selectedIndex].value;
+      target.innerHTML = "";
+      options.forEach((opt) => {
+        const clone = opt.cloneNode(true);
+        clone.selected = selected === opt.value;
+        target.add(clone);
       });
-    }
+    });
   }
 
   removeColumn(e) {
@@ -75,27 +93,15 @@ export default class extends Controller {
   }
 
   set_action(e) {
-    if (e.currentTarget.value === "create") {
-      this.table_name_fromTarget.classList.add("hidden");
-      this.table_name_toTarget.classList.add("hidden");
-      this.table_nameTarget.classList.remove("hidden");
-      this.add_model_containerTarget.classList.remove("hidden");
-      this.add_modelTarget.disabled = false;
-      this.validationsTarget.classList.remove("hidden");
-    } else if (e.currentTarget.value === "remove") {
-      this.table_name_fromTarget.classList.remove("hidden");
-      this.table_name_toTarget.classList.add("hidden");
-      this.table_nameTarget.classList.add("hidden");
-      this.add_model_containerTarget.classList.add("hidden");
-      this.add_modelTarget.disabled = true;
-      this.validationsTarget.classList.add("hidden");
-    } else if (e.currentTarget.value === "add") {
-      this.table_name_fromTarget.classList.add("hidden");
-      this.table_name_toTarget.classList.remove("hidden");
-      this.table_nameTarget.classList.add("hidden");
-      this.add_model_containerTarget.classList.add("hidden");
-      this.add_modelTarget.disabled = true;
-      this.validationsTarget.classList.add("hidden");
+    const config = MIGRATION_ACTION_UI[e.currentTarget.value];
+    if (!config) return;
+
+    for (const name of config.show) {
+      this[`${name}Target`].classList.remove("hidden");
     }
+    for (const name of config.hide) {
+      this[`${name}Target`].classList.add("hidden");
+    }
+    this.add_modelTarget.disabled = config.addModelDisabled;
   }
 }

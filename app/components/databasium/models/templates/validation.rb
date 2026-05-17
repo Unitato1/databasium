@@ -26,7 +26,13 @@ module Components
       end
 
       def view_template
-        div(class: "p-2", data: { controller: "validation", validation_selected_type_value: @selected_validation }) do
+        div(
+          class: "p-2",
+          data: {
+            controller: "validation",
+            validation_selected_type_value: @selected_validation
+          }
+        ) do
           div(class: "flex gap-2") do
             render_validation_name_input
             div(class: "relative") do

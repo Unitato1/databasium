@@ -23,6 +23,10 @@ module Components
       def render_icon(icon)
         heroicon icon, variant: :outline, options: { class: "w-6 h-6" }
       end
+
+      def render_text(text)
+        p(class: "text-main-text text-base text-nowrap") { text }
+      end
     end
   end
 end

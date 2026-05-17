@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 require "test_helper"
 
 class Databasium::ModelsControllerTest < ActionDispatch::IntegrationTest
   def setup
     @model_name = "TestModelFromControllerTest"
-    @destination_path = Rails.root.join("app/models/#{@model_name.downcase}.rb")
+    @destination_path = Rails.root.join("app/models/#{@model_name.underscore}.rb")
     FileUtils.rm_f(@destination_path)
   end
 
@@ -33,7 +35,7 @@ class Databasium::ModelsControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, 'target="model_preview"'
   end
 
-  test "POST /databasium/models with commit creates model file and redirects" do
+  test "POST /databasium/models with commit creates model file" do
     post "/databasium/models",
          params: {
            commit: "Create model file",
@@ -42,12 +44,13 @@ class Databasium::ModelsControllerTest < ActionDispatch::IntegrationTest
              attributes: [],
              relations: []
            }
-         }
+         },
+         as: :turbo_stream
 
-    assert_redirected_to "/databasium/schemas"
-    assert_equal "Model file created successfully", flash[:notice]
+    assert_response :success
+    assert_equal Mime[:turbo_stream].to_s, response.media_type
+    assert_includes response.body, 'target="flash"'
     assert File.exist?(@destination_path)
-    assert_includes File.read(@destination_path),
-                    "class Testmodelfromcontrollertest < ApplicationRecord"
+    assert_includes File.read(@destination_path), "class #{@model_name} < ApplicationRecord"
   end
 end

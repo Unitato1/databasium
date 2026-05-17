@@ -19,9 +19,7 @@ module Components
             data: {
               controller: "error"
             }
-          ) do
-            render_error if @message || @details
-          end
+          ) { render_error if @message || @details }
         end
       end
 
@@ -51,9 +49,10 @@ module Components
       def render_details
         details(class: "mt-3") do
           summary(class: "cursor-pointer font-semibold") { "Details" }
-          pre(class: "mt-2 max-h-64 overflow-auto whitespace-pre rounded-lg bg-red-50 p-2 font-mono text-xs") do
-            plain @details
-          end
+          pre(
+            class:
+              "mt-2 max-h-64 overflow-auto whitespace-pre rounded-lg bg-red-50 p-2 font-mono text-xs"
+          ) { plain @details }
         end
       end
     end

@@ -3,10 +3,12 @@ PATH
   specs:
     databasium (0.1.0)
       heroicon
+      importmap-rails
       pagy
       phlex-rails
       rails (>= 8.0.2)
-      tailwindcss-rails
+      stimulus-rails
+      turbo-rails
 
 GEM
   remote: https://rubygems.org/

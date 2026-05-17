@@ -17,6 +17,7 @@ class <%= model_name.classify %> < ApplicationRecord
   validates :<%= val[:name] -%>, <%= val[:type] -%>: <%= val[:value].to_s %>
 <% end -%>
 <% end -%>
-<% unknown.each do |line| -%>
+<% unknown&.each do |line| -%>
 <%= line -%>
 <% end -%>
+<%= "end" if unknown.nil? || unknown&.empty? -%>

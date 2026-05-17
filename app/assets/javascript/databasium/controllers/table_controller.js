@@ -3,7 +3,7 @@ import { Controller } from "@hotwired/stimulus";
 const SPACES_UP_TO_OPEN_FORM = 135;
 const CLICK_DELAY = 200;
 
-// Connects to data-controller="table-row"
+// Connects to data-controller="table"
 export default class extends Controller {
   static targets = [
     "deleteButton",
@@ -15,6 +15,7 @@ export default class extends Controller {
     "toggleAllRecordsButton",
     "checkbox"
   ];
+
   connect() {
     this.selectedRecords = 0;
     this.enableUpdate = false;
@@ -38,6 +39,7 @@ export default class extends Controller {
       this.appendRecordCard(e);
     }
   }
+
   selectRecord(e) {
     const tr = e.target.closest("tr");
     if (!tr) return;

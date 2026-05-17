@@ -26,19 +26,17 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
   end
 
   def view_template
-    foreign = @turbo_frame == "foreign_records_list"
-    target_frame = foreign ? "foreign_records_list" : "records_list"
+    foreign = @turbo_frame.start_with?("foreign_records_table_")
+    target_frame = foreign ? @turbo_frame : "records_list"
 
     turbo_stream.replace(
       target_frame,
-      Components::Databasium::Records::CleanTable.new(
+      Components::Databasium::Records::Table.new(
         records: @records,
         model: @model,
         turbo_frame: target_frame,
         pagy: @pagy,
-        feedback: @feedback,
-        columns_names_types: @columns_names_types,
-        render_as_cards: foreign
+        feedback: @feedback
       )
     )
 
@@ -46,11 +44,7 @@ class Components::Databasium::Records::ShowTurboStream < Components::Base
 
     turbo_stream.update(
       "header_actions",
-      Components::Databasium::Records::HeaderActions.new(
-        filter: @filter,
-        table: @table,
-        limit: @limit
-      )
+      Components::Databasium::Records::HeaderActions.new(filter: nil, table: @table, limit: @limit)
     )
     if @refresh
       turbo_stream.replace(

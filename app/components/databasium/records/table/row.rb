@@ -80,12 +80,9 @@ class Components::Databasium::Records::Table::Row < Components::Base
   end
 
   def render_plain_td(column)
-    td(
-      class: "text-center w-55 max-w-55 py-2 border-1 border-border overflow-auto",
-      data: {
-        attribute_name: column.name
-      }
-    ) { plain format_cell_value(record.public_send(column.name)) }
+    td(class: cell_classes, data: { attribute_name: column.name }) do
+      plain format_cell_value(record.public_send(column.name))
+    end
   end
 
   def format_cell_value(value)
@@ -99,5 +96,9 @@ class Components::Databasium::Records::Table::Row < Components::Base
     else
       value.to_s
     end
+  end
+
+  def cell_classes
+    "text-center max-w-15 h-15 p-2 border-1 border-border overflow-auto"
   end
 end
