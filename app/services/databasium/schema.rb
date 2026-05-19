@@ -9,7 +9,7 @@ class Databasium::Schema
   def sync!(schema: nil)
     path = Rails.root.join("storage")
     FileUtils.mkdir_p(path) unless Dir.exist?(path)
-    File.write(path.join("schema_graph.json"), schema || build_schema.to_json)
+    File.write(path.join("schema_graph.json"), (schema || build_schema).to_json)
   end
 
   def get_associations(table)

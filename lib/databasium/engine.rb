@@ -2,6 +2,7 @@
 
 require "databasium/engine_mount"
 require "databasium/middleware/conditional_check_pending"
+require "databasium/user_facing_error"
 
 module Databasium
   class Engine < ::Rails::Engine
