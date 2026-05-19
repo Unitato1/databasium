@@ -23,10 +23,7 @@ module Components
             div(
               class:
                 "relative bg-panel p-4 rounded-xl border-1 border-border w-fit max-w-[50vw] flex flex-col h-[90dvh] overflow-auto shadow-2xl",
-              id: @frame_id,
-              data: {
-                action: "click->table-select#stopPropagation"
-              }
+              id: @frame_id
             ) do
               render_title
               render_selected_record
