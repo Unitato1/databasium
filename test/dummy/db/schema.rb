@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_05_17_201711) do
+ActiveRecord::Schema[8.1].define(version: 2026_05_19_140007) do
   create_table "blog_author_profiles", force: :cascade do |t|
     t.text "bio"
     t.integer "blog_author_id", null: false
@@ -84,22 +84,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_05_17_201711) do
     t.string "slug", null: false
     t.datetime "updated_at", null: false
     t.index ["slug"], name: "index_blog_tags_on_slug", unique: true
-  end
-
-  create_table "blogviews", force: :cascade do |t|
-    t.integer "count"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "sadasdas", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "tests", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "blog_author_profiles", "blog_authors"
