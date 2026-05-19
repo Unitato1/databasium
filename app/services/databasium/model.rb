@@ -30,7 +30,11 @@ class Databasium::Model
   end
 
   def read_model_file(model_name)
-    File.read(model_file_path(model_name))
+    begin
+      File.read(model_file_path(model_name))
+    rescue Errno::ENOENT
+      nil
+    end
   end
 
   def get_model_data_from_file(model_name)

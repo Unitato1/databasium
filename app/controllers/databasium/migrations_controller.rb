@@ -43,6 +43,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       success = @migration_service.save_migration(migration_params)
     else
       content = @migration_service.generate_migration(migration_params)
+      raise_user_error("Please provide a table name to generate a migration") unless content
     end
 
     if success
@@ -61,7 +62,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def sidebar
     pagy, migrations =
-      pagy(@migration_service.get_migrations(params[:search]), limit: 5, root_key: "migrations")
+      pagy(@migration_service.get_migrations(params[:search]), limit: 7, root_key: "migrations")
     pending_migrations = @migration_service.pending_migrations
 
     render Components::Databasium::SearchResults::Migrations.new(

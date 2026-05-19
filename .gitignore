@@ -13,8 +13,8 @@
 /app/assets/builds/*
 !/app/assets/builds/databasium.css
 
-# /test/dummy/app/models/*
-# /test/dummy/db/migrate/*
+/test/dummy/app/models/*
+/test/dummy/db/migrate/*
 /test/dummy/db/schema.rb
 /test/dummy/test/fixtures/*
 /test/dummy/db/*

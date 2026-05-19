@@ -14,9 +14,6 @@ module Databasium
     end
 
     def render_error_flash(error)
-      Rails.logger.error("[Databasium] #{error.class}: #{error.message}")
-      Rails.logger.error(error.backtrace.join("\n")) if error.backtrace
-
       return if performed?
 
       message, details = error_message_parts(error)
@@ -53,12 +50,20 @@ module Databasium
       end
     end
 
+    def raise_user_error(message)
+      raise Databasium::UserFacingError, message
+    end
+
     def error_message_parts(error)
       lines = strip_ansi(error.message.to_s).lines.map(&:chomp)
       message = lines.shift.presence || "Something went wrong"
-      details = lines.join("\n")
+      details = lines.join("\n").presence
 
-      [ message, details.presence || strip_ansi(error.backtrace&.join("\n").to_s).presence ]
+      unless error.is_a?(Databasium::UserFacingError)
+        details ||= strip_ansi(error.backtrace&.join("\n").to_s).presence
+      end
+
+      [ message, details ]
     end
 
     def strip_ansi(text)

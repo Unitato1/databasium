@@ -74,7 +74,7 @@ class Databasium::Migration
   def generate_migration(params)
     unless params[:table_name_from].present? || params[:table_name_to].present? ||
              params[:table_name].present?
-      raise "Please provide a table name to generate a migration"
+      return nil
     end
 
     require "rails/generators/active_record/migration/migration_generator"
