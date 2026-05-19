@@ -48,6 +48,10 @@ export default class extends Controller {
     if (!e.target.closest("input, label, a, button")) {
       checkbox.checked = !checkbox.checked;
     }
+    // new records were rendered
+    if (this.deleteButtonTarget.parentElement.classList.contains("hidden")) {
+      this.resetDeleteButton();
+    }
     this.updateDeleteButton(checkbox.checked);
     this.allRecordsSelected = this.checkboxTargets.length === this.selectedRecords;
     this.updateStyleOfToggleAllRecordsButton();
@@ -159,6 +163,7 @@ export default class extends Controller {
 
   createAddRecordForm(row) {
     const form = this.element.querySelector("#addRecord").cloneNode(true);
+    this.uniquifyTurboFrames(form, `_${row.id}`);
     form.id = `record-form-${row.id}`;
     form.classList.remove("hidden", "max-h-100");
     // 135px is the space up to the open form cant define as constants because of tailwind dynamic classes
@@ -201,6 +206,27 @@ export default class extends Controller {
     });
 
     return form;
+  }
+  // this need to be done as also add tab contains the model froms and the ids would fight
+  uniquifyTurboFrames(root, suffix) {
+    root.querySelectorAll("turbo-frame[id]").forEach((frame) => {
+      frame.id = `${frame.id}${suffix}`;
+    });
+
+    root.querySelectorAll("[data-turbo-frame]").forEach((el) => {
+      const frame = el.getAttribute("data-turbo-frame");
+      if (frame && frame !== "_top") {
+        el.setAttribute("data-turbo-frame", `${frame}${suffix}`);
+      }
+    });
+
+    root.querySelectorAll("a[href]").forEach((link) => {
+      const url = new URL(link.href, window.location.origin);
+      const frameId = url.searchParams.get("frame_id");
+      if (!frameId) return;
+      url.searchParams.set("frame_id", `${frameId}${suffix}`);
+      link.href = url.toString();
+    });
   }
 
   openTab(e, givenRecordId = null) {
