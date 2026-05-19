@@ -43,6 +43,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
       success = @migration_service.save_migration(migration_params)
     else
       content = @migration_service.generate_migration(migration_params)
+      raise_user_error("Please provide a table name to generate a migration") unless content
     end
 
     if success

@@ -103,15 +103,17 @@ comments = [
   { post: "keeping-admin-screens-fast-enough", author: "omar@example.test", approved: true, body: "Good reminder to measure before adding caching." }
 ]
 
-comments.each do |attributes|
-  comment = BlogComment.find_or_initialize_by(
-    blog_post: posts_by_slug.fetch(attributes[:post]),
-    body: attributes[:body]
-  )
-  comment.update!(
-    blog_author: authors_by_email.fetch(attributes[:author]),
-    approved: attributes[:approved]
-  )
+if ActiveRecord::Base.connection.table_exists?(:blog_comments)
+  comments.each do |attributes|
+    comment = BlogComment.find_or_initialize_by(
+      blog_post: posts_by_slug.fetch(attributes[:post]),
+      body: attributes[:body]
+    )
+    comment.update!(
+      blog_author: authors_by_email.fetch(attributes[:author]),
+      approved: attributes[:approved]
+    )
+  end
 end
 
 taggings = {
@@ -138,4 +140,11 @@ taggings.each do |post_slug, tag_slugs|
   end
 end
 
-puts "Seeded blog example: #{BlogAuthor.count} authors, #{BlogAuthorProfile.count} profiles, #{BlogCategory.count} categories, #{BlogPost.count} posts, #{BlogComment.count} comments, #{BlogTag.count} tags, #{BlogTagging.count} taggings."
+comment_count =
+  if ActiveRecord::Base.connection.table_exists?(:blog_comments)
+    BlogComment.count
+  else
+    "pending migration"
+  end
+
+puts "Seeded blog example: #{BlogAuthor.count} authors, #{BlogAuthorProfile.count} profiles, #{BlogCategory.count} categories, #{BlogPost.count} posts, #{comment_count} comments, #{BlogTag.count} tags, #{BlogTagging.count} taggings."

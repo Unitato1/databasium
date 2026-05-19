@@ -12,6 +12,7 @@ class Databasium::ModelsController < Databasium::ApplicationController
   def show
     model = params[:id]
     content = @model_service.read_model_file(model)
+    raise_user_error("Model file not found for #{model}.") unless content
     attributes = @model_service.get_model_data_from_file(model)
     models = @model_service.get_all_models_from_db(search: params[:search])
 

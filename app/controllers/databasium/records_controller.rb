@@ -10,7 +10,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def create
     new_record = @record_service.create_new(attributes: model_columns_params)
-    raise ActiveRecord::RecordInvalid, new_record.errors.full_messages.join(", ") unless new_record
+    return raise_user_error(new_record.errors.full_messages.join(", ")) unless new_record && new_record.valid?
 
     render turbo_stream: [
              turbo_stream.append(
@@ -25,13 +25,15 @@ class Databasium::RecordsController < Databasium::ApplicationController
   end
 
   def records
+    raise_user_error("Missing model for #{params[:table]} table.") if @model.blank?
     @context = records_context
+    raw_records = @record_service.filter_records(filter_params)
     pagy, records =
       pagy(
-        @record_service.filter_records(filter_params),
+        raw_records,
         limit: params[:limit].presence || 10,
         root_key: "records"
-      )
+      ) 
 
     if foreign_records_frame?(@context[:turbo_frame])
       render_foreign_records_table
@@ -45,7 +47,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
 
   def update
     record = @record_service.update_by_id(params[:id], attributes: model_columns_params)
-    raise ActiveRecord::RecordInvalid, record.errors.full_messages.join(", ") unless record
+    raise_user_error(record.errors.full_messages.join(", ")) unless record
     render turbo_stream:
              turbo_stream.replace(
                dom_id(record),
@@ -59,7 +61,7 @@ class Databasium::RecordsController < Databasium::ApplicationController
   def bulk_destroy
     deleted_records = @record_service.bulk_destroy(params[:ids])
     unless deleted_records
-      raise ActiveRecord::RecordInvalid, deleted_records.errors.full_messages.join(", ")
+      raise_user_error(deleted_records.errors.full_messages.join(", "))
     end
 
     doms_ids = deleted_records.map { |record| dom_id(record) }

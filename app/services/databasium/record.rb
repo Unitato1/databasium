@@ -29,7 +29,7 @@ class Databasium::Record
 
   def filter_records(filter)
     records = @model&.all
-    return records if filter.nil? || @model.nil?
+    return [] if filter.nil? || @model.nil? || records.blank?
     connectors = Array(filter[:operator_types]).map(&:to_s)
     allowed_operators = %w[eq not_eq gt lt gteq lteq matches does_not_match]
     combined_predicate = nil
