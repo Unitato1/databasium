@@ -62,7 +62,7 @@ class Databasium::MigrationsController < Databasium::ApplicationController
 
   def sidebar
     pagy, migrations =
-      pagy(@migration_service.get_migrations(params[:search]), limit: 5, root_key: "migrations")
+      pagy(@migration_service.get_migrations(params[:search]), limit: 7, root_key: "migrations")
     pending_migrations = @migration_service.pending_migrations
 
     render Components::Databasium::SearchResults::Migrations.new(
