@@ -27,7 +27,7 @@ module Components
             %w[binary Binary],
             %w[boolean Boolean],
             %w[references Reference]
-          ].each { |value, label| option(value: value, selected: @value == value) { label } }
+          ].each { |value, label| option(value: value, selected: @value.to_s == value.to_s) { label } }
         end
       end
     end
