@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-05-16
+## [0.1.1] - 2026-05-16
 
 First public release. Databasium is a development-only Rails engine for managing and exploring Rails databases from the browser.
 
@@ -30,3 +30,4 @@ First public release. Databasium is a development-only Rails engine for managing
 - Host app must use Active Record
 
 [0.1.0]: https://github.com/Unitato1/databasium/releases/tag/v0.1.0
+[0.1.1]: https://github.com/Unitato1/databasium/releases/tag/v0.1.1
