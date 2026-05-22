@@ -96,7 +96,7 @@ Open [http://127.0.0.1:3000/databasium](http://127.0.0.1:3000/databasium).
 
 ## Status
 
-Version **0.1.0** is an early release. Automated test coverage is limited; treat the API and UI as subject to change.
+Version **0.1.1** is an early release. Automated test coverage is limited; treat the API and UI as subject to change.
 
 ## Contributing
 
